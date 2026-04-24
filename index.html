@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Moon小手机</title>
+    
+    <!-- PWA / 添加到桌面相关配置 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Moon小手机">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/Zqp4FZsP/IMG-20260423-204152.png">
+        <link rel="icon" type="image/png" href="https://i.postimg.cc/Zqp4FZsP/IMG-20260423-204152.png">
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Moon%E5%B0%8F%E6%89%8B%E6%9C%BA%22%2C%22short_name%22%3A%22Moon%E5%B0%8F%E6%89%8B%E6%9C%BA%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22fullscreen%22%2C%22background_color%22%3A%22%23000000%22%2C%22theme_color%22%3A%22%23000000%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fi.postimg.cc%2FZqp4FZsP%2FIMG-20260423-204152.png%22%2C%22sizes%22%3A%22192x192%20512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -9873,6 +9884,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     initLockScreen();
     updateTime();
     setInterval(updateTime, 1000);
+    
+    // 自动全屏逻辑：检测到从桌面图标启动时，在首次触摸屏幕时自动进入沉浸式全屏
+    if (window.matchMedia('(display-mode: standalone)').matches || 
+        window.matchMedia('(display-mode: fullscreen)').matches || 
+        window.navigator.standalone === true) {
+        const autoFullscreen = () => {
+            const el = document.documentElement;
+            const requestFs = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+            if (requestFs && !document.fullscreenElement && !document.webkitFullscreenElement) {
+                requestFs.call(el).then(() => {
+                    fullscreenLocked = true;
+                    updateFullscreenToggle();
+                }).catch(()=>{});
+            }
+            document.removeEventListener('touchstart', autoFullscreen);
+            document.removeEventListener('click', autoFullscreen);
+        };
+        // 绑定到用户的首次交互上（浏览器安全策略要求必须有用户交互才能全屏）
+        document.addEventListener('touchstart', autoFullscreen, { passive: true });
+        document.addEventListener('click', autoFullscreen);
+    }
     
     // 初始进入锁屏
     switchView('lockscreen');
