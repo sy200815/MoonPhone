@@ -3408,6 +3408,16 @@ body.hide-status-bar .status-bar {
                         </div>
                         <div class="m-right" id="model-row-container"></div>
                     </div>
+                                        <div class="modern-item">
+                        <div class="m-icon" style="background: #ff2d55; color: white;"><iconify-icon icon="solar:thermometer-bold-duotone"></iconify-icon></div>
+                        <div class="m-info">
+                            <div class="m-title">模型温度</div>
+                            <div class="m-desc">如果使用claude模型建议把温度改成1，最高温度设置是1，最低是0</div>
+                        </div>
+                        <div class="m-right">
+                            <input type="number" id="api-temperature" class="m-input" style="text-align: right; width: 60px;" value="${state.apiConfig.temperature !== undefined ? state.apiConfig.temperature : 0.6}" min="0" max="1" step="0.1" oninput="clearApiPresetSelection()" />
+                        </div>
+                    </div>
                     <div class="modern-item" style="justify-content: center; cursor: pointer;" onclick="testConnection()">
                         <div class="m-title" style="color: #007aff;" id="btn-test-conn"><iconify-icon icon="ph:plug-bold"></iconify-icon> 测试连接状态</div>
                     </div>
@@ -4078,7 +4088,7 @@ const state = {
     activeChatType: 'single',
     activeGroupId: null,
     
-                apiConfig: { url: '', apiKey: '', model: '', presetId: '' },
+                                apiConfig: { url: '', apiKey: '', model: '', presetId: '', temperature: 0.6 },
                 apiPresets: [],
     uiConfig: { textColor: '#ffffff', wallpaper: '', lockWallpaper: '', lockPasscodeEnabled: false, lockPasscode: '', customIcons: {}, momentsBg: '', momentsAvatar: '', momentsName: 'Space Traveler', chatMainBg: '', hideStatusBar: false },
     
@@ -5003,7 +5013,7 @@ async function triggerAIComments(moment) {
                         const res = await fetch(`${baseUrl}/chat/completions`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: state.apiConfig.model || 'gpt-3.5-turbo', messages: apiMessages, stream: false })
+                                body: JSON.stringify({ model: state.apiConfig.model || 'gpt-3.5-turbo', messages: apiMessages, temperature: state.apiConfig.temperature ?? 0.6, stream: false })
             });
             if (res.ok) {
                 const data = parseAPIResponse(await res.text());
@@ -5073,10 +5083,10 @@ ${STRICT_REALISM_PROMPT}
                 const res = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: state.apiConfig.model || 'gpt-3.5-turbo', messages: [
+                        body: JSON.stringify({ model: state.apiConfig.model || 'gpt-3.5-turbo', messages: [
                 {role: 'user', content: prompt},
                 {role: 'system', content: '【系统最后强制校验】自我审查：你的文案是否包含不尊重、居高临下、爹味或油腻霸总的词汇？如果是，请立即重写！必须保持平等、日常的语气。'}
-            ], stream: false })
+            ], temperature: state.apiConfig.temperature ?? 0.6, stream: false })
         });
         if (res.ok) {
             const data = parseAPIResponse(await res.text());
@@ -5145,10 +5155,10 @@ ${STRICT_REALISM_PROMPT}
                 const res = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: state.apiConfig.model || 'gpt-3.5-turbo', messages: [
+                        body: JSON.stringify({ model: state.apiConfig.model || 'gpt-3.5-turbo', messages: [
                 {role: 'user', content: prompt},
                 {role: 'system', content: '【系统最后强制校验】请在输出前自我审查：你的回复是否包含“欠收拾、胆子肥了、找打、咬”等不尊重、居高临下、轻浮挑逗的词汇？是否阴阳怪气？如果是，请立即重写！必须保持平等、尊重、高情商的日常评论语气。如果不想回直接输出 NONE。'}
-            ], stream: false })
+            ], temperature: state.apiConfig.temperature ?? 0.6, stream: false })
         });
         if (res.ok) {
             const data = parseAPIResponse(await res.text());
@@ -6139,9 +6149,10 @@ JSON 格式示例：
         const res = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+                        body: JSON.stringify({ 
                 model: state.apiConfig.model || 'gpt-3.5-turbo', 
                 messages: [{ role: 'user', content: prompt }],
+                temperature: state.apiConfig.temperature ?? 0.6,
                 stream: false
             })
         });
@@ -7342,10 +7353,11 @@ function applyApiPreset(id) {
     }
     const preset = state.apiPresets.find(p => p.id === id);
     if (preset) {
-        state.apiConfig.presetId = preset.id;
+                state.apiConfig.presetId = preset.id;
         state.apiConfig.url = preset.url;
         state.apiConfig.apiKey = preset.apiKey;
         state.apiConfig.model = preset.model;
+        if (preset.temperature !== undefined) state.apiConfig.temperature = preset.temperature;
         renderSettings();
     }
 }
@@ -7353,7 +7365,8 @@ function applyApiPreset(id) {
 async function saveApiPreset() {
     const url = $('#api-url').value.trim();
     const apiKey = $('#api-key').value.trim();
-    const model = $('#api-model')?.value.trim() || '';
+        const model = $('#api-model')?.value.trim() || '';
+    const temperature = parseFloat($('#api-temperature').value) || 0.6;
     
     if (!url || !apiKey) {
         showToast('请先填写完整的接口地址和密钥', 'error');
@@ -7366,15 +7379,17 @@ async function saveApiPreset() {
         const newPreset = {
             id: Date.now().toString(),
             name: name.trim(),
-            url,
+                        url,
             apiKey,
-            model
+            model,
+            temperature
         };
         state.apiPresets.push(newPreset);
         state.apiConfig.presetId = newPreset.id;
         state.apiConfig.url = url;
         state.apiConfig.apiKey = apiKey;
         state.apiConfig.model = model;
+        state.apiConfig.temperature = temperature;
         await saveDataSilently();
         renderSettings();
         showToast('已保存预设');
@@ -7426,7 +7441,7 @@ async function testConnection() {
     try {
                         const res = await fetch(`${url.replace(/\/+$/, '')}/chat/completions`, {
             method: 'POST', headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: $('#api-model')?.value || 'gpt-3.5-turbo', messages: [{role:'user',content:'Hi'}], max_tokens: 5, stream: false })
+                        body: JSON.stringify({ model: $('#api-model')?.value || 'gpt-3.5-turbo', messages: [{role:'user',content:'Hi'}], temperature: state.apiConfig.temperature ?? 0.6, max_tokens: 5, stream: false })
         });
         if(res.ok) showToast('连接成功'); else throw new Error();
     } catch(e) { showToast('连接失败', 'error'); }
@@ -7436,7 +7451,8 @@ async function testConnection() {
 function saveSettings() {
     state.apiConfig.url = $('#api-url').value.trim();
     state.apiConfig.apiKey = $('#api-key').value.trim();
-    state.apiConfig.model = $('#api-model')?.value.trim() || '';
+        state.apiConfig.model = $('#api-model')?.value.trim() || '';
+    state.apiConfig.temperature = parseFloat($('#api-temperature').value) || 0.6;
             state.apiConfig.presetId = $('#api-preset-select').value;
     state.uiConfig.textColor = $('#ui-text-color').value;
     
@@ -8088,12 +8104,13 @@ ${momentText}`;
                 const res = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+                        body: JSON.stringify({ 
                 model: state.apiConfig.model || 'gpt-3.5-turbo', 
                 messages: [
                     { role: 'user', content: prompt },
                     { role: 'system', content: '【系统最后强制校验】自我审查：你的总结中是否包含不尊重、居高临下、爹味或油腻霸总的词汇？如果是，请立即重写！必须保持平等、客观、正常的语气。' }
                 ],
+                temperature: state.apiConfig.temperature ?? 0.6,
                 stream: false
             })
         });
@@ -8286,12 +8303,13 @@ ${historyText}`;
         const res = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+                        body: JSON.stringify({ 
                 model: state.apiConfig.model || 'gpt-3.5-turbo', 
                 messages: [
                     { role: 'user', content: prompt },
                     { role: 'system', content: '【系统最后强制校验】自我审查：你的总结中是否包含不尊重、居高临下、爹味或油腻霸总的词汇？如果是，请立即重写！必须保持平等、客观、正常的语气。' }
-                ]
+                ],
+                temperature: state.apiConfig.temperature ?? 0.6
             })
         });
         if (!res.ok) {
@@ -8736,12 +8754,13 @@ SAFEGUARD CHECK: Before outputting, scan for asterisks (*), excessive adjectives
                 const res = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+                        body: JSON.stringify({ 
                 model: state.apiConfig.model || 'gpt-3.5-turbo', 
                 messages: [
                     { role: 'user', content: prompt },
                                         { role: 'system', content: '【系统最后强制校验】自我审查：你的日记中是否包含不尊重、居高临下、爹味或油腻霸总的词汇？是否包含了做作的动作描写或小说般的矫情独白？如果是，请立即重写！必须保持极度真实、克制、平淡的日记口吻。直接输出正文。' }
                 ],
+                temperature: state.apiConfig.temperature ?? 0.6,
                 stream: false
             })
         });
@@ -9314,9 +9333,10 @@ JSON 格式示例：
         const res = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+                        body: JSON.stringify({ 
                 model: state.apiConfig.model || 'gpt-3.5-turbo', 
-                messages: [{ role: 'user', content: prompt }]
+                messages: [{ role: 'user', content: prompt }],
+                temperature: state.apiConfig.temperature ?? 0.6
             })
         });
         
