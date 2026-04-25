@@ -3914,30 +3914,85 @@ body.hide-status-bar .status-bar {
     
 <script>
 function parseAPIResponse(responseText) {
+    // 1. 先尝试直接解析标准 JSON
     try {
-        return JSON.parse(responseText);
-    } catch (e) {
-        if (responseText.includes('data: {')) {
-            let combinedContent = '';
-            const lines = responseText.split('\n');
-            for (const line of lines) {
-                if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-                    try {
-                        const chunk = JSON.parse(line.substring(6));
-                        if (chunk.choices && chunk.choices[0].delta && chunk.choices[0].delta.content) {
-                            combinedContent += chunk.choices[0].delta.content;
-                        } else if (chunk.choices && chunk.choices[0].message && chunk.choices[0].message.content) {
-                            combinedContent += chunk.choices[0].message.content;
-                        }
-                    } catch (err) {}
-                }
+        const parsed = JSON.parse(responseText);
+        // 兼容 Gemini 原生格式（candidates）
+        if (parsed.candidates && parsed.candidates[0]) {
+            const candidate = parsed.candidates[0];
+            const content = candidate.content?.parts?.[0]?.text || '';
+            if (content) {
+                return { choices: [{ message: { content } }] };
             }
-            if (combinedContent) {
-                return { choices: [{ message: { content: combinedContent } }] };
+            // 被安全过滤拦截
+            if (candidate.finishReason === 'SAFETY') {
+                throw new Error('Gemini 安全过滤拦截了此请求，请尝试换个说法或换用其他模型');
             }
         }
-        throw new Error('API返回数据不是有效的JSON格式');
+        return parsed;
+    } catch (e) {
+        // 如果是我们自己抛出的带描述的错误，直接往上抛
+        if (e.message && !e.message.includes('JSON')) throw e;
     }
+
+    // 2. 尝试从响应文本中用正则提取 JSON 对象（应对返回了多余文本的情况）
+    try {
+        const jsonMatch = responseText.match(/\{[\s\S]*"choices"[\s\S]*\}/);
+        if (jsonMatch) return JSON.parse(jsonMatch[0]);
+    } catch (e) {}
+
+    // 3. 尝试解析 SSE 流式响应（data: {...}）
+    if (responseText.includes('data:')) {
+        let combinedContent = '';
+        const lines = responseText.split('\n');
+        for (const line of lines) {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('data:') && !trimmed.includes('[DONE]')) {
+                try {
+                    const jsonStr = trimmed.substring(5).trim();
+                    const chunk = JSON.parse(jsonStr);
+                    // OpenAI 流式格式
+                    if (chunk.choices?.[0]?.delta?.content) {
+                        combinedContent += chunk.choices[0].delta.content;
+                    } else if (chunk.choices?.[0]?.message?.content) {
+                        combinedContent += chunk.choices[0].message.content;
+                    }
+                    // Gemini 流式格式
+                    if (chunk.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        combinedContent += chunk.candidates[0].content.parts[0].text;
+                    }
+                } catch (err) {}
+            }
+        }
+        if (combinedContent) {
+            return { choices: [{ message: { content: combinedContent } }] };
+        }
+    }
+
+    // 4. 尝试提取响应中任何可能的 JSON 片段
+    try {
+        const anyJson = responseText.match(/\{[\s\S]+\}/);
+        if (anyJson) {
+            const parsed = JSON.parse(anyJson[0]);
+            // Gemini 原生格式兜底
+            if (parsed.candidates?.[0]?.content?.parts?.[0]?.text) {
+                return { choices: [{ message: { content: parsed.candidates[0].content.parts[0].text } }] };
+            }
+            if (parsed.error?.message) {
+                throw new Error(`API 错误: ${parsed.error.message}`);
+            }
+        }
+    } catch (e) {
+        if (e.message && e.message.startsWith('API 错误')) throw e;
+    }
+
+    // 5. 如果响应本身就是纯文本（极少数情况）
+    const trimmed = responseText.trim();
+    if (trimmed && !trimmed.startsWith('{') && !trimmed.startsWith('[') && trimmed.length < 5000) {
+        return { choices: [{ message: { content: trimmed } }] };
+    }
+
+    throw new Error(`API返回数据无法解析，原始内容：${responseText.substring(0, 200)}`);
 }
 
 // ==================== 1. DB & Storage ====================
