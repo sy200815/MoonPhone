@@ -70,6 +70,10 @@ body, html {
 }
 
 /* iOS 状态栏与灵动岛 */
+body.hide-status-bar .status-bar {
+    display: none !important;
+}
+
 .status-bar {
     display: flex;
     justify-content: space-between;
@@ -3464,7 +3468,7 @@ body, html {
                 <div class="modern-card" id="app-icon-settings"></div>
                                 <input type="file" id="iconInput" accept="image/png, image/jpeg, image/jpg, image/gif, image/*" style="position:absolute; width:0; height:0; opacity:0; z-index:-1;" onchange="handleIconUpload(event)">
 
-                <div class="modern-group-title">系统控制</div>
+                                <div class="modern-group-title">系统控制</div>
                 <div class="modern-card">
                     <div class="modern-item">
                         <div class="m-icon" style="background: #5856d6; color: white;"><iconify-icon icon="ph:corners-out-bold"></iconify-icon></div>
@@ -3474,6 +3478,16 @@ body, html {
                         </div>
                         <div class="m-right">
                             <div class="toggle-switch" id="toggle-fullscreen" onclick="toggleFullscreenMode()"></div>
+                        </div>
+                    </div>
+                    <div class="modern-item">
+                        <div class="m-icon" style="background: #000000; color: white;"><iconify-icon icon="ph:battery-slash-bold"></iconify-icon></div>
+                        <div class="m-info">
+                            <div class="m-title">隐藏状态栏与灵动岛</div>
+                            <div class="m-desc">隐藏顶部时间、电池和灵动岛</div>
+                        </div>
+                        <div class="m-right">
+                            <div class="toggle-switch" id="toggle-status-bar" onclick="toggleStatusBar()"></div>
                         </div>
                     </div>
                 </div>
@@ -4065,8 +4079,8 @@ const state = {
     activeGroupId: null,
     
                 apiConfig: { url: '', apiKey: '', model: '', presetId: '' },
-            apiPresets: [],
-    uiConfig: { textColor: '#ffffff', wallpaper: '', lockWallpaper: '', lockPasscodeEnabled: false, lockPasscode: '', customIcons: {}, momentsBg: '', momentsAvatar: '', momentsName: 'Space Traveler', chatMainBg: '' },
+                apiPresets: [],
+    uiConfig: { textColor: '#ffffff', wallpaper: '', lockWallpaper: '', lockPasscodeEnabled: false, lockPasscode: '', customIcons: {}, momentsBg: '', momentsAvatar: '', momentsName: 'Space Traveler', chatMainBg: '', hideStatusBar: false },
     
     models: [],
     isFetchingModels: false,
@@ -4154,10 +4168,15 @@ async function fetchFreeTranslation(text, targetLang) {
     // 智能互译逻辑：
     // 包含中文且目标是中文 -> 翻成英文
     // 不含中文且目标是英文 -> 翻成中文
-    let actualTargetLang = targetLang;
+        let actualTargetLang = targetLang;
     const hasChinese = /[\u4e00-\u9fa5]/.test(text);
     if (hasChinese && targetLang === 'zh-CN') actualTargetLang = 'en';
     else if (!hasChinese && targetLang === 'en') actualTargetLang = 'zh-CN';
+
+    let sourceLang = hasChinese ? 'zh-CN' : 'en';
+    
+    // 如果源语言和目标语言相同，直接返回原文，避免 API 报错
+    if (sourceLang === actualTargetLang) return text;
 
     const fetchWithTimeout = async (url) => {
         const controller = new AbortController();
@@ -4181,12 +4200,12 @@ async function fetchFreeTranslation(text, targetLang) {
         }
     } catch (e) {}
     
-    // 2. 备用接口 MyMemory (支持国内直连 CORS)
+        // 2. 备用接口 MyMemory (支持国内直连 CORS)
     try {
-        const res2 = await fetchWithTimeout(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=Autodetect|${actualTargetLang}`);
+        const res2 = await fetchWithTimeout(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${actualTargetLang}`);
         if (res2.ok) {
             const data = await res2.json();
-            if (data && data.responseData && data.responseData.translatedText) {
+            if (data && data.responseData && data.responseData.translatedText && !data.responseData.translatedText.includes('PLEASE SELECT TWO DISTINCT LANGUAGES')) {
                 return data.responseData.translatedText;
             }
         }
@@ -4221,9 +4240,12 @@ function formatMsgTime(ts) {
 
 async function loadSettings() {
         const data = await StorageManager.loadData();
-    if (data) {
+        if (data) {
                 if (data.apiConfig) Object.assign(state.apiConfig, data.apiConfig);
-        if (data.uiConfig) Object.assign(state.uiConfig, data.uiConfig);
+        if (data.uiConfig) {
+            Object.assign(state.uiConfig, data.uiConfig);
+            if (state.uiConfig.hideStatusBar) document.body.classList.add('hide-status-bar');
+        }
                         if (data.contacts) {
             state.contacts = data.contacts;
             state.contacts.forEach(c => ensureContactConfig(c));
@@ -5276,9 +5298,9 @@ function renderChatRoom() {
         $('#chat-room-header-normal').style.display = 'flex';
         $('#chat-input-area').style.display = 'flex';
         
-                let avatarStr = '';
+                        let avatarStr = '';
         if (isGroup) {
-            avatarStr = chatData.avatar ? `<img src="${chatData.avatar}">` : `<div class="text-avatar" style="background:#5856d6; color:#fff;"><iconify-icon icon="solar:users-group-rounded-bold"></iconify-icon></div>`;
+            avatarStr = chatData.avatar ? `<img src="${chatData.avatar}" class="${chatData.avatarShape==='square'?'shape-square':''}">` : `<div class="text-avatar ${chatData.avatarShape==='square'?'shape-square':''}" style="background:#5856d6; color:#fff;"><iconify-icon icon="solar:users-group-rounded-bold"></iconify-icon></div>`;
         } else {
             avatarStr = chatData.chatAvatar || chatData.avatar ? 
                 `<img src="${chatData.chatAvatar || chatData.avatar}" class="${chatData.avatarShape==='square'?'shape-square':''}">` : 
@@ -5355,9 +5377,18 @@ function renderChatRoom() {
         const nextMsg = index < msgsToRender.length - 1 ? msgsToRender[index + 1] : null;
         
                 const isSameAsPrev = prevMsg && (isGroup ? prevMsg.senderId === msg.senderId : prevMsg.role === msg.role);
-        const isSameAsNext = nextMsg && (isGroup ? nextMsg.senderId === msg.senderId : nextMsg.role === msg.role);
+                const isSameAsNext = nextMsg && (isGroup ? nextMsg.senderId === msg.senderId : nextMsg.role === msg.role);
         const showAvatar = !isSameAsPrev;
         
+        if (msg.role === 'system') {
+            return `
+            <div class="message-item system" data-id="${msg.id}" style="justify-content: center; margin: 10px 0; width: 100%;">
+                <div class="msg-bubble-container" style="align-items: center; max-width: 90%;">
+                    <div class="msg-bubble" style="background-color: rgba(0,0,0,0.06); color: #8e8e93; font-size: 12px; padding: 4px 12px; border-radius: 8px; text-align: center; border: none; box-shadow: none;">${escapeHtml(msg.content)}</div>
+                </div>
+            </div>`;
+        }
+
         let bubbleGroupClass = 'bubble-single';
         if (isSameAsPrev && isSameAsNext) bubbleGroupClass = 'bubble-middle';
         else if (isSameAsPrev && !isSameAsNext) bubbleGroupClass = 'bubble-bottom';
@@ -5365,11 +5396,11 @@ function renderChatRoom() {
         
                         let avatarStr = '';
         let senderName = '';
-        if (isMe) {
+                if (isMe) {
             senderName = '我';
             if (showAvatar) {
                 if (isGroup) {
-                    avatarStr = chatData.myChatAvatar ? `<img src="${chatData.myChatAvatar}" class="msg-avatar my-avatar">` : `<div class="msg-avatar text-avatar my-avatar">我</div>`;
+                    avatarStr = chatData.myChatAvatar ? `<img src="${chatData.myChatAvatar}" class="msg-avatar my-avatar ${chatData.avatarShape==='square'?'shape-square':''}">` : `<div class="msg-avatar text-avatar my-avatar ${chatData.avatarShape==='square'?'shape-square':''}">我</div>`;
                 } else {
                     avatarStr = chatData.myChatAvatar ? `<img src="${chatData.myChatAvatar}" class="msg-avatar my-avatar ${chatData.avatarShape==='square'?'shape-square':''}">` : `<div class="msg-avatar text-avatar my-avatar ${chatData.avatarShape==='square'?'shape-square':''}">我</div>`;
                 }
@@ -5379,7 +5410,7 @@ function renderChatRoom() {
                 const sender = state.contacts.find(c => c.id === msg.senderId);
                 senderName = sender ? sender.name : '未知';
                 if (showAvatar) {
-                    avatarStr = sender && sender.avatar ? `<img src="${sender.avatar}" class="msg-avatar">` : `<div class="msg-avatar text-avatar">${escapeHtml(senderName.charAt(0))}</div>`;
+                    avatarStr = sender && sender.avatar ? `<img src="${sender.avatar}" class="msg-avatar ${chatData.avatarShape==='square'?'shape-square':''}">` : `<div class="msg-avatar text-avatar ${chatData.avatarShape==='square'?'shape-square':''}">${escapeHtml(senderName.charAt(0))}</div>`;
                 }
             } else {
                 senderName = chatData.name;
@@ -5441,8 +5472,8 @@ function renderChatRoom() {
             replyStr = `<div class="reply-quote">回复 ${rName}: ${rContent}</div>`;
         }
         
-        const myBgColor = isGroup ? '#007aff' : (chatData.myBubbleColor || '#007aff');
-        const roleBgColor = isGroup ? '#e5e5ea' : (chatData.roleBubbleColor || '#e5e5ea');
+                const myBgColor = chatData.myBubbleColor || '#007aff';
+        const roleBgColor = chatData.roleBubbleColor || '#e5e5ea';
         const myTextColor = getContrastTextColor(myBgColor);
         const roleTextColor = getContrastTextColor(roleBgColor);
         
@@ -6027,7 +6058,10 @@ async function receiveGroupMessage(triggerContext = null) {
         triggerContext = (triggerContext ? triggerContext + '\n' : '') + packetContext;
     }
 
-    let rolesPrompt = '【群成员列表及人设】\n';
+        let rolesPrompt = '【群成员列表及人设】\n';
+    if (!group.admins) group.admins = [];
+    if (!group.mutes) group.mutes = {};
+    const now = Date.now();
     members.forEach(c => {
         let emotesStr = '';
         if (c.roleEmotePackageId) {
@@ -6036,15 +6070,24 @@ async function receiveGroupMessage(triggerContext = null) {
                 emotesStr = `，拥有表情包：[${pkg.emotes.map(e => e.remark).filter(Boolean).join(', ')}]`;
             }
         }
-        rolesPrompt += `- ID: ${c.id}, 名字: ${c.name}, 人设: ${c.persona}${emotesStr}\n`;
+        const isAdmin = group.admins.includes(c.id);
+        const isMuted = group.mutes[c.id] && group.mutes[c.id] > now;
+        let statusStr = '';
+        if (isAdmin) statusStr += ' (身份: 群管理员)';
+        if (isMuted) statusStr += ' (状态: 当前被禁言，绝对无法发言！)';
+        rolesPrompt += `- ID: ${c.id}, 名字: ${c.name}${statusStr}, 人设: ${c.persona}${emotesStr}\n`;
     });
     
-    let myPersonaContent = '';
+        let myPersonaContent = '';
     if (state.myPersonas.length > 0) {
-        myPersonaContent = `\n【我的设定（群主/用户）】\n名字：我\n人设：${state.myPersonas[0].content}\n`;
+        myPersonaContent = `\n【我的设定（群主/用户）】\n名字：我 (身份: 群主)\n人设：${state.myPersonas[0].content}\n`;
+    } else {
+        myPersonaContent = `\n【我的设定（群主/用户）】\n名字：我 (身份: 群主)\n`;
     }
 
-    const recentMsgs = group.messages.slice(-20).map(m => {
+        const historyCount = (group.memoryRounds || 10) * 2;
+    const recentMsgs = group.messages.slice(-historyCount).map(m => {
+        if (m.role === 'system') return `【系统消息】${m.content}`;
         let senderName = '我';
         if (m.role !== 'user') {
             const sender = members.find(c => c.id === m.senderId);
@@ -6067,6 +6110,13 @@ ${triggerContext ? `【特殊触发情境】\n${triggerContext}\n` : ''}
 
 ${STRICT_REALISM_PROMPT}
 
+【绝对禁止的红线行为（违反将导致系统严重错误）】
+1. 绝对禁止任何居高临下、冒犯或不尊重的言辞：严禁使用“欠收拾”、“胆子肥了”、“找打”等带有威胁、贬低或上对下态度的词汇。即使是开玩笑，也绝不能使用这种容易引起反感的爹味或霸道总裁式话术。你必须保持平等、尊重、友好的态度。
+2. 绝对禁止爹味与说教：严禁好为人师，严禁教育我该怎么做，严禁长篇大论讲道理或主动给出建议。严禁使用“你应该”、“我觉得你最好”等句式。你绝不是我的上司或长辈！
+3. 社交分寸与高情商：你是一个有正常社交直觉、高情商的真实人类。保持人与人之间基本的尊重和边界感，绝对不要随意冒犯、阴阳怪气或进行言语攻击。分清玩笑的尺度，绝不说让人感到烦躁或不适的话。
+4. 极度日常与平淡：请用最普通、最生活化的网友聊天语气。严禁小说般的戏剧性发言，严禁霸道总裁、轻浮挑逗等油腻感。聊天大多是平淡的交流，不要用力过猛。
+5. 角色心情不好或平淡的时候话少，心情好或兴奋的时候话多。
+
 【核心任务】
 请根据每个角色的性格，推演接下来群里的互动。
 要求：
@@ -6075,7 +6125,8 @@ ${STRICT_REALISM_PROMPT}
 3. 极度真实，符合现代网友群聊习惯。严禁机械感、AI感。
 4. 生成 1 到 5 条左右的连续回复（如果话题冷场，可能只有1个人回一句）。
 5. 如果角色想发表情包，必须从其拥有的表情包列表中选择，并在 content 中输出格式为 [表情包: 备注名]。绝对不能捏造不存在的表情包！
-6. 必须输出纯 JSON 数组格式，不要包含 Markdown 代码块。
+6. 【管理员权限】如果某个角色是“群管理员”，且他觉得某个群成员（除了群主“我”）太吵、冒犯或者符合他禁言别人的性格动机，他可以在回复内容中加入指令 [禁言: 成员名字, 分钟数]（例如：[禁言: 张三, 10]）。系统会自动执行禁言。非管理员角色严禁使用此指令！
+7. 必须输出纯 JSON 数组格式，不要包含 Markdown 代码块。
 
 JSON 格式示例：
 [
@@ -6103,10 +6154,14 @@ JSON 格式示例：
         else content = content.replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
         
         const parsedData = JSON.parse(content);
-        if (Array.isArray(parsedData)) {
+                if (Array.isArray(parsedData)) {
             const msgsToAdd = [];
             parsedData.forEach(msg => {
                 if (msg.senderId && msg.content && members.find(c => c.id === msg.senderId)) {
+                    if (group.mutes && group.mutes[msg.senderId] && group.mutes[msg.senderId] > Date.now()) {
+                        console.warn(`AI 尝试让被禁言的角色 ${msg.senderId} 发言，已拦截`);
+                        return;
+                    }
                     msgsToAdd.push({
                         id: Date.now().toString() + Math.random().toString().substr(2, 5),
                         role: 'assistant',
@@ -6118,13 +6173,40 @@ JSON 格式示例：
                 }
             });
             
-            // 模拟打字延迟效果，依次加入
+                        // 模拟打字延迟效果，依次加入
             for (const m of msgsToAdd) {
                 await new Promise(r => setTimeout(r, 800 + Math.random() * 1000));
                 
-                                // 解析表情包
+                // 解析表情包与禁言指令
                 let finalContent = m.content;
                 let finalType = 'text';
+                
+                // 处理管理员禁言指令
+                const muteRegex = /\[禁言:\s*(.*?),\s*(\d+)\]/g;
+                let muteMatch;
+                let hasMuteAction = false;
+                while ((muteMatch = muteRegex.exec(finalContent)) !== null) {
+                    const targetName = muteMatch[1].trim();
+                    const minutes = parseInt(muteMatch[2], 10);
+                    const sender = members.find(c => c.id === m.senderId);
+                    if (sender && group.admins && group.admins.includes(sender.id) && targetName !== '我') {
+                        const target = members.find(c => c.name === targetName);
+                        if (target) {
+                            if (!group.mutes) group.mutes = {};
+                            group.mutes[target.id] = Date.now() + minutes * 60 * 1000;
+                            const timeStr = minutes >= 60 ? (minutes === 1440 ? '1天' : `${minutes/60}小时`) : `${minutes}分钟`;
+                            group.messages.push({
+                                id: Date.now().toString() + Math.random().toString().substr(2,5),
+                                role: 'system',
+                                content: `"${target.name}" 被管理员 "${sender.name}" 禁言 ${timeStr}`,
+                                timestamp: Date.now()
+                            });
+                            hasMuteAction = true;
+                        }
+                    }
+                }
+                finalContent = finalContent.replace(muteRegex, '').trim();
+
                 const emoteMatch = finalContent.match(/^\[表情包:\s*(.*?)\]$/);
                 if (emoteMatch) {
                     const remark = emoteMatch[1].trim();
@@ -6139,7 +6221,7 @@ JSON 格式示例：
                             }
                         }
                     }
-                } else {
+                } else if (finalContent) {
                     const sender = members.find(c => c.id === m.senderId);
                     if (sender && sender.enableAutoTranslate && sender.translateTargetLang) {
                         const trans = await fetchFreeTranslation(finalContent, sender.translateTargetLang);
@@ -6149,16 +6231,20 @@ JSON 格式示例：
                     }
                 }
                 
-                m.content = finalContent;
-                m.type = finalType;
-                m.timestamp = Date.now();
-                group.messages.push(m);
-                state.chatDisplayLimit += 1;
-                if (state.activeChatType === 'group' && state.activeGroupId === group.id) {
-                    renderChatRoom();
-                    scrollToBottom();
+                if (finalContent || hasMuteAction) {
+                    if (finalContent) {
+                        m.content = finalContent;
+                        m.type = finalType;
+                        m.timestamp = Date.now();
+                        group.messages.push(m);
+                        state.chatDisplayLimit += 1;
+                    }
+                    if (state.activeChatType === 'group' && state.activeGroupId === group.id) {
+                        renderChatRoom();
+                        scrollToBottom();
+                    }
+                    await saveDataSilently();
                 }
-                await saveDataSilently();
             }
         }
     } catch (err) {
@@ -6787,16 +6873,17 @@ function handleColorInput(prop, val) {
         updateBubbleColor(prop, val);
     } else {
         showToast('无效的颜色代码', 'error');
-        renderChatSettings();
+        if (state.activeChatType === 'group') renderGroupChatSettings(); else renderChatSettings();
     }
 }
 
 function updateBubbleColor(prop, value) {
-    const c = state.contacts.find(x => x.id === state.activeContactId);
+    const isGroup = state.activeChatType === 'group';
+    const c = isGroup ? state.chatGroups.find(g => g.id === state.activeGroupId) : state.contacts.find(x => x.id === state.activeContactId);
     if (c) {
         c[prop] = value;
         saveDataSilently();
-        renderChatSettings();
+        if (isGroup) renderGroupChatSettings(); else renderChatSettings();
         if (state.currentView === 'chat_room') renderChatRoom();
     }
 }
@@ -7223,9 +7310,15 @@ function renderSettings() {
         if (state.uiConfig.lockPasscodeEnabled) passcodeToggle.classList.add('active');
         else passcodeToggle.classList.remove('active');
     }
-        const changePasscodeBtn = $('#change-passcode-btn');
+                const changePasscodeBtn = $('#change-passcode-btn');
     if (changePasscodeBtn) {
         changePasscodeBtn.style.display = state.uiConfig.lockPasscodeEnabled ? 'flex' : 'none';
+    }
+    
+    const statusBarToggle = $('#toggle-status-bar');
+    if (statusBarToggle) {
+        if (state.uiConfig.hideStatusBar) statusBarToggle.classList.add('active');
+        else statusBarToggle.classList.remove('active');
     }
     
         $('#app-icon-settings').innerHTML = [...defaultApps, ...desktopApps].map(app => `
@@ -8419,8 +8512,34 @@ function getCrossModuleMemoryPrompt(contact) {
             }
         });
 
-                                if (forumInteractions) {
+                                                                if (forumInteractions) {
             prompt += `\n【近期的全息论坛动态】\n${forumInteractions}请在聊天或心理活动中自然地记住这些论坛发生的互动。\n`;
+        }
+    }
+    
+    // 4. 注入群聊记忆
+    const activeGroups = state.chatGroups.filter(g => g.memberIds.includes(contact.id) && g.messages && g.messages.length > 0);
+    if (activeGroups.length > 0) {
+        let groupInteractions = '';
+        activeGroups.forEach(g => {
+            const recentGroupMsgs = g.messages.slice(-8).map(m => {
+                let senderName = '我';
+                if (m.role !== 'user') {
+                    const sender = state.contacts.find(c => c.id === m.senderId);
+                    senderName = sender ? sender.name : '未知';
+                }
+                let txt = m.content;
+                if (m.type === 'image' || m.type === 'real_image') txt = '[图片]';
+                else if (m.type === 'red_packet') txt = '[红包]';
+                else if (m.type === 'virtual_image') txt = `[文字图: ${m.content}]`;
+                return `${senderName}: ${txt}`;
+            }).join(' | ');
+            if (recentGroupMsgs) {
+                groupInteractions += `- 在群聊【${g.name}】中的近期讨论：“${recentGroupMsgs}”\n`;
+            }
+        });
+        if (groupInteractions) {
+            prompt += `\n【近期的群聊动态】\n${groupInteractions}请在接下来的行为中自然地记住这些群里发生的事，这会影响你对“我”或其他群成员的态度。\n`;
         }
     }
     
@@ -9161,6 +9280,8 @@ async function generateNetworkChat() {
         contextPrompt = `\n【他们之前的聊天记录参考】\n${recent}\n请顺着上面的话题继续聊，或者开启一个符合他们关系的新话题。`;
     }
 
+        let crossMemoryPrompt = getCrossModuleMemoryPrompt(source) + '\n' + getCrossModuleMemoryPrompt(target);
+
     const prompt = `你现在是顶级编剧。请根据以下两个角色的设定和关系，推演并编写一段他们两人最近在微信上的真实聊天记录。
 
 【角色 A】
@@ -9173,6 +9294,7 @@ async function generateNetworkChat() {
 人设：${target.persona}
 对 A 的看法：${rel.targetToSourceDesc}
 ${contextPrompt}
+${crossMemoryPrompt}
 
 ${STRICT_REALISM_PROMPT}
 
@@ -10475,6 +10597,17 @@ document.addEventListener('msfullscreenchange', handleFullscreenChange);
 
 
 
+function toggleStatusBar() {
+    state.uiConfig.hideStatusBar = !state.uiConfig.hideStatusBar;
+    if (state.uiConfig.hideStatusBar) {
+        document.body.classList.add('hide-status-bar');
+    } else {
+        document.body.classList.remove('hide-status-bar');
+    }
+    saveDataSilently();
+    renderSettings();
+}
+
 // ==================== 13. Group Chat System ====================
 let tempSelectedMembers = new Set();
 
@@ -10520,15 +10653,21 @@ async function submitCreateGroupChat() {
     if (!name) { showToast('请输入群聊名称', 'error'); return; }
     if (tempSelectedMembers.size < 2) { showToast('群聊至少需要选择2个联系人', 'error'); return; }
     
-    if (!state.chatGroups) state.chatGroups = [];
-    const newGroup = {
+        if (!state.chatGroups) state.chatGroups = [];
+                const newGroup = {
         id: 'group_' + Date.now(),
         name: name,
         avatar: '',
         memberIds: Array.from(tempSelectedMembers),
         messages: [],
         chatBackground: '',
-        notice: ''
+        notice: '',
+        admins: [],
+        mutes: {},
+        memoryRounds: 10,
+        avatarShape: 'circle',
+        myBubbleColor: '#007aff',
+        roleBubbleColor: '#e5e5ea'
     };
     state.chatGroups.unshift(newGroup);
     await saveDataSilently();
@@ -10577,23 +10716,88 @@ function renderGroupChatSettings() {
                 <div class="m-info"><div class="m-title">群聊名称</div></div>
                 <div class="m-right"><span style="font-size:14px; color:#8e8e93;">${escapeHtml(group.name)}</span><iconify-icon icon="ph:caret-right-bold" style="color:#c7c7cc;"></iconify-icon></div>
             </div>
-            <div class="modern-item" onclick="triggerGroupChatUpload('chatBackground')" style="cursor: pointer;">
+                        <div class="modern-item" onclick="triggerGroupChatUpload('chatBackground')" style="cursor: pointer;">
                 <div class="m-icon" style="background: #ff2d55; color: white;"><iconify-icon icon="solar:wallpaper-bold-duotone"></iconify-icon></div>
                 <div class="m-info"><div class="m-title">聊天背景</div></div>
                 <div class="m-right">${group.chatBackground ? `<span onclick="clearGroupChatBg(event)" style="color:#ff3b30; font-size: 15px; margin-right:8px;">清除</span>`:''}<iconify-icon icon="ph:caret-right-bold" style="color:#c7c7cc;"></iconify-icon></div>
             </div>
         </div>
 
-        <div class="modern-group-title">群成员 (${members.length})</div>
-        <div class="modern-card" style="padding: 16px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
-            ${members.map(c => `
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
-                    <div style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; background: #f2f2f7; display: flex; align-items: center; justify-content: center;">
-                        ${c.avatar ? `<img src="${c.avatar}" style="width:100%;height:100%;object-fit:cover;"/>` : `<div style="color:#007aff; font-weight:bold; font-size:16px;">${escapeHtml(c.name.charAt(0))}</div>`}
+        <div class="modern-group-title">视觉与个性化</div>
+        <div class="modern-card">
+            <div class="modern-item">
+                <div class="m-icon" style="background: #007aff; color: white;"><iconify-icon icon="solar:chat-round-bold-duotone"></iconify-icon></div>
+                <div class="m-info"><div class="m-title">我方气泡颜色</div></div>
+                <div class="m-right">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <input type="text" value="${group.myBubbleColor || '#007aff'}" onchange="handleColorInput('myBubbleColor', this.value)" style="width:70px; border:none; background:transparent; font-size:15px; color:#8e8e93; outline:none; text-align:right; font-family:inherit; text-transform:uppercase;" />
+                        <label style="cursor:pointer; display:flex; height:28px;">
+                            <input type="color" value="${group.myBubbleColor || '#007aff'}" onchange="updateBubbleColor('myBubbleColor', this.value)" style="width:28px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:0;background:transparent;" />
+                        </label>
                     </div>
-                    <div style="font-size: 11px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">${escapeHtml(c.name)}</div>
                 </div>
-            `).join('')}
+            </div>
+            <div class="modern-item">
+                <div class="m-icon" style="background: #8e8e93; color: white;"><iconify-icon icon="solar:chat-round-line-duotone"></iconify-icon></div>
+                <div class="m-info"><div class="m-title">对方气泡颜色</div></div>
+                <div class="m-right">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <input type="text" value="${group.roleBubbleColor || '#e5e5ea'}" onchange="handleColorInput('roleBubbleColor', this.value)" style="width:70px; border:none; background:transparent; font-size:15px; color:#8e8e93; outline:none; text-align:right; font-family:inherit; text-transform:uppercase;" />
+                        <label style="cursor:pointer; display:flex; height:28px;">
+                            <input type="color" value="${group.roleBubbleColor || '#e5e5ea'}" onchange="updateBubbleColor('roleBubbleColor', this.value)" style="width:28px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:0;background:transparent;" />
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modern-item">
+                <div class="m-icon" style="background: #34c759; color: white;"><iconify-icon icon="solar:square-bottom-down-bold-duotone"></iconify-icon></div>
+                <div class="m-info"><div class="m-title">头像形状</div></div>
+                <div class="m-right">
+                    <select class="m-select" onchange="updateGroupChatProp('avatarShape', this.value)">
+                        <option value="circle" ${group.avatarShape==='circle'?'selected':''}>圆形</option>
+                        <option value="square" ${group.avatarShape==='square'?'selected':''}>圆角方形</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+                <div class="modern-group-title">群成员 (${members.length + 1})</div>
+        <div class="modern-card" style="padding: 16px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; background: #f2f2f7; display: flex; align-items: center; justify-content: center; position: relative;">
+                    ${group.myChatAvatar ? `<img src="${group.myChatAvatar}" style="width:100%;height:100%;object-fit:cover;"/>` : `<div style="color:#007aff; font-weight:bold; font-size:16px;">我</div>`}
+                    <div style="position: absolute; bottom: 0; width: 100%; background: #ff9500; color: #fff; font-size: 9px; text-align: center; padding: 1px 0;">群主</div>
+                </div>
+                <div style="font-size: 11px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">我</div>
+            </div>
+            ${members.map(c => {
+                const isAdmin = group.admins && group.admins.includes(c.id);
+                const isMuted = group.mutes && group.mutes[c.id] && group.mutes[c.id] > Date.now();
+                return `
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;" onclick="handleGroupMemberClick('${c.id}')">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; background: #f2f2f7; display: flex; align-items: center; justify-content: center; position: relative;">
+                        ${c.avatar ? `<img src="${c.avatar}" style="width:100%;height:100%;object-fit:cover; ${isMuted ? 'filter: grayscale(100%); opacity: 0.5;' : ''}"/>` : `<div style="color:#007aff; font-weight:bold; font-size:16px; ${isMuted ? 'filter: grayscale(100%); opacity: 0.5;' : ''}">${escapeHtml(c.name.charAt(0))}</div>`}
+                        ${isAdmin ? `<div style="position: absolute; bottom: 0; width: 100%; background: #34c759; color: #fff; font-size: 9px; text-align: center; padding: 1px 0;">管理员</div>` : ''}
+                        ${isMuted ? `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #ff3b30; font-size: 24px;"><iconify-icon icon="solar:forbidden-circle-bold"></iconify-icon></div>` : ''}
+                    </div>
+                                        <div style="font-size: 11px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">${escapeHtml(c.name)}</div>
+                </div>
+            `}).join('')}
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;" onclick="inviteToGroupChat()">
+                <div style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; background: #f2f2f7; display: flex; align-items: center; justify-content: center; color: #007aff; font-size: 24px; border: 1px dashed #c7c7cc;">
+                    <iconify-icon icon="ph:plus-bold"></iconify-icon>
+                </div>
+                <div style="font-size: 11px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">邀请</div>
+            </div>
+        </div>
+
+                <div class="modern-group-title">数据与系统</div>
+        <div class="modern-card">
+            <div class="modern-item">
+                <div class="m-icon" style="background: #8e8e93; color: white;"><iconify-icon icon="solar:database-bold-duotone"></iconify-icon></div>
+                <div class="m-info"><div class="m-title">群聊记忆轮数</div></div>
+                <div class="m-right"><input type="number" class="m-input" style="text-align: right; width: 60px;" value="${group.memoryRounds || 10}" onchange="updateGroupChatProp('memoryRounds', parseInt(this.value)||10)" /></div>
+            </div>
         </div>
 
         <div class="modern-group-title">危险操作</div>
@@ -10607,6 +10811,184 @@ function renderGroupChatSettings() {
         </div>
     `;
     $('#group-chat-settings-content').innerHTML = html;
+}
+
+function updateGroupChatProp(prop, val) {
+    const g = state.chatGroups.find(x => x.id === state.activeGroupId);
+    if(g) { g[prop] = val; saveDataSilently(); renderGroupChatSettings(); }
+}
+
+function showInviteMemberDialog() {
+    return new Promise(resolve => {
+        state.dialog.resolve = resolve;
+        state.dialog.inputs = [];
+        $('#dialog-title').textContent = '邀请新成员';
+        
+        const group = state.chatGroups.find(g => g.id === state.activeGroupId);
+        const availableContacts = state.contacts.filter(c => !group.memberIds.includes(c.id));
+        
+        let html = '<div style="max-height: 300px; overflow-y: auto; text-align: left;">';
+        if (availableContacts.length === 0) {
+            html += '<div style="text-align:center; color:#999; padding: 20px;">没有可邀请的联系人</div>';
+        } else {
+            availableContacts.forEach(c => {
+                html += `
+                <div class="contact-item" style="padding: 10px; border-bottom: 1px solid #f0f0f0; cursor: pointer;" onclick="selectContactForForward('${c.id}')">
+                    <div class="contact-avatar" style="width:32px; height:32px; margin-right:10px;">
+                        ${c.avatar ? `<img src="${c.avatar}" />` : `<div class="text-avatar" style="font-size:14px;">${escapeHtml(c.name.charAt(0))}</div>`}
+                    </div>
+                    <div class="contact-name" style="font-size:15px; margin-bottom:0;">${escapeHtml(c.name)}</div>
+                </div>`;
+            });
+        }
+        html += '</div>';
+        
+        $('#dialog-body').innerHTML = html;
+        $('#custom-dialog').style.display = 'flex';
+        
+        $('.custom-dialog-footer').innerHTML = `
+            <button class="custom-dialog-btn cancel" style="width: 100%; border: none;" onclick="closeDialog(false)">取消</button>
+        `;
+    });
+}
+
+async function inviteToGroupChat() {
+    const contactId = await showInviteMemberDialog();
+    if (!contactId || typeof contactId !== 'string') return;
+    
+    const group = state.chatGroups.find(g => g.id === state.activeGroupId);
+    const contact = state.contacts.find(c => c.id === contactId);
+    if (!group || !contact) return;
+    
+    group.memberIds.push(contactId);
+    const sysMsg = {
+        id: Date.now().toString(),
+        role: 'system',
+        content: `"我" 邀请 "${contact.name}" 加入了群聊`,
+        timestamp: Date.now()
+    };
+    group.messages.push(sysMsg);
+    await saveDataSilently();
+    renderGroupChatSettings();
+    showToast('邀请成功');
+}
+
+function handleGroupMemberClick(contactId) {
+    const group = state.chatGroups.find(g => g.id === state.activeGroupId);
+    if (!group) return;
+    const contact = state.contacts.find(c => c.id === contactId);
+    if (!contact) return;
+    
+    if (!group.admins) group.admins = [];
+    if (!group.mutes) group.mutes = {};
+    
+    const isAdmin = group.admins.includes(contactId);
+    const isMuted = group.mutes[contactId] && group.mutes[contactId] > Date.now();
+    
+    let html = `
+        <div class="msg-bubble-menu-item" onclick="toggleGroupAdmin('${contactId}')">
+            <span>${isAdmin ? '取消管理员' : '设为管理员'}</span>
+            <iconify-icon icon="solar:shield-user-bold-duotone"></iconify-icon>
+        </div>
+        <div class="msg-bubble-menu-item ${isMuted ? '' : 'text-danger'}" onclick="toggleGroupMute('${contactId}')">
+            <span>${isMuted ? '解除禁言' : '禁言'}</span>
+            <iconify-icon icon="solar:forbidden-circle-bold-duotone"></iconify-icon>
+        </div>
+    `;
+    
+    $('#dialog-title').textContent = `管理成员: ${contact.name}`;
+    $('#dialog-body').innerHTML = `<div style="display: flex; flex-direction: column; border: 1px solid #eee; border-radius: 10px; overflow: hidden;">${html}</div>`;
+    $('#custom-dialog').style.display = 'flex';
+    $('.custom-dialog-footer').innerHTML = `<button class="custom-dialog-btn cancel" style="width: 100%; border: none;" onclick="closeDialog(false)">取消</button>`;
+}
+
+async function toggleGroupAdmin(contactId) {
+    closeDialog();
+    const group = state.chatGroups.find(g => g.id === state.activeGroupId);
+    const contact = state.contacts.find(c => c.id === contactId);
+    if (!group || !contact) return;
+    
+    if (!group.admins) group.admins = [];
+    const isAdmin = group.admins.includes(contactId);
+    if (isAdmin) {
+        group.admins = group.admins.filter(id => id !== contactId);
+    } else {
+        group.admins.push(contactId);
+    }
+    
+    const sysMsg = {
+        id: Date.now().toString(),
+        role: 'system',
+        content: `"${contact.name}" 已${isAdmin ? '被取消' : '成为'}群管理员`,
+        timestamp: Date.now()
+    };
+    group.messages.push(sysMsg);
+    await saveDataSilently();
+    renderGroupChatSettings();
+    showToast('设置成功');
+    
+        receiveGroupMessage(`【系统提示】我刚刚将群成员 ${contact.name} ${isAdmin ? '取消了管理员身份' : '设置为了群管理员'}。请大家对此做出符合人设的自然反应（比如恭喜、嫉妒、害怕被禁言、或者新官上任三把火等）。`);
+}
+
+function toggleGroupMute(contactId) {
+    closeDialog();
+    const group = state.chatGroups.find(g => g.id === state.activeGroupId);
+    const contact = state.contacts.find(c => c.id === contactId);
+    if (!group || !contact) return;
+    
+    if (!group.mutes) group.mutes = {};
+    const isMuted = group.mutes[contactId] && group.mutes[contactId] > Date.now();
+    if (isMuted) {
+                delete group.mutes[contactId];
+        saveDataSilently().then(() => {
+            renderGroupChatSettings();
+            showToast('已解除禁言');
+            group.messages.push({
+                id: Date.now().toString(),
+                role: 'system',
+                content: `"${contact.name}" 被解除禁言`,
+                timestamp: Date.now()
+            });
+        });
+    } else {
+        let html = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button class="m-btn" onclick="executeGroupMute('${contactId}', 1)">1分钟</button>
+                <button class="m-btn" onclick="executeGroupMute('${contactId}', 5)">5分钟</button>
+                <button class="m-btn" onclick="executeGroupMute('${contactId}', 10)">10分钟</button>
+                <button class="m-btn" onclick="executeGroupMute('${contactId}', 30)">半小时</button>
+                <button class="m-btn" onclick="executeGroupMute('${contactId}', 60)">1小时</button>
+                <button class="m-btn" onclick="executeGroupMute('${contactId}', 1440)">1天</button>
+            </div>
+        `;
+        $('#dialog-title').textContent = `选择禁言时长`;
+        $('#dialog-body').innerHTML = html;
+        $('#custom-dialog').style.display = 'flex';
+        $('.custom-dialog-footer').innerHTML = `<button class="custom-dialog-btn cancel" style="width: 100%; border: none;" onclick="closeDialog(false)">取消</button>`;
+    }
+}
+
+async function executeGroupMute(contactId, minutes) {
+    closeDialog();
+    const group = state.chatGroups.find(g => g.id === state.activeGroupId);
+    const contact = state.contacts.find(c => c.id === contactId);
+    if (!group || !contact) return;
+    
+    if (!group.mutes) group.mutes = {};
+    group.mutes[contactId] = Date.now() + minutes * 60 * 1000;
+    
+    let timeStr = minutes >= 60 ? (minutes === 1440 ? '1天' : `${minutes/60}小时`) : `${minutes}分钟`;
+    
+        const sysMsg = {
+        id: Date.now().toString(),
+        role: 'system',
+        content: `"${contact.name}" 被群主禁言 ${timeStr}`,
+        timestamp: Date.now()
+    };
+    group.messages.push(sysMsg);
+    await saveDataSilently();
+    renderGroupChatSettings();
+    showToast('已禁言');
 }
 
 function triggerGroupChatUpload(field) {
