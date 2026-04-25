@@ -3387,18 +3387,21 @@ body.hide-status-bar .status-bar {
                             <iconify-icon icon="solar:trash-bin-trash-bold-duotone" style="color: #ff3b30; font-size: 24px; margin-left: 8px; cursor: pointer;" onclick="deleteApiPreset()" title="删除当前预设"></iconify-icon>
                         </div>
                     </div>
-                    <div class="modern-item">
+                                        <div class="modern-item">
                         <div class="m-icon" style="background: #007aff; color: white;"><iconify-icon icon="ph:link-bold"></iconify-icon></div>
                         <div class="m-info">
                             <div class="m-title">接口地址</div>
-                                                        <input type="text" id="api-url" class="m-input" placeholder="https://api.openai.com/v1" />
+                                                        <input type="text" id="api-url" class="m-input" placeholder="https://api.openai.com/v1" onchange="state.apiConfig.url = this.value.trim(); saveDataSilently();" />
                         </div>
                     </div>
-                    <div class="modern-item">
+                                        <div class="modern-item">
                         <div class="m-icon" style="background: #ff9500; color: white;"><iconify-icon icon="ph:key-bold"></iconify-icon></div>
                         <div class="m-info">
                             <div class="m-title">API 密钥</div>
-                            <input type="password" id="api-key" class="m-input" placeholder="sk-..." />
+                            <div style="display: flex; align-items: center;">
+                                <input type="password" id="api-key" class="m-input" placeholder="sk-..." autocomplete="new-password" onchange="state.apiConfig.apiKey = this.value.trim(); saveDataSilently();" style="flex: 1;" />
+                                <iconify-icon id="api-key-eye" icon="ph:eye-closed-bold" style="font-size: 20px; color: #8e8e93; cursor: pointer; margin-left: 8px; margin-top: 4px;" onclick="toggleApiKeyVisibility()"></iconify-icon>
+                            </div>
                         </div>
                     </div>
                     <div class="modern-item">
@@ -3408,14 +3411,14 @@ body.hide-status-bar .status-bar {
                         </div>
                         <div class="m-right" id="model-row-container"></div>
                     </div>
-                                                            <div class="modern-item">
+                                                                                <div class="modern-item">
                         <div class="m-icon" style="background: #ff2d55; color: white;"><iconify-icon icon="solar:thermometer-bold-duotone"></iconify-icon></div>
                         <div class="m-info">
                             <div class="m-title">模型温度</div>
                             <div class="m-desc">如果使用claude模型建议把温度改成1，最高温度设置是1，最低是0</div>
                         </div>
                         <div class="m-right">
-                            <input type="number" id="api-temperature" class="m-input" style="text-align: right; width: 60px;" min="0" max="1" step="0.1" />
+                            <input type="number" id="api-temperature" class="m-input" style="text-align: right; width: 60px;" min="0" max="1" step="0.1" onchange="state.apiConfig.temperature = parseFloat(this.value) || 0.6; saveDataSilently();" />
                         </div>
                     </div>
                     <div class="modern-item" style="justify-content: center; cursor: pointer;" onclick="testConnection()">
@@ -7402,16 +7405,23 @@ function renderSettings() {
     }
     $('#api-preset-select').innerHTML = presetHtml;
 
-        $('#api-url').value = state.apiConfig.url;
-    $('#api-key').value = state.apiConfig.apiKey;
+            $('#api-url').value = state.apiConfig.url;
+    const apiKeyEl = $('#api-key');
+    if (apiKeyEl) {
+        apiKeyEl.value = state.apiConfig.apiKey;
+        apiKeyEl.type = 'password';
+    }
+    const eyeEl = $('#api-key-eye');
+    if (eyeEl) eyeEl.setAttribute('icon', 'ph:eye-closed-bold');
+    
     const tempEl = $('#api-temperature');
     if (tempEl) tempEl.value = (state.apiConfig.temperature !== undefined && state.apiConfig.temperature !== null) ? state.apiConfig.temperature : 0.6;
     
-    let modelHtml = '';
+        let modelHtml = '';
         if(state.models.length > 0) {
-        modelHtml = `<select id="api-model" class="m-select" style="max-width: 120px;">` + state.models.map(m => `<option value="${m}" ${state.apiConfig.model===m?'selected':''}>${m}</option>`).join('') + `</select>`;
+        modelHtml = `<select id="api-model" class="m-select" style="max-width: 120px;" onchange="state.apiConfig.model = this.value; saveDataSilently();">` + state.models.map(m => `<option value="${m}" ${state.apiConfig.model===m?'selected':''}>${m}</option>`).join('') + `</select>`;
     } else {
-        modelHtml = `<input type="text" id="api-model" class="m-input" style="text-align: right; width: 120px;" value="${state.apiConfig.model}" placeholder="gpt-3.5-turbo" />`;
+        modelHtml = `<input type="text" id="api-model" class="m-input" style="text-align: right; width: 120px;" value="${state.apiConfig.model}" placeholder="gpt-3.5-turbo" onchange="state.apiConfig.model = this.value.trim(); saveDataSilently();" />`;
     }
     modelHtml += `<button class="m-btn" style="padding: 6px; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;" onclick="fetchModels()"><iconify-icon icon="ph:arrows-clockwise-bold" class="${state.isFetchingModels?'spin':''}"></iconify-icon></button>`;
     $('#model-row-container').innerHTML = modelHtml;
@@ -7448,9 +7458,24 @@ function renderSettings() {
     `).join('');
 }
 
+function toggleApiKeyVisibility() {
+    const input = $('#api-key');
+    const eye = $('#api-key-eye');
+    if (input && eye) {
+        if (input.type === 'password') {
+            input.type = 'text';
+            eye.setAttribute('icon', 'ph:eye-bold');
+        } else {
+            input.type = 'password';
+            eye.setAttribute('icon', 'ph:eye-closed-bold');
+        }
+    }
+}
+
 function applyApiPreset(id) {
     if (!id) {
         state.apiConfig.presetId = '';
+        renderSettings();
         return;
     }
     const preset = state.apiPresets.find(p => p.id === id);
@@ -7537,6 +7562,9 @@ function clearApiPresetSelection() {
 async function fetchModels() {
     const url = $('#api-url').value.trim(); const key = $('#api-key').value.trim();
     if(!url || !key) { showToast('请填写地址和密钥', 'error'); return; }
+    state.apiConfig.url = url;
+    state.apiConfig.apiKey = key;
+    saveDataSilently();
     state.isFetchingModels = true; renderSettings();
     try {
         const res = await fetch(`${url.replace(/\/+$/, '')}/models`, { headers: { 'Authorization': `Bearer ${key}` }});
@@ -7554,6 +7582,9 @@ async function fetchModels() {
 async function testConnection() {
     const url = $('#api-url').value.trim(); const key = $('#api-key').value.trim();
     if(!url || !key) { showToast('请填写地址和密钥', 'error'); return; }
+    state.apiConfig.url = url;
+    state.apiConfig.apiKey = key;
+    saveDataSilently();
     state.isTesting = true; $('#btn-test-conn').innerHTML = '测试中...';
     try {
                         const res = await fetch(`${url.replace(/\/+$/, '')}/chat/completions`, {
