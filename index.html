@@ -3391,14 +3391,14 @@ body.hide-status-bar .status-bar {
                         <div class="m-icon" style="background: #007aff; color: white;"><iconify-icon icon="ph:link-bold"></iconify-icon></div>
                         <div class="m-info">
                             <div class="m-title">接口地址</div>
-                            <input type="text" id="api-url" class="m-input" placeholder="https://api.openai.com/v1" oninput="clearApiPresetSelection()" />
+                                                        <input type="text" id="api-url" class="m-input" placeholder="https://api.openai.com/v1" />
                         </div>
                     </div>
                     <div class="modern-item">
                         <div class="m-icon" style="background: #ff9500; color: white;"><iconify-icon icon="ph:key-bold"></iconify-icon></div>
                         <div class="m-info">
                             <div class="m-title">API 密钥</div>
-                            <input type="password" id="api-key" class="m-input" placeholder="sk-..." oninput="clearApiPresetSelection()" />
+                            <input type="password" id="api-key" class="m-input" placeholder="sk-..." />
                         </div>
                     </div>
                     <div class="modern-item">
@@ -3414,8 +3414,8 @@ body.hide-status-bar .status-bar {
                             <div class="m-title">模型温度</div>
                             <div class="m-desc">如果使用claude模型建议把温度改成1，最高温度设置是1，最低是0</div>
                         </div>
-                        <div class="m-right">
-                            <input type="number" id="api-temperature" class="m-input" style="text-align: right; width: 60px;" value="${state.apiConfig.temperature !== undefined ? state.apiConfig.temperature : 0.6}" min="0" max="1" step="0.1" oninput="clearApiPresetSelection()" />
+                                                <div class="m-right">
+                            <input type="number" id="api-temperature" class="m-input" style="text-align: right; width: 60px;" value="${state.apiConfig.temperature !== undefined ? state.apiConfig.temperature : 0.6}" min="0" max="1" step="0.1" />
                         </div>
                     </div>
                     <div class="modern-item" style="justify-content: center; cursor: pointer;" onclick="testConnection()">
@@ -7306,10 +7306,10 @@ function renderSettings() {
     $('#api-key').value = state.apiConfig.apiKey;
     
     let modelHtml = '';
-    if(state.models.length > 0) {
-        modelHtml = `<select id="api-model" class="m-select" style="max-width: 120px;" onchange="clearApiPresetSelection()">` + state.models.map(m => `<option value="${m}" ${state.apiConfig.model===m?'selected':''}>${m}</option>`).join('') + `</select>`;
+        if(state.models.length > 0) {
+        modelHtml = `<select id="api-model" class="m-select" style="max-width: 120px;">` + state.models.map(m => `<option value="${m}" ${state.apiConfig.model===m?'selected':''}>${m}</option>`).join('') + `</select>`;
     } else {
-        modelHtml = `<input type="text" id="api-model" class="m-input" style="text-align: right; width: 120px;" value="${state.apiConfig.model}" placeholder="gpt-3.5-turbo" oninput="clearApiPresetSelection()" />`;
+        modelHtml = `<input type="text" id="api-model" class="m-input" style="text-align: right; width: 120px;" value="${state.apiConfig.model}" placeholder="gpt-3.5-turbo" />`;
     }
     modelHtml += `<button class="m-btn" style="padding: 6px; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;" onclick="fetchModels()"><iconify-icon icon="ph:arrows-clockwise-bold" class="${state.isFetchingModels?'spin':''}"></iconify-icon></button>`;
     $('#model-row-container').innerHTML = modelHtml;
@@ -7366,26 +7366,41 @@ async function saveApiPreset() {
     const url = $('#api-url').value.trim();
     const apiKey = $('#api-key').value.trim();
         const model = $('#api-model')?.value.trim() || '';
-    const temperature = parseFloat($('#api-temperature').value) || 0.6;
+    let tempVal = parseFloat($('#api-temperature').value);
+    const temperature = isNaN(tempVal) ? 0.6 : tempVal;
     
     if (!url || !apiKey) {
         showToast('请先填写完整的接口地址和密钥', 'error');
         return;
     }
     
-    const name = await showPromptDialog('保存 API 预设', '', '给这个预设起个名字 (如: DeepSeek)');
+    let currentPreset = state.apiPresets ? state.apiPresets.find(p => p.id === state.apiConfig.presetId) : null;
+    let defaultName = currentPreset ? currentPreset.name : '';
+    
+    const name = await showPromptDialog('保存 API 预设', defaultName, '给这个预设起个名字 (如: DeepSeek)');
     if (name && name.trim()) {
         if (!state.apiPresets) state.apiPresets = [];
-        const newPreset = {
-            id: Date.now().toString(),
-            name: name.trim(),
-                        url,
-            apiKey,
-            model,
-            temperature
-        };
-        state.apiPresets.push(newPreset);
-        state.apiConfig.presetId = newPreset.id;
+        
+        let existing = state.apiPresets.find(p => p.name === name.trim());
+        if (existing) {
+            existing.url = url;
+            existing.apiKey = apiKey;
+            existing.model = model;
+            existing.temperature = temperature;
+            state.apiConfig.presetId = existing.id;
+        } else {
+            const newPreset = {
+                id: Date.now().toString(),
+                name: name.trim(),
+                url,
+                apiKey,
+                model,
+                temperature
+            };
+            state.apiPresets.push(newPreset);
+            state.apiConfig.presetId = newPreset.id;
+        }
+        
         state.apiConfig.url = url;
         state.apiConfig.apiKey = apiKey;
         state.apiConfig.model = model;
@@ -7452,7 +7467,8 @@ function saveSettings() {
     state.apiConfig.url = $('#api-url').value.trim();
     state.apiConfig.apiKey = $('#api-key').value.trim();
         state.apiConfig.model = $('#api-model')?.value.trim() || '';
-    state.apiConfig.temperature = parseFloat($('#api-temperature').value) || 0.6;
+    let tempVal = parseFloat($('#api-temperature').value);
+    state.apiConfig.temperature = isNaN(tempVal) ? 0.6 : tempVal;
             state.apiConfig.presetId = $('#api-preset-select').value;
     state.uiConfig.textColor = $('#ui-text-color').value;
     
