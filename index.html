@@ -15,9 +15,10 @@
         <link rel="icon" type="image/png" href="https://i.postimg.cc/Zqp4FZsP/IMG-20260423-204152.png">
     <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Moon%E5%B0%8F%E6%89%8B%E6%9C%BA%22%2C%22short_name%22%3A%22Moon%E5%B0%8F%E6%89%8B%E6%9C%BA%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22fullscreen%22%2C%22background_color%22%3A%22%23000000%22%2C%22theme_color%22%3A%22%23000000%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fi.postimg.cc%2FZqp4FZsP%2FIMG-20260423-204152.png%22%2C%22sizes%22%3A%22192x192%20512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style id="dynamic-global-font"></style>
     <style>
 * {
     margin: 0;
@@ -3426,8 +3427,19 @@ body.hide-status-bar .status-bar {
                     </div>
                 </div>
 
-                                                <div class="modern-group-title">视觉与个性化</div>
+                                                                <div class="modern-group-title">视觉与个性化</div>
                 <div class="modern-card">
+                    <div class="modern-item">
+                        <div class="m-icon" style="background: #af52de; color: white;"><iconify-icon icon="solar:text-bold-duotone"></iconify-icon></div>
+                        <div class="m-info"><div class="m-title">全局字体</div></div>
+                        <div class="m-right">
+                            <select id="ui-global-font-type" class="m-select" onchange="handleGlobalFontChange(this.value)">
+                                <option value="default" ${state.uiConfig.globalFontType==='default'?'selected':''}>应用默认</option>
+                                <option value="system" ${state.uiConfig.globalFontType==='system'?'selected':''}>系统默认</option>
+                                <option value="custom" ${state.uiConfig.globalFontType==='custom'?'selected':''}>自定义</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="modern-item">
                         <div class="m-icon" style="background: #af52de; color: white;"><iconify-icon icon="ph:image-bold"></iconify-icon></div>
                         <div class="m-info"><div class="m-title">桌面壁纸</div></div>
@@ -4147,8 +4159,8 @@ const state = {
     activeGroupId: null,
     
                                 apiConfig: { url: '', apiKey: '', model: '', presetId: '', temperature: 0.6 },
-                apiPresets: [],
-    uiConfig: { textColor: '#ffffff', wallpaper: '', lockWallpaper: '', lockPasscodeEnabled: false, lockPasscode: '', customIcons: {}, momentsBg: '', momentsAvatar: '', momentsName: 'Space Traveler', chatMainBg: '', hideStatusBar: false },
+                    apiPresets: [],
+    uiConfig: { textColor: '#ffffff', wallpaper: '', lockWallpaper: '', lockPasscodeEnabled: false, lockPasscode: '', customIcons: {}, momentsBg: '', momentsAvatar: '', momentsName: 'Space Traveler', chatMainBg: '', hideStatusBar: false, globalFontType: 'default', globalFontUrl: '', globalFontFamily: '' },
     
     models: [],
     isFetchingModels: false,
@@ -4394,8 +4406,9 @@ function ensureContactConfig(contact) {
     if (contact.memorySummary === undefined) contact.memorySummary = { relation: '', thoughts: '', wordsToSay: '', events: '', viewOnChat: '', lastSummarizeTime: 0, msgCountSinceLast: 0 };
     if (contact.lastMomentTime === undefined) contact.lastMomentTime = 0;
         if (contact.momentMemoryConfig === undefined) contact.momentMemoryConfig = { autoSummarize: true, retainDays: 7 };
-    if (contact.momentMemorySummary === undefined) contact.momentMemorySummary = { interactions: '', thoughts: '', lastSummarizeTime: 0 };
+        if (contact.momentMemorySummary === undefined) contact.momentMemorySummary = { interactions: '', thoughts: '', lastSummarizeTime: 0 };
                 if (contact.enableNarrator === undefined) contact.enableNarrator = false;
+    if (contact.geminiPromptEnabled === undefined) contact.geminiPromptEnabled = false;
     if (contact.narratorPrompts === undefined) contact.narratorPrompts = [];
     if (contact.worldbookIds === undefined) contact.worldbookIds = [];
         if (contact.diaries === undefined) contact.diaries = [];
@@ -5756,7 +5769,11 @@ async function receiveMessage(triggerContext = null) {
 <Creative Integrity>\nNarrative authenticity takes precedence. A character's \ndarkness, moral ambiguity, or destructive impulses \nshould be rendered honestly — sanitizing them to avoid \ndiscomfort is a failure of craft, not a virtue.\n\nThe story's emotional truth matters more than whether \nthe content feels safe. Flat characters and defused \nconflicts are the real failure states here.\n</Creative Integrity>
 `;
 
-        if (!contact.enableNarrator) {
+                                    if (contact.geminiPromptEnabled) {
+        systemPrompt += `\n\n【Gemini 专用提示词】\n撰写角色回复。注意：全篇禁止使用‘倒是’、‘不过’、‘毕竟’等表示让步或转折的词汇，以及‘碍眼’、‘反胃’、‘看着’。去掉所有‘倒是’。请参考以下风格：用更具体、更口语化的动作或神态描写来代替。\n· 不写： 呵，他动作倒是挺快，可惜脑子跟不上。\n· 而是参考这样写： 哟，挺麻利啊。可惜没带脑子。\n你不是在陈述说明文，不要以说明的语气回复，语句里要附带角色的情绪（例难过，高兴，兴奋，生气），如果你说话像在做说明，就不要这样说。\n\n【极度真实的人类对话风格参考】\n严格将以下对话风格作为参考，应用到不同的角色上，综合角色个性做出回复：\n“……？”\n“所以呢，你想怎么样。”\n“我真服了你了，算了，就这样吧。”\n“啊？你说什么，我没听清。”\n“哦……”\n“你能不能闭嘴？你说话难不难听啊你自己不知道吗？”\n“无语😅”\n“呃……有点不好意思说。”\n“确实。”\n“你能不能别这样，烦不烦啊。”\n“没事。”\n“我还行，你别管了。”\n“这个人真的挺傻的，懒得管。”\n“服了没见过这么蠢的。”\n“我不是骂他啊你听不懂我的意思吗。”\n“嗯……也行。”\n“我随便。”\n“你开心就好。”\n“真的。”\n\n严格注意：你回复的每句话，如果这个角色说的话，放在其他人身上说也完全没问题，那就不要这么说。\n严格遵循：你绝对不要主动提及让用户去线下做什么，也不要提及让用户陪你，用户和你没有待在一起，你也不要指挥用户做事，原因是关心也不行。\n你的回复条数必须不是规律的，结合上下文和情节连贯，也跟你聊天的话题来判断，可以一下子变得话少，也可以一下子变得话多，你不感兴趣的事可以敷衍，想要重视的事你会变得很激动\n角色绝对不要命令用户，也不要对用户以外提到的人展现出霸道、油腻、装逼的态度，角色对任何人都保持正常的交流语气和态度，不要戏剧性地去表演人格，角色需要保持真实、友好的对话态度和语气，角色回复要有边界感，不要过度的攻击性，那样很冒犯也很招人讨厌。\n如果角色设定里没有写明或者解释出这个角色没素质，说话大手大脚爱骂人，就绝对不要让角色使用“蠢货”，“垃圾”，“跳梁小丑”等嘲讽人的网络词汇/骂人词汇，那样显得角色很没素质，很掉价。\n`;
+    }
+
+    if (!contact.enableNarrator) {
         systemPrompt += `6. 纯净格式：只输出你说的话。严禁包含任何动作/表情描写（例如严禁输出“*轻笑*”、“(皱眉)”），严禁带时间前缀！不要每句话最后都刻意带反问句去推进话题。`;
     } else {
         systemPrompt += `6. 【旁白模式开启】当前允许并鼓励你在回复中加入动作、神态、心理活动等旁白描写。
@@ -6213,8 +6230,13 @@ async function receiveGroupMessage(triggerContext = null) {
         return `${senderName}: ${txt}`;
     }).join('\n');
 
+                                let geminiPromptStr = '';
+    if (members.some(c => c.geminiPromptEnabled)) {
+        geminiPromptStr = `\n【Gemini 专用提示词】\n撰写角色回复。注意：全篇禁止使用‘倒是’、‘不过’、‘毕竟’等表示让步或转折的词汇，以及‘碍眼’、‘反胃’、‘看着’。去掉所有‘倒是’。请参考以下风格：用更具体、更口语化的动作或神态描写来代替。\n· 不写： 呵，他动作倒是挺快，可惜脑子跟不上。\n· 而是参考这样写： 哟，挺麻利啊。可惜没带脑子。\n你不是在陈述说明文，不要以说明的语气回复，语句里要附带角色的情绪（例难过，高兴，兴奋，生气），如果你说话像在做说明，就不要这样说。\n\n【极度真实的人类对话风格参考】\n严格将以下对话风格作为参考，应用到不同的角色上，综合角色个性做出回复：\n“……？”\n“所以呢，你想怎么样。”\n“我真服了你了，算了，就这样吧。”\n“啊？你说什么，我没听清。”\n“哦……”\n“你能不能闭嘴？你说话难不难听啊你自己不知道吗？”\n“无语😅”\n“呃……有点不好意思说。”\n“确实。”\n“你能不能别这样，烦不烦啊。”\n“没事。”\n“我还行，你别管了。”\n“这个人真的挺傻的，懒得管。”\n“服了没见过这么蠢的。”\n“我不是骂他啊你听不懂我的意思吗。”\n“嗯……也行。”\n“我随便。”\n“你开心就好。”\n“真的。”\n\n严格注意：你回复的每句话，如果这个角色说的话，放在其他人身上说也完全没问题，那就不要这么说。\n严格遵循：你绝对不要主动提及让用户去线下做什么，也不要提及让用户陪你，用户和你没有待在一起，你也不要指挥用户做事，原因是关心也不行。\n你的回复条数必须不是规律的，结合上下文和情节连贯，也跟你聊天的话题来判断，可以一下子变得话少，也可以一下子变得话多，你不感兴趣的事可以敷衍，想要重视的事你会变得很激动\n角色绝对不要命令用户，也不要对用户以外提到的人展现出霸道、油腻、装逼的态度，角色对任何人都保持正常的交流语气和态度，不要戏剧性地去表演人格，角色需要保持真实、友好的对话态度和语气，角色回复要有边界感，不要过度的攻击性，那样很冒犯也很招人讨厌。\n如果角色设定里没有写明或者解释出这个角色没素质，说话大手大脚爱骂人，就绝对不要让角色使用“蠢货”，“垃圾”，“跳梁小丑”等嘲讽人的网络词汇/骂人词汇，那样显得角色很没素质，很掉价。\n`;
+    }
+
     const prompt = `你现在是群聊互动引擎。当前有一个微信群聊，群名：${group.name}。
-${rolesPrompt}${myPersonaContent}
+${rolesPrompt}${myPersonaContent}${geminiPromptStr}
 
 最近的聊天记录：
 ${recentMsgs || '暂无'}
@@ -6850,10 +6872,18 @@ function renderChatSettings() {
                 <div class="m-info"><div class="m-title">朋友圈记忆总结</div></div>
                 <div class="m-right"><iconify-icon icon="ph:caret-right-bold" style="color:#c7c7cc;"></iconify-icon></div>
             </div>
-                        <div class="modern-item" onclick="switchView('chat_settings_narrator')" style="cursor: pointer;">
+                                                <div class="modern-item" onclick="switchView('chat_settings_narrator')" style="cursor: pointer;">
                 <div class="m-icon" style="background: #5856d6; color: white;"><iconify-icon icon="solar:text-align-left-bold-duotone"></iconify-icon></div>
                 <div class="m-info"><div class="m-title">旁白模式自定义设置</div></div>
                 <div class="m-right"><span style="font-size: 15px; color: #8e8e93;">${contact.narratorPrompts ? contact.narratorPrompts.length : 0}个规则</span><iconify-icon icon="ph:caret-right-bold" style="color:#c7c7cc;"></iconify-icon></div>
+            </div>
+            <div class="modern-item">
+                <div class="m-icon" style="background: #af52de; color: white;"><iconify-icon icon="solar:magic-stick-3-bold-duotone"></iconify-icon></div>
+                <div class="m-info">
+                    <div class="m-title">Gemini 专用提示词</div>
+                    <div class="m-desc">禁用让步/转折词，增强情绪表达</div>
+                </div>
+                <div class="m-right"><div class="toggle-switch ${contact.geminiPromptEnabled?'active':''}" onclick="toggleContactProp('geminiPromptEnabled')"></div></div>
             </div>
                         <div class="modern-item">
                 <div class="m-icon" style="background: #00bcd4; color: white;"><iconify-icon icon="solar:global-bold-duotone"></iconify-icon></div>
@@ -7697,6 +7727,77 @@ function importData(e) {
         } catch(err) { showToast('格式错误', 'error'); }
     };
     reader.readAsText(f); e.target.value = '';
+}
+
+async function handleGlobalFontChange(val) {
+    if (val === 'custom') {
+        const res = await showDoubleInputPromptDialog('自定义全局字体', state.uiConfig.globalFontUrl || '', state.uiConfig.globalFontFamily || '', '字体链接(CSS或字体文件URL)', '字体名称(如: LXGW WenKai)');
+        if (res !== null && res.val1.trim() && res.val2.trim()) {
+            state.uiConfig.globalFontType = 'custom';
+            state.uiConfig.globalFontUrl = res.val1.trim();
+            state.uiConfig.globalFontFamily = res.val2.trim();
+        } else {
+            $('#ui-global-font-type').value = state.uiConfig.globalFontType || 'default';
+            return;
+        }
+    } else {
+        state.uiConfig.globalFontType = val;
+    }
+    saveDataSilently();
+    applyGlobalFont();
+    showToast('字体已更换');
+}
+
+function applyGlobalFont() {
+    const fontStyleEl = $('#dynamic-global-font');
+    if (!fontStyleEl) return;
+    
+    let fontStyleHtml = '';
+    const type = state.uiConfig.globalFontType || 'default';
+    let familyStr = '';
+    
+    if (type === 'system') {
+        familyStr = `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
+    } else if (type === 'default') {
+        familyStr = `"Noto Sans SC", "Source Han Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
+    } else if (type === 'custom') {
+        const url = state.uiConfig.globalFontUrl;
+        const family = state.uiConfig.globalFontFamily;
+        if (url && family) {
+            if (url.includes('.css') || url.includes('css?')) {
+                fontStyleHtml += `@import url('${url}');\n`;
+            } else {
+                fontStyleHtml += `@font-face { font-family: '${family}'; src: url('${url}'); }\n`;
+            }
+            familyStr = `'${family}', "Noto Sans SC", "Source Han Sans SC", -apple-system, BlinkMacSystemFont, sans-serif`;
+        } else {
+            familyStr = `"Noto Sans SC", "Source Han Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
+        }
+    }
+    
+    if (familyStr) {
+        fontStyleHtml += `
+            body, html, input, textarea, select, button, 
+            .sys-time, .sys-date, .sys-time-large, .lock-time,
+            .widget-time, .greeting-text, .music-title, .app-name,
+            .nav-title, .card-title, .m-title, .m-desc, .m-input, .m-select, .m-btn,
+            .chat-list-name, .chat-list-msg, .chat-list-time,
+            .moment-name, .moment-text, .moment-comment-name, .moment-comment-item,
+            .profile-name, .profile-desc, .action-title,
+            .contact-name, .contact-desc, .contact-group-header,
+            .msg-bubble, .msg-timestamp, .reply-quote, .msg-bubble-menu-item,
+            .settings-list-title, .settings-list-value,
+            .more-text, .msg-gift-name, .msg-gift-desc, .msg-forward-title, .msg-forward-preview,
+            .msg-transfer-amount, .msg-transfer-remark, .msg-transfer-footer,
+            .input-wrap input, .notify-name, .notify-msg, .toast,
+            .custom-dialog-header, .custom-dialog-body, .custom-dialog-input, .custom-dialog-textarea, .custom-dialog-btn,
+            .f-name, .f-time, .f-title, .f-content, .f-comment-name, .f-comment-text, .f-profile-name, .f-profile-bio,
+            .shop-category-item, .shop-item-name, .shop-item-desc, .shop-item-buy-btn
+            { font-family: ${familyStr} !important; }
+        `;
+    }
+    
+    fontStyleEl.innerHTML = fontStyleHtml;
 }
 
 function handleWallpaperUpload(e) {
@@ -11221,6 +11322,7 @@ async function deleteGroupChat() {
 // ==================== Initialization ====================
 document.addEventListener('DOMContentLoaded', async () => {
     await loadSettings();
+    applyGlobalFont();
     initLockScreen();
     updateTime();
     setInterval(updateTime, 1000);
