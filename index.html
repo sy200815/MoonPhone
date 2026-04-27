@@ -6108,7 +6108,7 @@ async function receiveMessage(triggerContext = null, targetContactId = null) {
             
             // 解析并处理回复指令
             let replyToMsg = null;
-            const replyRegex = /^\[回复:\s*(.*?)\]/i;
+            const replyRegex = /[\[【]回复[:：]\s*(.*?)[\]】]/i;
             const replyMatch = reply.match(replyRegex);
             if (replyMatch) {
                 const replyTargetContent = replyMatch[1].trim();
@@ -6122,7 +6122,8 @@ async function receiveMessage(triggerContext = null, targetContactId = null) {
                     const lastMsg = recentUserMsgs[0];
                     replyToMsg = { id: lastMsg.id, role: lastMsg.role, content: lastMsg.content, type: lastMsg.type || 'text' };
                 }
-                reply = reply.replace(replyRegex, '').trim();
+                // 移除所有的回复标记，防止残留导致单独的气泡
+                reply = reply.replace(/[\[【]回复[:：]\s*(.*?)[\]】]/gi, '').trim();
             }
 
                                     const parsedMsgs = parseReplyToMessages(reply, contact.roleEmotePackageId);
