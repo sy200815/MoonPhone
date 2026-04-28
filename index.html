@@ -5862,7 +5862,7 @@ async function receiveMessage(triggerContext = null, targetContactId = null) {
         const p = state.myPersonas.find(x => x.id === contact.myPersonaId);
         if (p) myPersonaContent = `我的人设是：${p.content}。`;
     }
-    let timeStr = contact.perceiveTime ? `当前现实世界的时间是：${state.currentDate} ${state.currentTime}。` : '';
+    let timeStr = contact.perceiveTime ? `【现实世界时间感知】\n当前时间：${state.currentDate} ${state.currentTime} (${state.currentWeek})。\n请根据当前的时间点（如深夜、清晨、工作日、周末等）在对话中表现出符合生理规律和生活逻辑的状态（如困倦、刚起床、正在忙碌等）。\n` : '';
     let roleEmotesPrompt = '';
     if (contact.roleEmotePackageId) {
         const pkg = state.emotePackages.find(p => p.id === contact.roleEmotePackageId);
@@ -9336,11 +9336,26 @@ ${historyText}`;
 // ==================== 11.6 Worldbook ====================
 function renderWorldbookList() {
     const list = $('#worldbook-list-content');
-        if(state.worldbooks.length === 0) {
+    if(!state.worldbooks) state.worldbooks = [];
+    
+    if(state.worldbooks.length === 0) {
         list.innerHTML = `<div class="empty-state" style="padding: 60px 0;"><iconify-icon icon="solar:folder-with-files-line-duotone" style="font-size: 56px; color: #ccc;"></iconify-icon><p style="margin-top:12px; color:#999;">暂无世界书文件夹</p><button class="m-btn" style="margin-top: 20px;" onclick="createWorldbookFolder()">创建世界书</button></div>`;
         return;
     }
-    list.innerHTML = `<div class="modern-group-title" style="margin-top: 10px;">我的世界书</div><div class="modern-card">` + state.worldbooks.map(wb => `
+
+    let html = `
+    <div class="modern-group-title" style="margin-top: 10px;">操作</div>
+    <div class="modern-card">
+        <div class="modern-item" style="cursor: pointer;" onclick="createWorldbookFolder()">
+            <div class="m-icon" style="background: #007aff; color: white;"><iconify-icon icon="solar:folder-add-bold-duotone"></iconify-icon></div>
+            <div class="m-info"><div class="m-title" style="color: #007aff; font-weight: 600;">新建文件夹</div></div>
+            <div class="m-right"><iconify-icon icon="ph:caret-right-bold" style="color:#c7c7cc;"></iconify-icon></div>
+        </div>
+    </div>
+    <div class="modern-group-title">我的文件夹 (${state.worldbooks.length})</div>
+    <div class="modern-card">`;
+    
+    html += state.worldbooks.map(wb => `
         <div class="modern-item" onclick="openWorldbookDetail('${wb.id}')" style="cursor: pointer;">
             <div class="m-icon" style="background: #fff3e0; color: #ff9500;"><iconify-icon icon="solar:folder-with-files-bold-duotone"></iconify-icon></div>
             <div class="m-info">
@@ -9352,14 +9367,26 @@ function renderWorldbookList() {
                 <iconify-icon icon="solar:trash-bin-trash-bold-duotone" onclick="event.stopPropagation(); deleteWorldbookFolder('${wb.id}')" style="color:#ff3b30; font-size:22px; padding: 4px; margin-left: 4px;"></iconify-icon>
             </div>
         </div>
-    `).join('') + `</div>`;
+    `).join('');
+    
+    html += `</div>`;
+    list.innerHTML = html;
 }
 
 async function createWorldbookFolder() {
     const name = await showPromptDialog('新建文件夹', '', '文件夹名称 (如: 1号角色世界书)');
     if(name && name.trim()) {
-        state.worldbooks.push({ id: Date.now().toString(), name: name.trim(), entries: [] });
-        saveDataSilently(); renderWorldbookList(); showToast('已创建');
+        // 使用更唯一的 ID 生成方式，防止快速点击导致的 ID 重复
+        const newFolder = { 
+            id: 'wb_' + Date.now() + Math.random().toString(36).substr(2, 5), 
+            name: name.trim(), 
+            entries: [] 
+        };
+        if (!state.worldbooks) state.worldbooks = [];
+        state.worldbooks.push(newFolder);
+        await saveDataSilently(); 
+        renderWorldbookList(); 
+        showToast('已创建');
     }
 }
 
@@ -9715,6 +9742,7 @@ ${recentMsgs}
 
 【日记要求】
 1. 必须以第一人称（你自己的口吻）来写。
+2. 必须体现出对“当前时间”的感知。例如，如果是深夜写的日记，语气可以更感性或疲惫；如果是清晨，可以提到刚醒来的心情。
 2. 内容主要围绕“我”（也就是和你聊天的用户）以及你们之间的互动、你的心理活动、情感变化来写。
 3. 字数要求在 300 到 500 字之间。
 4. 这是一篇私密日记，所以你可以展现出你最真实、最深层的想法，甚至是对“我”没有表现出来的情感。
@@ -9897,8 +9925,11 @@ async function fetchSnoopData(categoryId) {
         </div>
     `;
 
-        // 准备上下文记忆
-    let memoryPrompt = '';
+        // 准备时间感知 (日记默认开启强感知)
+    let timePrompt = `\n【现实世界时间感知】\n今天是：${state.currentDate} ${state.currentTime} (${state.currentWeek})。\n`;
+
+    // 准备上下文记忆
+    let memoryPrompt = timePrompt;
     if (c.memorySummary && (c.memorySummary.relation || c.memorySummary.thoughts)) {
         memoryPrompt = `\n【角色当前心理状态】\n看待我们的关系：${c.memorySummary.relation}\n最近的心里想法：${c.memorySummary.thoughts}\n记住的事情：${c.memorySummary.events}`;
     }
