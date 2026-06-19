@@ -11,9 +11,9 @@
     <meta name="apple-mobile-web-app-title" content="Moon小手机">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#000000">
-    <link rel="apple-touch-icon" href="https://i.postimg.cc/Zqp4FZsP/IMG-20260423-204152.png">
-        <link rel="icon" type="image/png" href="https://i.postimg.cc/Zqp4FZsP/IMG-20260423-204152.png">
-    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Moon%E5%B0%8F%E6%89%8B%E6%9C%BA%22%2C%22short_name%22%3A%22Moon%E5%B0%8F%E6%89%8B%E6%9C%BA%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22fullscreen%22%2C%22background_color%22%3A%22%23000000%22%2C%22theme_color%22%3A%22%23000000%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fi.postimg.cc%2FZqp4FZsP%2FIMG-20260423-204152.png%22%2C%22sizes%22%3A%22192x192%20512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/jSvXWqdN/3223CA2E-77DF-4379-BFBC-649A512E3DFB.png">
+        <link rel="icon" type="image/png" href="https://i.postimg.cc/jSvXWqdN/3223CA2E-77DF-4379-BFBC-649A512E3DFB.png">
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Moon%E5%B0%8F%E6%89%8B%E6%9C%BA%22%2C%22short_name%22%3A%22Moon%E5%B0%8F%E6%89%8B%E6%9C%BA%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22fullscreen%22%2C%22background_color%22%3A%22%23000000%22%2C%22theme_color%22%3A%22%23000000%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fi.postimg.cc%2FjSvXWqdN%2F3223CA2E-77DF-4379-BFBC-649A512E3DFB.png%22%2C%22sizes%22%3A%22192x192%20512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,58 +92,253 @@ body, html {
     display: none !important;
 }
 
-/* ===== 极简奶油白桌面样式 (Minimal Cream White Style) ===== */
-.desktop-status-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
+/* ===== 韩系奶油低饱和拟物桌面样式 (Soft Desktop Widgets) ===== */
+.desktop-view {
+    background-color: #F6F6F6 !important;
+    background-image: 
+        radial-gradient(rgba(0, 0, 0, 0.02) 8%, transparent 8%),
+        radial-gradient(rgba(0, 0, 0, 0.015) 8%, transparent 8%);
+    background-size: 24px 24px;
+    background-position: 0 0, 12px 12px;
+    z-index: 1;
+}
+
+/* 统一小图片坑位占位符类名 */
+.img-container {
+    background-color: #EFEFEF !important;
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+.img-container img {
     width: 100%;
-    height: calc(env(safe-area-inset-top) + 44px);
-    padding: env(safe-area-inset-top) 24px 0 24px;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 顶部蝴蝶结小组件 */
+.cream-top-bow-tag {
+    background: #FFFFFF;
+    border-radius: 999px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 auto 12px;
+    width: fit-content;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+.cream-top-bow-tag span {
+    font-size: 11px;
+    color: #A3A3A3;
+    font-weight: 500;
+}
+.cream-top-bow-tag .bow-icon {
+    font-size: 14px;
+    color: #D1D1D6;
+}
+
+/* 时间电池大胶囊小组件 */
+.cream-time-battery-capsule {
+    background: #FFFFFF;
+    border-radius: 28px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.04);
+    padding: 12px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 10;
+    gap: 12px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.capsule-avatar-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #F0F0F0;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.capsule-middle-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.capsule-time-row {
+    font-size: 20px;
+    font-weight: 700;
+    color: #4A4A4A;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.capsule-time-row .paws {
+    font-size: 14px;
+    color: #D1CFC9;
+}
+
+.capsule-signature-bubble {
+    background: #F5F5F5;
+    border-radius: 12px;
+    padding: 4px 10px;
+    font-size: 10px;
+    color: #8E8E93;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: 1px solid rgba(0, 0, 0, 0.01);
+}
+
+.capsule-battery-ring {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #FAF9F6;
+    border: 3px solid #EFEFEF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.capsule-battery-ring iconify-icon {
     font-size: 12px;
-    font-weight: 500;
-    color: #999999;
-    pointer-events: none;
-    background: transparent;
+    color: #D1D1D6;
+}
+.capsule-battery-ring span {
+    font-size: 8px;
+    font-weight: 700;
+    color: #A3A3A3;
 }
 
-.status-bar-left {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+/* Top Widgets 小字标题 */
+.widget-group-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #B2B2B2;
+    text-align: center;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
 }
 
-.status-bar-right {
+/* 拟物化手账本组件 (Book Container) */
+.cream-notebook-widget {
+    background: #FFFFFF;
+    border-radius: 32px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04);
     display: flex;
-    align-items: center;
+    padding: 16px 12px;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.notebook-page-left {
+    flex: 1.1;
+    background: #FAF9F6;
+    border-radius: 20px;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
     gap: 8px;
 }
 
-.status-icon-svg {
-    width: 16px;
-    height: 16px;
-    fill: none;
-    stroke: #999999;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+.notebook-tag-line {
+    background: #FFFFFF;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 10px;
+    color: #8E8E93;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    border: 1px solid rgba(0, 0, 0, 0.02);
 }
 
+.notebook-tag-bow {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+    padding-right: 4px;
+}
+
+.notebook-tag-bow iconify-icon {
+    font-size: 24px;
+    color: #E2E2E2;
+}
+
+.notebook-rings {
+    width: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 12px 0;
+    z-index: 5;
+}
+
+.notebook-ring {
+    width: 5px;
+    height: 14px;
+    background: linear-gradient(to bottom, #EFEFEF, #C7C7CC, #EFEFEF);
+    border-radius: 3px;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.05);
+}
+
+.notebook-page-right {
+    flex: 1;
+    background: #FAF9F6;
+    border-radius: 20px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.notebook-polaroid {
+    background: #FFFFFF;
+    padding: 8px 8px 24px 8px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+    width: 100%;
+    transform: rotate(2deg);
+    border: 1px solid rgba(0, 0, 0, 0.01);
+}
+
+.notebook-polaroid-img {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    background: #EFEFEF;
+    overflow: hidden;
+}
+
+/* 个人主页卡片 - 韩系低饱和 */
 .cream-profile-card {
     background: #FFFFFF;
-    border-radius: 20px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border-radius: 32px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04);
     padding: 24px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(0,0,0,0.02);
+    border: 1px solid rgba(255, 255, 255, 0.9);
 }
 
 .cream-profile-card .deco-bg {
@@ -151,8 +346,8 @@ body, html {
     top: 0; left: 0; width: 100%; height: 100%;
     pointer-events: none;
     font-size: 10px;
-    color: #CCCCCC;
-    opacity: 0.2;
+    color: #E2E2E2;
+    opacity: 0.3;
 }
 
 .cream-profile-card .deco-bg span {
@@ -163,8 +358,7 @@ body, html {
     width: 68px;
     height: 68px;
     border-radius: 50%;
-    border: 2px solid #FFFFFF;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.02);
     margin-bottom: 12px;
     background: #F5F5F5;
     display: flex;
@@ -175,113 +369,81 @@ body, html {
 }
 
 .profile-avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
-.profile-avatar-wrap .text-avatar { font-size: 24px; color: #999; }
+.profile-avatar-wrap .text-avatar { font-size: 20px; color: #B0B0B0; font-weight: bold; }
 
 .profile-name {
-    font-size: 18px;
-    font-weight: 500;
-    color: #333333;
-    margin-bottom: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #4A4A4A;
+    margin-bottom: 4px;
     display: flex;
     align-items: center;
     gap: 6px;
-    font-family: 'Playfair Display', 'Georgia', 'Noto Sans SC', serif;
 }
 
-.profile-name .deco { font-size: 12px; color: #BBBBBB; }
+.profile-name .deco { font-size: 10px; color: #CCCCCC; }
 
 .profile-location {
-    font-size: 11px;
-    color: #AAAAAA;
-    margin-bottom: 12px;
+    font-size: 10px;
+    color: #B0B0B0;
+    margin-bottom: 8px;
     display: flex;
     align-items: center;
     gap: 4px;
 }
 
 .profile-bio {
-    font-size: 12px;
-    color: #888888;
-    margin-bottom: 16px;
+    font-size: 11px;
+    color: #999999;
+    margin-bottom: 12px;
+    text-align: center;
+    line-height: 1.4;
 }
 
 .profile-tags {
     display: flex;
-    gap: 12px;
-    font-size: 11px;
-    color: #999999;
+    gap: 6px;
+    font-size: 9px;
+    color: #B0B0B0;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-.cream-pill-card {
+/* 搜索栏 */
+.cream-search-bar {
     background: #FFFFFF;
     border-radius: 999px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
-    border: 1px solid rgba(0,0,0,0.02);
-    padding: 8px 12px 8px 8px;
+    padding: 10px 18px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.pill-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.pill-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: #F0F0F0;
-    overflow: hidden;
-}
-.pill-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-.pill-text {
-    font-size: 12px;
-    color: #888888;
-}
-
-.pill-btn {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: #F5F5F5;
-}
-
-.cream-search-bar {
-    background: #F7F7F7;
-    border-radius: 999px;
-    padding: 12px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+    border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 .cream-search-bar input {
     border: none;
     background: transparent;
     outline: none;
-    font-size: 13px;
-    color: #333333;
+    font-size: 12px;
+    color: #4A4A4A;
     width: 100%;
 }
-.cream-search-bar input::placeholder { color: #BBBBBB; }
-.cream-search-bar iconify-icon { color: #999999; font-size: 18px; }
+.cream-search-bar input::placeholder { color: #CCCCCC; }
+.cream-search-bar iconify-icon { color: #B0B0B0; font-size: 16px; }
 
 .cream-card-row {
     display: flex;
-    gap: 12px;
+    gap: 16px;
 }
 
+/* My Diary 小组件 */
 .cream-card-left {
-    flex: 1.5;
+    flex: 1.4;
     background: #FFFFFF;
-    border-radius: 18px;
-    padding: 16px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.03);
-    border: 1px solid rgba(0,0,0,0.02);
+    border-radius: 28px;
+    padding: 20px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.04);
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -290,58 +452,75 @@ body, html {
 .card-header {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .card-avatar {
-    width: 28px; height: 28px; border-radius: 8px; background: #F0F0F0; overflow: hidden;
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: #F5F5F5;
+    overflow: hidden;
 }
 .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-.card-user { font-size: 13px; font-weight: 500; color: #333; flex: 1; }
-.card-action { width: 24px; height: 24px; border-radius: 50%; background: #F5F5F5; display: flex; align-items: center; justify-content: center; color: #999; font-size: 12px; }
+.card-user { font-size: 13px; font-weight: 700; color: #4A4A4A; flex: 1; }
+.card-action { display: none; }
 
-.card-tags, .card-tags-center {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: #999;
-}
-.card-tags-center { justify-content: center; margin-top: 12px; }
-
-.tag-pill {
-    background: #F7F7F7;
-    padding: 4px 10px;
-    border-radius: 999px;
+.card-tags {
+    display: none;
 }
 
 .card-input-fake {
-    background: #F9F9F9;
-    border-radius: 12px;
-    padding: 10px 12px;
+    background: #F5F5F5;
+    border-radius: 18px;
+    padding: 12px 14px;
     font-size: 11px;
-    color: #BBBBBB;
+    color: #B0B0B0;
 }
 
+/* Network 小组件 (拍立得相框样式) */
 .cream-card-right {
     flex: 1;
     background: #FFFFFF;
-    border-radius: 18px;
-    padding: 16px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.03);
-    border: 1px solid rgba(0,0,0,0.02);
+    border-radius: 28px;
+    padding: 12px 12px 20px 12px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.04);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .circle-avatar-large {
-    width: 60px; height: 60px; border-radius: 50%; background: #F0F0F0; overflow: hidden;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 16px;
+    background: #F5F5F5;
+    overflow: hidden;
 }
 .circle-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
 
+.card-tags-center {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.card-tags-center .tag-pill {
+    background: transparent;
+    padding: 0;
+    font-size: 10px;
+    font-weight: 700;
+    color: #B0B0B0;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+.card-tags-center iconify-icon {
+    display: none;
+}
+
+/* 功能网格入口 (Grid 排列) */
 .cream-apps-container {
     display: flex;
     flex-direction: column;
@@ -350,45 +529,56 @@ body, html {
 }
 
 .app-group {
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    justify-items: center;
 }
 
 .cream-app-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
     cursor: pointer;
 }
 
 .app-icon-circle {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: #F7F7F7;
+    width: 58px;
+    height: 58px;
+    border-radius: 18px; /* iOS Squircle 圆角 */
+    background: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 24px;
-    color: #999999;
+    color: #555555 !important;
     transition: transform 0.2s;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+}
+.app-icon-circle iconify-icon, .app-icon-circle svg {
+    color: #555555 !important;
+    stroke: #555555 !important;
 }
 .cream-app-item:active .app-icon-circle { transform: scale(0.95); }
 
 .app-label {
     font-size: 11px;
-    color: #AAAAAA;
+    font-weight: 600;
+    color: #555555;
+    margin-top: 6px;
+    text-align: center;
 }
 
+/* About Me (带待办与信号的小组件) */
 .cream-todo-card {
     background: #FFFFFF;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.03);
-    border: 1px solid rgba(0,0,0,0.02);
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04);
     position: relative;
     margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
 }
 
 .todo-header {
@@ -399,13 +589,15 @@ body, html {
 }
 
 .todo-header .title {
-    font-family: 'Dancing Script', cursive, sans-serif;
-    font-size: 18px;
-    color: #333;
+    font-size: 13px;
+    font-weight: 700;
+    color: #4A4A4A;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.todo-header .deco { color: #CCC; font-size: 14px; }
-.todo-header .more { margin-left: auto; color: #CCC; font-size: 18px; }
+.todo-header .deco { color: #B0B0B0; font-size: 12px; }
+.todo-header .more { margin-left: auto; color: #B0B0B0; font-size: 18px; }
 
 .todo-list {
     display: flex;
@@ -416,42 +608,44 @@ body, html {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px dashed #EEEEEE;
+    padding: 12px 0;
+    border-bottom: 1px dashed #F0F0F0;
 }
 .todo-item:last-child { border-bottom: none; }
 
 .todo-item .circle {
-    width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #DDDDDD;
+    width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #C7C7CC; background: transparent;
 }
 
 .todo-item .text {
-    font-size: 13px; color: #666666;
+    font-size: 12px; color: #4A4A4A;
+    font-weight: 500;
 }
 
-.todo-item.add-new .text { color: #BBBBBB; }
+.todo-item.add-new .text { color: #B0B0B0; }
 
 .star-deco {
     position: absolute;
-    bottom: 16px; right: 16px;
+    bottom: 20px; right: 20px;
     font-size: 24px;
-    color: #F0F0F0;
+    color: #FAF9F6;
 }
 
+/* ===== 底部悬浮毛玻璃导航栏 ===== */
 .cream-bottom-nav {
     position: absolute;
     bottom: calc(20px + env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
-    width: 90%;
-    max-width: 400px;
-    height: 64px;
-    background: rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-radius: 32px;
+    width: calc(100% - 40px);
+    max-width: 360px;
+    height: 68px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 34px;
     border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04);
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -459,15 +653,490 @@ body, html {
 }
 
 .cream-bottom-nav .nav-item {
-    font-size: 24px;
-    color: rgba(0, 0, 0, 0.25);
+    font-size: 22px;
+    color: #C7C7CC;
     padding: 10px 20px;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .cream-bottom-nav .nav-item.active {
-    color: #666666;
+    color: #4A4A4A;
+}
+
+/* ===== 第二页高仿精致韩系组件样式 ===== */
+
+/* 待做角标 */
+.todo-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #EFEFEF;
+    color: #A3A3A3;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    transform: scale(0.85);
+    pointer-events: none;
+}
+
+/* 第一页高仿 DorisWorld 音乐播放组件 */
+.korean-music-widget {
+    background: #FFFFFF;
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.music-card-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #FAF9F6;
+    padding: 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(0,0,0,0.02);
+}
+
+.music-card-img {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px !important;
+}
+
+.music-card-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.music-card-info .music-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #4A4A4A;
+}
+
+.music-card-info .music-sub {
+    font-size: 11px;
+    color: #8E8E93;
+}
+
+.music-card-info .music-provider {
+    font-size: 9px;
+    color: #B2B2B2;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+.music-card-close {
+    font-size: 20px;
+    color: #D1D1D6;
+    cursor: pointer;
+}
+
+.music-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 4px;
+}
+
+.bottom-arrow-btn {
+    width: 32px;
+    height: 32px;
+    background: #EFEFEF;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8E8E93;
+    font-size: 14px;
+}
+
+.bottom-input-mock {
+    flex: 1;
+    font-size: 11px;
+    color: #8E8E93;
+    font-weight: 600;
+    background: #FAF9F6;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.01);
+}
+
+.bottom-send-btn {
+    width: 32px;
+    height: 32px;
+    background: #8E8E93;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-size: 14px;
+}
+
+/* 第一页高仿 3Pics 相册卡片组件 */
+.korean-carousel-widget {
+    background: #FFFFFF;
+    border-radius: 28px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.carousel-drag-handle {
+    width: 40px;
+    height: 4px;
+    background: #E5E5EA;
+    border-radius: 2px;
+    margin-bottom: 2px;
+}
+
+.carousel-pics-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 12px;
+}
+
+.carousel-pic-item {
+    flex: 1;
+    aspect-ratio: 1;
+    border-radius: 18px;
+    background: #FAF9F6;
+    border: 1px solid rgba(0,0,0,0.03);
+    overflow: hidden;
+}
+
+.carousel-pic-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carousel-footer {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 4px;
+}
+
+.carousel-footer .footer-pill {
+    background: #F2F2F7;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 700;
+    color: #8E8E93;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 顶部细长流光胶囊 */
+.cream-top-text-bar {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 999px;
+    padding: 4px 16px;
+    font-size: 10px;
+    color: #A3A3A3;
+    font-weight: 500;
+    text-align: center;
+    width: fit-content;
+    margin: 0 auto 16px;
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* 2列非对称布局网格 */
+.widget-flex-row {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    align-items: stretch;
+    margin-bottom: 20px;
+}
+
+/* Instagram 风格照片小组件 */
+.instagram-widget {
+    flex: 1.2;
+    background: #FFFFFF;
+    border-radius: 28px;
+    padding: 14px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.ins-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 4px;
+}
+
+.ins-header span {
+    font-size: 11px;
+    font-weight: 700;
+    color: #B0B0B0;
+    letter-spacing: 0.3px;
+}
+
+.ins-header iconify-icon {
+    font-size: 14px;
+    color: #D1D1D6;
+}
+
+.ins-img-box {
+    width: 100%;
+    aspect-ratio: 1.1;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #FAF9F6;
+}
+
+.ins-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 4px 0;
+}
+
+.ins-footer iconify-icon {
+    font-size: 16px;
+    color: #A3A3A3;
+}
+
+.ins-share-pill {
+    background: #EFEFEF;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 8px;
+    font-weight: 700;
+    color: #8E8E93;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* 右侧App网格（2x2） */
+.app-grid-2x2 {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 16px;
+    align-content: space-between;
+}
+
+/* 注销对话框组件 */
+.korean-bubble-widget {
+    width: 100%;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.bubble-user-info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+}
+
+.bubble-user-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bubble-avatar-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* 小天使光环 */
+.bubble-avatar-box::after {
+    content: '👼';
+    position: absolute;
+    top: -8px;
+    font-size: 10px;
+    opacity: 0.9;
+}
+
+.bubble-meta-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.bubble-user-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #4A4A4A;
+}
+
+.bubble-user-handle {
+    font-size: 10px;
+    color: #B2B2B2;
+}
+
+.bubble-user-right {
+    font-size: 10px;
+    color: #B2B2B2;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 大对话气泡框 */
+.korean-large-bubble {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 20px 24px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.03);
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+/* 气泡尖角 */
+.korean-large-bubble::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 24px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #FFFFFF;
+}
+
+.korean-large-bubble-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4A4A4A;
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* Windows 98 拟物记事本窗口组件 */
+.win98-todo-widget {
+    flex: 1.3;
+    background: #FFFFFF;
+    border-radius: 24px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.win98-title-bar {
+    background: #F1F3F5;
+    padding: 6px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.win98-title-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9px;
+    font-weight: 700;
+    color: #4A4A4A;
+    text-transform: uppercase;
+}
+
+.win98-title-left iconify-icon {
+    font-size: 12px;
+    color: #A3A3A3;
+}
+
+.win98-title-right {
+    display: flex;
+    gap: 4px;
+}
+
+.win98-btn-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #D1D1D6;
+}
+
+.win98-btn-dot.red { background: #FF5F56; }
+.win98-btn-dot.yellow { background: #FFBD2E; }
+.win98-btn-dot.green { background: #27C93F; }
+
+.win98-menu-bar {
+    display: flex;
+    gap: 8px;
+    padding: 4px 12px;
+    font-size: 8px;
+    font-weight: 700;
+    color: #A3A3A3;
+    border-bottom: 1px dashed #E5E5E5;
+    background: #FAF9F6;
+}
+
+.win98-content {
+    flex: 1;
+    padding: 12px;
+    background: #FFFFFF;
+    overflow-y: auto;
+}
+
+.win98-content .todo-item {
+    padding: 8px 0;
+    border-bottom: 1px dashed #F5F5F5;
+}
+
+.win98-content .todo-item:last-child {
+    border-bottom: none;
+}
+
+.win98-content .todo-item .text {
+    font-size: 11px;
+    font-weight: 600;
 }
 
 /* 锁屏视图 */
@@ -3255,6 +3924,17 @@ body, html {
     cursor: pointer !important;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
     transition: all 0.2s ease;
+    pointer-events: auto !important;
+}
+
+.chat-room-view .nav-right {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+    z-index: 15 !important;
+    pointer-events: auto !important;
 }
 .chat-room-view .back-btn:active,
 .chat-room-view .nav-right > div:active {
@@ -3558,12 +4238,10 @@ body, html {
 
 /* 回复消息的引用区域 */
 .reply-quote {
-    background-color: rgba(0, 0, 0, 0.08);
-    border-radius: 12px;
+    border-radius: 6px;
     padding: 6px 10px;
     font-size: 12px;
-    color: rgba(0,0,0,0.6);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     word-break: break-all;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -3571,8 +4249,7 @@ body, html {
     overflow: hidden;
 }
 .message-item.user .reply-quote {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255,255,255,0.9);
+    /* 动态自适应颜色由 JS 处理 */
 }
 
 /* 消息长按浮窗菜单 (iOS Context Menu 风格) */
@@ -5713,208 +6390,426 @@ body, html {
     margin-left: 12px;
 }
 
-/* ===== 极简中文论坛排版样式 ===== */
-.forum-feed { background: #FFFFFF; height: 0; min-height: 0; flex: 1; padding-bottom: 120px; overflow-x: hidden; }
-
-/* 列表项 */
-.f-min-item {
-    background: #FFFFFF;
-    padding: 20px;
-    border-bottom: 8px solid #F7F7F7;
-    cursor: pointer;
-    transition: background 0.15s ease;
+/* ===== High Fidelity Blog-Style Forum UI & Night Mode ===== */
+.forum-theme-root {
+    --f-bg: #F8F9FA;
+    --f-card-bg: #FFFFFF;
+    --f-text-pri: #111111;
+    --f-text-sec: #757F8A;
+    --f-border: #EEEEEE;
+    --f-btn-bg: #11142A;
+    --f-btn-text: #FFFFFF;
+    --f-input-bg: #F0F2F4;
+    --f-header-bg: #FFFFFF;
+    --f-tab-active: #111111;
+    --f-tab-inactive: #9CA3AF;
+    --f-sidebar-bg: #11142A;
+    --f-sidebar-text: #FFFFFF;
+    --f-sidebar-text-sec: #9CA3AF;
+    transition: background 0.3s ease, color 0.3s ease;
 }
-.f-min-item:active { background: #FAFAFA; }
 
-.f-min-tag {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 600;
-    color: #111111;
-    background: #F5F5F5;
-    padding: 4px 8px;
-    border-radius: 4px;
-    margin-bottom: 10px;
+.forum-theme-root.night-mode {
+    --f-bg: #121214;
+    --f-card-bg: #1E1E22;
+    --f-text-pri: #FFFFFF;
+    --f-text-sec: #9CA3AF;
+    --f-border: #2C2C32;
+    --f-btn-bg: #FFFFFF;
+    --f-btn-text: #111111;
+    --f-input-bg: #222226;
+    --f-header-bg: #1E1E22;
+    --f-tab-active: #FFFFFF;
+    --f-tab-inactive: #6B7280;
+}
+
+#view-forum_main, #view-forum_post, #view-forum_profile, #view-forum_create_post, #view-forum_settings {
+    background-color: var(--f-bg) !important;
+    color: var(--f-text-pri) !important;
+}
+
+.forum-header-modern {
+    background-color: var(--f-header-bg) !important;
+    border-bottom: 1px solid var(--f-border) !important;
+    padding: calc(env(safe-area-inset-top) + 12px) 20px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 100;
+    transition: background-color 0.3s;
+}
+.forum-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.forum-icon-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: var(--f-text-pri);
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+.forum-icon-btn:active {
+    background-color: var(--f-border);
+}
+
+.forum-search-box {
+    display: flex;
+    align-items: center;
+    background-color: var(--f-input-bg);
+    border-radius: 12px;
+    padding: 8px 16px;
+    gap: 10px;
+    transition: background-color 0.3s;
+}
+.forum-search-box input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+    color: var(--f-text-pri);
+    width: 100%;
+}
+.forum-search-box input::placeholder {
+    color: var(--f-text-sec);
+    opacity: 0.6;
+}
+
+.forum-category-scroll {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 4px 0 8px;
+    -webkit-overflow-scrolling: touch;
+}
+.forum-category-scroll::-webkit-scrollbar { display: none; }
+.forum-category-tab {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--f-tab-inactive);
+    white-space: nowrap;
+    cursor: pointer;
+    padding-bottom: 6px;
+    position: relative;
+    transition: color 0.2s;
+}
+.forum-category-tab.active {
+    color: var(--f-tab-active);
+}
+.forum-category-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 16px;
+    height: 2px;
+    background-color: var(--f-tab-active);
+    border-radius: 1px;
+}
+
+.forum-feed {
+    background-color: var(--f-bg) !important;
+    padding: 20px 20px 100px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.f-min-item {
+    background-color: var(--f-card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+    border: 1px solid var(--f-border);
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, border-color 0.3s;
+}
+.f-min-item:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.01);
+}
+
+.f-card-author-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+.f-card-author-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.f-card-author-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--f-border);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--f-text-pri);
+}
+.f-card-author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.f-card-author-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--f-text-pri);
+}
+.f-card-time {
+    font-size: 12px;
+    color: var(--f-text-sec);
 }
 
 .f-min-title {
-    font-size: 17px;
-    font-weight: 700;
-    color: #111111;
-    line-height: 1.5;
-    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--f-text-pri);
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+.f-min-preview {
+    font-size: 13px;
+    color: var(--f-text-sec);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-.f-min-meta {
+.f-read-more-btn {
+    background-color: var(--f-btn-bg);
+    color: var(--f-btn-text);
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    transition: opacity 0.2s, background-color 0.3s, color 0.3s;
+}
+.f-read-more-btn:active {
+    opacity: 0.9;
+}
+
+.forum-sidebar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.forum-sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+.forum-sidebar {
+    position: absolute;
+    top: 0;
+    left: -80%;
+    width: 75%;
+    max-width: 300px;
+    height: 100%;
+    background-color: var(--f-sidebar-bg);
+    color: var(--f-sidebar-text);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    padding: calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 24px);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.15);
+    transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.forum-sidebar-overlay.active .forum-sidebar {
+    transform: translateX(100%);
+}
+
+.forum-sidebar-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 36px;
+    width: 100%;
+}
+.forum-sidebar-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.1);
+    overflow: hidden;
+    margin-bottom: 16px;
+    border: 2px solid rgba(255,255,255,0.2);
+}
+.forum-sidebar-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.forum-sidebar-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--f-sidebar-text);
+    margin-bottom: 2px;
+}
+.forum-sidebar-handle {
+    font-size: 13px;
+    color: var(--f-sidebar-text-sec);
+    margin-bottom: 16px;
+}
+.forum-sidebar-stats {
+    display: flex;
+    gap: 20px;
+}
+.forum-sidebar-stat-item {
+    font-size: 13px;
+    color: var(--f-sidebar-text-sec);
+}
+.forum-sidebar-stat-item b {
+    color: var(--f-sidebar-text);
+    font-weight: 700;
+}
+
+.forum-sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+}
+.forum-sidebar-menu-item {
     display: flex;
     align-items: center;
-    font-size: 12px;
-    color: #999999;
-    gap: 0;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--f-sidebar-text-sec);
+    padding: 10px 0;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.forum-sidebar-menu-item:active, .forum-sidebar-menu-item.active {
+    color: var(--f-sidebar-text);
+}
+.forum-sidebar-menu-item iconify-icon {
+    font-size: 20px;
 }
 
-.f-min-meta-item { display: flex; align-items: center; }
-.f-min-meta-item:not(:last-child)::after {
-    content: '·';
-    margin: 0 8px;
-    color: #DDDDDD;
+.forum-sidebar-close-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--f-sidebar-text);
+    font-size: 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: auto;
+}
+.forum-sidebar-close-btn:active {
+    background-color: rgba(255,255,255,0.2);
 }
 
-.f-min-author-avatar {
-    width: 20px; height: 20px; border-radius: 50%; background: #F5F5F5; 
-    margin-right: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center;
-    color: #999999; font-size: 10px; font-weight: 700;
+/* Detail View Styling */
+.f-post-detail {
+    background-color: var(--f-bg) !important;
+    color: var(--f-text-pri) !important;
 }
-.f-min-author-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-/* 板块页专用 */
-#forum-tab-boards { background: #F7F7F7; padding-top: 8px; }
-.f-board-item {
-    background: #FFFFFF;
-    padding: 20px;
-    border-radius: 12px;
-    margin: 8px 16px;
+.f-detail-header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    padding: calc(env(safe-area-inset-top) + 12px) 20px 12px;
+    background-color: var(--f-header-bg);
+    border-bottom: 1px solid var(--f-border);
+    transition: background-color 0.3s, border-color 0.3s;
 }
-.f-board-name { font-size: 16px; font-weight: 700; color: #111111; margin-bottom: 6px; }
-.f-board-desc { font-size: 13px; color: #666666; line-height: 1.5; }
-.f-board-meta { font-size: 11px; color: #999999; margin-top: 8px; }
-
-.f-btn-outline {
-    background: #F5F5F5;
-    color: #111111;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
+.f-detail-body {
+    padding: 24px 20px;
 }
-.f-btn-solid {
-    background: #111111;
-    color: #FFFFFF;
-    border-radius: 12px;
-    width: calc(100% - 32px);
-    margin: 16px;
-    padding: 14px;
-    font-size: 15px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
+.f-detail-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--f-text-pri);
+    line-height: 1.4;
+    margin-bottom: 16px;
 }
-
-/* 个人主页 */
-.f-profile-min {
-    padding: 32px 20px;
+.f-detail-author-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+.f-detail-author-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--f-border);
+    overflow: hidden;
+}
+.f-detail-author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.f-detail-author-info {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background: #fff;
-    border-bottom: 8px solid #F7F7F7;
+    gap: 2px;
 }
-.f-profile-min-avatar {
-    width: 80px; height: 80px; border-radius: 50%; background: #F5F5F5; 
-    margin-bottom: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center;
-    color: #999999; font-size: 32px; font-weight: 700;
+.f-detail-author-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--f-text-pri);
 }
-.f-profile-min-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.f-profile-min-name { font-size: 20px; font-weight: 700; color: #111111; margin-bottom: 6px; }
-.f-profile-min-bio { font-size: 13px; color: #666666; line-height: 1.6; text-align: center; max-width: 80%; }
+.f-detail-time {
+    font-size: 11px;
+    color: var(--f-text-sec);
+}
+.f-detail-content {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--f-text-pri);
+}
+.f-detail-content h1, .f-detail-content h2, .f-detail-content h3 {
+    font-size: 17px;
+    font-weight: 800;
+    margin: 24px 0 12px;
+    color: var(--f-text-pri);
+}
+.f-detail-content p {
+    margin-bottom: 16px;
+}
 
-/* 详情页重构 */
-.f-post-detail { background: #FFFFFF; min-height: 100%; padding-bottom: 120px; }
-.f-min-detail-header { padding: 24px 20px; border-bottom: 8px solid #F7F7F7; }
-.f-min-detail-content { padding: 24px 20px; font-size: 16px; line-height: 1.8; color: #333333; }
-
-.f-section-title {
-    font-size: 15px; font-weight: 700; color: #111111;
-    border-bottom: 1px solid #F0F0F0; padding: 20px; margin-top: 10px;
-}
-
-/* 评论项重构 */
-.f-comment-list { padding: 0; }
-.f-min-comment-item {
-    padding: 16px 20px; border-bottom: 1px solid #F0F0F0; display: flex; gap: 12px;
-}
-.f-min-comment-item:last-child { border-bottom: none; }
-.f-comment-author-avatar {
-    width: 32px; height: 32px; border-radius: 50%; background: #F5F5F5; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center; color: #999999; font-size: 14px; font-weight: 700;
-}
-.f-comment-author-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-.f-comment-info { flex: 1; }
-.f-comment-meta { display: flex; align-items: center; justify-content: space-between; }
-.f-comment-name { font-size: 14px; font-weight: 600; color: #111111; }
-.f-comment-time { font-size: 11px; color: #999999; }
-.f-comment-text { font-size: 15px; color: #333333; line-height: 1.6; margin-top: 6px; }
-
-/* 评论输入框重构 */
-.f-comment-input-bar {
-    position: fixed; bottom: 0; left: 0; width: 100%; background: #FFFFFF;
-    border-top: 1px solid #F0F0F0; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-    display: flex; align-items: center; gap: 12px; z-index: 100;
-}
-.f-comment-input-wrap { flex: 1; background: #F5F5F5; border-radius: 20px; padding: 0 16px; }
-.f-comment-input-wrap input {
-    width: 100%; border: none; background: transparent; outline: none;
-    padding: 10px 0; font-size: 14px; color: #111111;
-}
-.f-comment-input-wrap input::placeholder { color: #999999; }
-.f-comment-send-btn {
-    background: #111111; color: #FFFFFF; padding: 8px 16px; border-radius: 20px;
-    font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s ease;
-}
-.f-comment-send-btn:active { opacity: 0.8; transform: scale(0.96); }
-
-/* 发帖页重构 */
-.f-create-container { padding: 0 20px; display: flex; flex-direction: column; gap: 16px; }
-.f-select-line {
-    border: none; background: #F5F5F5; border-radius: 8px;
-    padding: 12px 16px; width: 100%; font-size: 15px; color: #111111; outline: none;
-    appearance: none; -webkit-appearance: none;
-}
-.f-title-input-line {
-    border: none; border-bottom: 1px solid #F0F0F0; background: transparent;
-    padding: 16px 0; width: 100%; font-size: 20px; font-weight: 700; color: #111111; outline: none;
-}
-.f-title-input-line::placeholder { color: #CCCCCC; font-weight: 600; }
-.f-content-textarea {
-    border: none; background: transparent; padding: 16px 0; width: 100%;
-    font-size: 16px; line-height: 1.8; color: #333333; outline: none;
-    resize: none; min-height: 300px;
-}
-.f-content-textarea::placeholder { color: #CCCCCC; }
-
-/* 管理页重构 */
-.f-mgmt-list { padding: 0; }
-.f-mgmt-item {
-    padding: 20px; border-bottom: 8px solid #F7F7F7; display: flex;
-    justify-content: space-between; align-items: flex-start;
-}
-.f-mgmt-item:last-child { border-bottom: none; }
-.f-mgmt-info { flex: 1; padding-left: 8px; }
-.f-mgmt-name { font-size: 16px; font-weight: 700; color: #111111; }
-.f-mgmt-desc { font-size: 13px; color: #666666; margin-top: 6px; line-height: 1.5; }
-.f-mgmt-meta { font-size: 12px; color: #007aff; margin-top: 10px; display: flex; align-items: center; gap: 8px; font-weight: 500; }
-.f-mgmt-actions { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; margin-left: 16px; }
-.f-mgmt-btn { font-size: 13px; font-weight: 600; cursor: pointer; padding: 6px 12px; border-radius: 6px; background: #F5F5F5; color: #333; }
-.f-mgmt-btn.delete { color: #ff3b30; background: #FFF0F0; }
-
-.f-mgmt-instruction {
-    background: #F7F7F7; padding: 20px; margin: 20px; border-radius: 12px;
-}
-.f-mgmt-instruction-header {
-    font-size: 14px; font-weight: 700; color: #111111; margin-bottom: 8px; display: block;
-}
-.f-mgmt-instruction-text { font-size: 13px; color: #666666; line-height: 1.6; }
-
-/* 底部导航重构 */
 #view-forum_main .modern-tab-bar {
-    background: #FFFFFF;
-    border-top: 1px solid #E8E8E8;
+    background-color: var(--f-header-bg) !important;
+    border-top: 1px solid var(--f-border);
     box-shadow: none;
     border-radius: 0;
     width: 100%;
@@ -5922,27 +6817,138 @@ body, html {
     bottom: 0;
     height: 56px;
     padding: 0;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 #view-forum_main .tab-item {
     border-radius: 0;
-    color: #B0B0B0;
+    color: var(--f-tab-inactive);
     background: transparent !important;
     box-shadow: none !important;
     height: 100%;
     position: relative;
 }
-#view-forum_main .tab-item.active { color: #0A0A0A; }
+#view-forum_main .tab-item.active { color: var(--f-tab-active); }
 #view-forum_main .tab-item.active::after {
     content: '';
     position: absolute;
     bottom: 0;
     width: 20px;
     height: 2px;
-    background: #0A0A0A;
+    background-color: var(--f-tab-active);
 }
 #view-forum_main .tab-item iconify-icon { font-size: 20px; }
 
-/* 隐藏原有 FAB */
+.f-board-item {
+    background-color: var(--f-card-bg);
+    padding: 20px;
+    border-radius: 12px;
+    margin: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--f-border);
+}
+.f-board-name { font-size: 16px; font-weight: 800; color: var(--f-text-pri); margin-bottom: 6px; }
+.f-board-desc { font-size: 13px; color: var(--f-text-sec); line-height: 1.5; }
+.f-board-meta { font-size: 11px; color: var(--f-text-sec); margin-top: 8px; }
+
+.f-btn-outline {
+    background-color: var(--f-input-bg);
+    color: var(--f-text-pri);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+}
+.f-btn-solid {
+    background-color: var(--f-btn-bg);
+    color: var(--f-btn-text);
+    border-radius: 12px;
+    width: calc(100% - 32px);
+    margin: 16px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+}
+
+.f-profile-min {
+    padding: 32px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--f-card-bg);
+    border-bottom: 1px solid var(--f-border);
+}
+.f-profile-min-avatar {
+    width: 80px; height: 80px; border-radius: 50%; background-color: var(--f-border); 
+    margin-bottom: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+    color: var(--f-text-pri); font-size: 32px; font-weight: 800;
+}
+.f-profile-min-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.f-profile-min-name { font-size: 20px; font-weight: 800; color: var(--f-text-pri); margin-bottom: 6px; }
+.f-profile-min-bio { font-size: 13px; color: var(--f-text-sec); line-height: 1.6; text-align: center; max-width: 80%; }
+
+.f-comment-input-bar {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    border-top: 1px solid var(--f-border); padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    display: flex; align-items: center; gap: 12px; z-index: 100;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+.f-comment-input-wrap { flex: 1; border-radius: 20px; padding: 0 16px; }
+.f-comment-input-wrap input {
+    width: 100%; border: none; background: transparent; outline: none;
+    padding: 10px 0; font-size: 14px;
+}
+.f-comment-send-btn {
+    padding: 8px 16px; border-radius: 20px;
+    font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: all 0.15s ease;
+}
+.f-comment-send-btn:active { opacity: 0.8; transform: scale(0.96); }
+
+.f-create-container { padding: 0 20px; display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+.f-select-line {
+    border: none; background-color: var(--f-input-bg); border-radius: 8px;
+    padding: 12px 16px; width: 100%; font-size: 15px; color: var(--f-text-pri); outline: none;
+    appearance: none; -webkit-appearance: none;
+}
+.f-title-input-line {
+    border: none; border-bottom: 1px solid var(--f-border); background: transparent;
+    padding: 16px 0; width: 100%; font-size: 20px; font-weight: 800; color: var(--f-text-pri); outline: none;
+}
+.f-title-input-line::placeholder { color: var(--f-text-sec); opacity: 0.5; }
+.f-content-textarea {
+    border: none; background: transparent; padding: 16px 0; width: 100%;
+    font-size: 16px; line-height: 1.8; color: var(--f-text-pri); outline: none;
+    resize: none; min-height: 300px;
+}
+.f-content-textarea::placeholder { color: var(--f-text-sec); opacity: 0.5; }
+
+.f-mgmt-list { padding: 0; }
+.f-mgmt-item {
+    padding: 20px; border-bottom: 8px solid var(--f-bg); display: flex;
+    justify-content: space-between; align-items: flex-start;
+    background-color: var(--f-card-bg);
+}
+.f-mgmt-info { flex: 1; padding-left: 8px; }
+.f-mgmt-name { font-size: 16px; font-weight: 800; color: var(--f-text-pri); }
+.f-mgmt-desc { font-size: 13px; color: var(--f-text-sec); margin-top: 6px; line-height: 1.5; }
+.f-mgmt-meta { font-size: 12px; color: #007aff; margin-top: 10px; display: flex; align-items: center; gap: 8px; font-weight: 700; }
+.f-mgmt-actions { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; margin-left: 16px; }
+.f-mgmt-btn { font-size: 13px; font-weight: 700; cursor: pointer; padding: 6px 12px; border-radius: 6px; background-color: var(--f-input-bg); color: var(--f-text-pri); }
+.f-mgmt-btn.delete { color: #ff3b30; background-color: #FFF0F0; }
+
+.f-mgmt-instruction {
+    background-color: var(--f-input-bg); padding: 20px; margin: 20px; border-radius: 12px;
+}
+.f-mgmt-instruction-header {
+    font-size: 14px; font-weight: 800; color: var(--f-text-pri); margin-bottom: 8px; display: block;
+}
+.f-mgmt-instruction-text { font-size: 13px; color: var(--f-text-sec); line-height: 1.6; }
+
 .f-fab { display: none !important; }
 
 /* 29CM 风格商城样式重构 */
@@ -6119,49 +7125,49 @@ body, html {
     opacity: 0.8;
 }
 
-/* 1:1复刻小红书卡片风格日记本样式 */
+/* 全屏简约风格日记本样式 */
 .diary-detail-page {
-    background-color: #D6D6D6 !important; /* 卡片外侧的灰色背景 */
+    background-color: #FFFFFF !important; /* 卡片外侧的灰色背景改为纯白 */
     padding: 0 !important;
     display: flex;
     flex-direction: column;
-    align-items: center;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
 }
 
 .diary-card-container {
     width: 100%;
-    max-width: 375px;
-    padding: 40px 16px 120px 16px;
+    padding: 0 0 120px 0; /* 去除外侧的间距 */
     display: flex;
     flex-direction: column;
-    min-height: min-content;
+    min-height: 100%;
 }
 
 .diary-pic-card {
     background: #FFFFFF;
-    border-radius: 28px;
-    border: 1.5px solid #E5E5E5;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.06);
-    overflow: hidden;
+    border-radius: 0; /* 铺满全屏，去除圆角 */
+    border: none; /* 去除边框 */
+    box-shadow: none; /* 去除浮动阴影 */
     display: flex;
     flex-direction: column;
 }
 
 .diary-pic-card-header {
-    height: 56px;
+    height: calc(56px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
     background: #F5F5F5;
     border-bottom: 1px solid #EBEBEB;
     display: flex;
     align-items: center;
     position: relative;
-    padding: 0 20px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .diary-pic-card-back {
     position: absolute;
     left: 20px;
+    bottom: 16px;
     font-size: 24px;
     color: #8E8E93;
     cursor: pointer;
@@ -6470,7 +7476,7 @@ body, html {
         </div>
 
         <!-- 桌面视图 - 重构为低饱和白色简约风 -->
-        <div id="view-desktop" class="view-container desktop-view" style="display: none; background-color: #FFFFFF; overflow: hidden;">
+        <div id="view-desktop" class="view-container desktop-view" style="display: none; background-color: #F8F9FA; overflow: hidden;">
             <!-- 极简手机状态栏 (已隐藏内容留出安全区) -->
             <div class="desktop-status-bar">
                 <div class="status-bar-left"></div>
@@ -6480,143 +7486,277 @@ body, html {
             <!-- 分页滑动区 -->
             <div class="desktop-slider" id="desktop-slider" onscroll="updateDesktopPagination()">
                 <!-- 第一页 -->
-                <div class="desktop-page" style="padding: calc(env(safe-area-inset-top) + 60px) 20px calc(env(safe-area-inset-bottom) + 100px) 20px;">
-                    <!-- 搜索栏组件 -->
-                    <div class="cream-search-bar" style="cursor: default;">
-                        <input type="text" placeholder="Search for something..." readonly style="pointer-events: none;" />
-                        <iconify-icon icon="solar:magnifer-linear"></iconify-icon>
+                <div class="desktop-page" style="padding: calc(env(safe-area-inset-top) + 40px) 20px calc(env(safe-area-inset-bottom) + 80px) 20px;">
+                    
+                    <!-- 顶部状态胶囊 -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <div style="width: 32px; height: 32px; background: #FFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                            <iconify-icon icon="ph:arrow-left-bold" style="color: #666; font-size: 14px;"></iconify-icon>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <div style="width: 32px; height: 32px; background: #FFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                                <iconify-icon icon="ph:house-fill" style="color: #666; font-size: 14px;"></iconify-icon>
+                            </div>
+                            <div style="padding: 0 16px; height: 32px; background: #FFF; border-radius: 16px; display: flex; align-items: center; font-size: 11px; font-weight: 700; color: #666; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                                #记录你有关的萌点
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- 顶部个人信息卡片区域 -->
-                    <div class="cream-profile-card" style="margin-top: 20px;">
-                        <div class="deco-bg">
-                            <span style="top:10%; left:10%;">+</span>
-                            <span style="top:20%; right:15%;">·</span>
-                            <span style="top:80%; left:20%;">◇</span>
-                            <span style="top:70%; right:10%;">+</span>
+                    <!-- DorisWorld Widget -->
+                    <div class="korean-music-widget">
+                        <div class="music-card-top" onclick="editDorisMusicWidgetText()">
+                            <div class="music-card-img img-container" onclick="event.stopPropagation(); triggerWidgetImageUpload('musicWidgetImg')">
+                                <img id="widget-music-img" src="https://i.postimg.cc/Zqp4FZsP/IMG-20260423-204152.png" />
+                            </div>
+                            <div class="music-card-info">
+                                <div class="music-title" id="widget-music-title">DorisWorld</div>
+                                <div class="music-sub" id="widget-music-sub">Doris</div>
+                                <div class="music-provider"><iconify-icon icon="ph:apple-logo-fill" style="font-size: 10px;"></iconify-icon> Music</div>
+                            </div>
+                            <div class="music-card-close" onclick="event.stopPropagation();">
+                                <iconify-icon icon="ph:x-circle-fill"></iconify-icon>
+                            </div>
                         </div>
-                        <div class="profile-avatar-wrap" onclick="document.getElementById('momentsAvatarInput').click()">
-                            <img id="desktop-profile-avatar" src="" style="display:none;" />
-                            <div id="desktop-profile-avatar-fallback" class="text-avatar">我</div>
+                        <div class="music-card-bottom" onclick="editDorisMusicWidgetBottomText()">
+                            <div class="bottom-arrow-btn">
+                                <iconify-icon icon="ph:caret-right-bold"></iconify-icon>
+                            </div>
+                            <div class="bottom-input-mock" id="widget-music-bottom-text">索菲亞公主的午後芭蕾茶話會</div>
+                            <div class="bottom-send-btn">
+                                <iconify-icon icon="ph:arrow-up-bold"></iconify-icon>
+                            </div>
                         </div>
-                        <div class="profile-name">
-                            <span class="deco">†</span> <span id="desktop-profile-name">Space Traveler</span> <span class="deco">✦</span>
-                        </div>
-                        <div class="profile-location">
-                            <iconify-icon icon="solar:map-point-linear"></iconify-icon> Moon City, Lunar
-                        </div>
-                    <div class="profile-bio" id="desktop-profile-bio" onclick="editDesktopWidget('profileBio', '个性签名')">
-                        ♡ 收集宇宙里所有的温柔与星光
-                    </div>
-                    <div class="profile-tags" id="desktop-profile-tags" onclick="editDesktopWidget('profileTags', '标签 (用空格分隔)')">
-                        <span>✦ INFP</span>
-                        <span>✦ 摄影</span>
-                        <span>✦ 极简主义</span>
-                    </div>
                     </div>
 
-                    <!-- 留出展示壁纸的空间 -->
-                    <div style="flex: 1; min-height: 40px;"></div>
+                    <!-- 3Pics Carousel Widget -->
+                    <div class="korean-carousel-widget">
+                        <div class="carousel-drag-handle"></div>
+                        <div class="carousel-pics-row">
+                            <div class="carousel-pic-item" onclick="triggerWidgetImageUpload('carouselImg1')">
+                                <img id="widget-carousel-img1" src="https://i.postimg.cc/mD8zHh0S/image.png" onerror="this.src='https://placehold.co/100x100?text=love'" />
+                            </div>
+                            <div class="carousel-pic-item" onclick="triggerWidgetImageUpload('carouselImg2')">
+                                <img id="widget-carousel-img2" src="https://i.postimg.cc/FHBVNDcM/image.png" onerror="this.src='https://placehold.co/100x100?text=Cherish'" />
+                            </div>
+                            <div class="carousel-pic-item" onclick="triggerWidgetImageUpload('carouselImg3')">
+                                <img id="widget-carousel-img3" src="https://i.postimg.cc/jSTfDsyk/image.png" onerror="this.src='https://placehold.co/100x100?text=Sound'" />
+                            </div>
+                        </div>
+                        <div class="carousel-footer" onclick="editCarouselFooterText()">
+                            <div class="footer-pill">
+                                <iconify-icon icon="ph:square-multiple-fill" style="font-size: 10px;"></iconify-icon>
+                                <span id="widget-carousel-tag1">3Pics</span>
+                            </div>
+                            <div class="footer-pill">
+                                <span id="widget-carousel-tag2">• ㅈ •</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <!-- 第一组应用图标网格 -->
-                    <div class="cream-apps-container" style="margin-bottom: 10px;">
+                    <div class="widget-group-label" style="margin-top: 14px;">Top Widgets⁺</div>
+
+                    <!-- App Grid: 待做, 日记, 待做, 待做, 待做, 关系网, 查手机, 聊天 -->
+                    <div class="cream-apps-container" style="margin-top: 6px;">
                         <div class="app-group">
-                            <div class="cream-app-item" onclick="handleAppClick('chat')">
-                                <div class="app-icon-circle"><iconify-icon icon="solar:chat-round-dots-linear"></iconify-icon></div>
-                                <div class="app-label">Chat</div>
+                            <div class="cream-app-item" onclick="showTodoToast('todo_weather')">
+                                <div class="app-icon-circle" style="position: relative;">
+                                    <iconify-icon icon="ph:cloud-sun"></iconify-icon>
+                                    <div class="todo-badge">待做</div>
+                                </div>
+                                <div class="app-label">待做</div>
+                            </div>
+                            <div class="cream-app-item" onclick="handleAppClick('diary')">
+                                <div class="app-icon-circle"><iconify-icon icon="ph:calendar-blank"></iconify-icon></div>
+                                <div class="app-label">日记</div>
+                            </div>
+                            <div class="cream-app-item" onclick="showTodoToast('todo_clock')">
+                                <div class="app-icon-circle" style="position: relative;">
+                                    <iconify-icon icon="ph:clock"></iconify-icon>
+                                    <div class="todo-badge">待做</div>
+                                </div>
+                                <div class="app-label">待做</div>
+                            </div>
+                            <div class="cream-app-item" onclick="showTodoToast('todo_calculator')">
+                                <div class="app-icon-circle" style="position: relative;">
+                                    <iconify-icon icon="ph:calculator"></iconify-icon>
+                                    <div class="todo-badge">待做</div>
+                                </div>
+                                <div class="app-label">待做</div>
+                            </div>
+                        </div>
+                        <div class="app-group" style="margin-top: 10px;">
+                            <div class="cream-app-item" onclick="showTodoToast('todo_camera')">
+                                <div class="app-icon-circle" style="position: relative;">
+                                    <iconify-icon icon="ph:camera"></iconify-icon>
+                                    <div class="todo-badge">待做</div>
+                                </div>
+                                <div class="app-label">待做</div>
+                            </div>
+                            <div class="cream-app-item" onclick="handleAppClick('network')">
+                                <div class="app-icon-circle"><iconify-icon icon="ph:image"></iconify-icon></div>
+                                <div class="app-label">关系网</div>
                             </div>
                             <div class="cream-app-item" onclick="handleAppClick('snoop')">
-                                <div class="app-icon-circle"><iconify-icon icon="solar:smartphone-update-linear"></iconify-icon></div>
-                                <div class="app-label">Snoop</div>
+                                <div class="app-icon-circle"><iconify-icon icon="ph:note-pencil"></iconify-icon></div>
+                                <div class="app-label">查手机</div>
                             </div>
-                            <div class="cream-app-item" onclick="handleAppClick('forum')">
-                                <div class="app-icon-circle"><iconify-icon icon="solar:chat-square-like-linear"></iconify-icon></div>
-                                <div class="app-label">Forum</div>
-                            </div>
-                            <div class="cream-app-item" onclick="handleAppClick('shop')">
-                                <div class="app-icon-circle"><iconify-icon icon="solar:cart-large-minimalistic-linear"></iconify-icon></div>
-                                <div class="app-label">Store</div>
+                            <div class="cream-app-item" onclick="handleAppClick('chat')">
+                                <div class="app-icon-circle"><iconify-icon icon="ph:users-three"></iconify-icon></div>
+                                <div class="app-label">聊天</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 第二页 -->
-                <div class="desktop-page" style="padding: calc(env(safe-area-inset-top) + 60px) 20px calc(env(safe-area-inset-bottom) + 100px) 20px;">
-                    <!-- 关系计时小组件 -->
-                    <div class="cream-pill-card" onclick="editAnniversary()">
-                        <div class="pill-left">
-                            <div class="pill-avatar" id="desktop-partner-avatar"></div>
-                            <div class="pill-text"><span id="desktop-anniversary-prefix">和</span> <span id="desktop-partner-name">TA</span> <span id="desktop-anniversary-suffix">在一起已经 ✦</span> <span style="font-weight: 600; color: #333;" id="desktop-anniversary-days">100 DAY</span></div>
-                        </div>
-                        <div class="pill-btn"></div>
+                <div class="desktop-page" style="padding: calc(env(safe-area-inset-top) + 40px) 20px calc(env(safe-area-inset-bottom) + 80px) 20px;">
+                    
+                    <!-- 顶部细长小胶囊提示 -->
+                    <div class="cream-top-text-bar" id="widget-top-text-bar" onclick="editDesktopWidget('topTextBar', '修改顶部气泡文字')">
+                        e • • • ur in doll x sugar free dream ... 🤍
                     </div>
 
-                    <!-- 内容卡片组件 (双列排布) -->
-                    <div class="cream-card-row" style="margin-top: 20px;">
-                        <!-- 左侧宽卡片 -->
-                        <div class="cream-card-left" onclick="handleAppClick('diary')">
-                            <div class="card-header">
-                                <div class="card-avatar" id="desktop-diary-avatar"></div>
-                                <div class="card-user">My Diary</div>
-                                <div class="card-action"><iconify-icon icon="ph:plus"></iconify-icon></div>
+                    <!-- 第一排：左侧 Instagram 拍立得 + 右侧 2x2 应用网格 (待做, 设置, 待做, 待做) -->
+                    <div class="widget-flex-row">
+                        <!-- Instagram 风格相框小组件 (可独立修改图片) -->
+                        <div class="instagram-widget" onclick="triggerWidgetImageUpload('insWidgetImg')">
+                            <div class="ins-header">
+                                <span>Instagram</span>
+                                <iconify-icon icon="ph:paper-plane-tilt-fill"></iconify-icon>
                             </div>
-                        <div class="card-tags">
-                            <iconify-icon icon="solar:heart-linear"></iconify-icon>
-                            <span class="tag-pill">Daily Notes</span>
+                            <div class="ins-img-box img-container">
+                                <img id="widget-ins-img" src="" style="display:none;" />
+                                <div id="widget-ins-fallback" style="font-size:24px; color:#B0B0B0; font-weight:bold;">UPLOAD</div>
+                            </div>
+                            <div class="ins-footer">
+                                <iconify-icon icon="ph:star-fill"></iconify-icon>
+                                <span class="ins-share-pill">Shared File</span>
+                                <iconify-icon icon="ph:trash-fill" style="opacity:0.3;"></iconify-icon>
+                            </div>
                         </div>
-                        <div class="card-input-fake" id="desktop-diary-prompt" onclick="event.stopPropagation(); editDesktopWidget('diaryPrompt', '日记提示语')">在这里写点什么...</div>
+
+                        <!-- 右侧 2x2 精致小图标底座 (待做, 设置, 待做, 待做) -->
+                        <div class="app-grid-2x2">
+                            <div class="cream-app-item" onclick="showTodoToast('todo_video')">
+                                <div class="app-icon-circle" style="position: relative;">
+                                    <iconify-icon icon="ph:video-camera"></iconify-icon>
+                                    <div class="todo-badge">待做</div>
+                                </div>
+                                <div class="app-label">待做</div>
+                            </div>
+                            <div class="cream-app-item" onclick="handleAppClick('settings')">
+                                <div class="app-icon-circle">
+                                    <iconify-icon icon="ph:gear"></iconify-icon>
+                                </div>
+                                <div class="app-label">设置</div>
+                            </div>
+                            <div class="cream-app-item" onclick="showTodoToast('todo_sparkles')">
+                                <div class="app-icon-circle" style="position: relative;">
+                                    <iconify-icon icon="ph:sparkles"></iconify-icon>
+                                    <div class="todo-badge">待做</div>
+                                </div>
+                                <div class="app-label">待做</div>
+                            </div>
+                            <div class="cream-app-item" onclick="showTodoToast('todo_film')">
+                                <div class="app-icon-circle" style="position: relative;">
+                                    <iconify-icon icon="ph:film-strip"></iconify-icon>
+                                    <div class="todo-badge">待做</div>
+                                </div>
+                                <div class="app-label">待做</div>
+                            </div>
+                        </div>
                     </div>
-                        <!-- 右侧窄卡片 -->
-                        <div class="cream-card-right" onclick="handleAppClick('network')">
-                            <div class="circle-avatar-large" id="desktop-network-avatar"></div>
-                            <div class="card-tags-center">
-                                <iconify-icon icon="solar:heart-linear"></iconify-icon>
-                                <span class="tag-pill">Network</span>
+
+                    <div class="widget-group-label" style="margin-bottom: 8px;">Top Widgets⁺</div>
+
+                    <!-- 第二排：注销用户对话气泡组件 (可编辑各处文本) -->
+                    <div class="korean-bubble-widget">
+                        <!-- 用户基本信息行 -->
+                        <div class="bubble-user-info-row" onclick="editBubbleUserInfo()">
+                            <div class="bubble-user-left">
+                                <div class="bubble-avatar-box" onclick="event.stopPropagation(); triggerWidgetImageUpload('bubbleUserAvatar')">
+                                    <img id="widget-bubble-avatar" src="" style="width:100%;height:100%;object-fit:cover;display:none;" />
+                                    <iconify-icon id="widget-bubble-avatar-fallback" icon="solar:user-rounded-bold" style="font-size: 20px; color: #DEE2E6;"></iconify-icon>
+                                </div>
+                                <div class="bubble-meta-text">
+                                    <span class="bubble-user-name" id="widget-bubble-user-name">爱上一个天使的缺点</span>
+                                    <span class="bubble-user-handle" id="widget-bubble-user-handle">@ Virovo_915</span>
+                                </div>
+                            </div>
+                            <div class="bubble-user-right">
+                                <span class="sys-date" style="font-size: 9px; font-weight: 700;">01月16日</span>
+                                <iconify-icon icon="ph:heart-fill" style="color: #A3A3A3; font-size: 11px;"></iconify-icon>
+                                <span>星期五</span>
+                            </div>
+                        </div>
+                        <!-- 大文本气泡 (绑定独立气泡文案，点击可编辑) -->
+                        <div class="korean-large-bubble" onclick="editDesktopWidget('bubbleText', '修改气泡文案')">
+                            <div class="korean-large-bubble-text" id="widget-bubble-text">
+                                你對我來說是宇宙，但我對你来说只是一颗星吗？
                             </div>
                         </div>
                     </div>
 
-                    <!-- 待办清单小组件 -->
-                    <div class="cream-todo-card" style="margin-top: 20px;" onclick="editTodoList()">
-                        <div class="todo-header">
-                            <span class="deco">+</span>
-                            <span class="title" id="desktop-todo-title">about me</span>
-                            <span class="deco">+</span>
-                            <iconify-icon icon="ph:dots-three" class="more"></iconify-icon>
-                        </div>
-                        <div class="todo-list" id="desktop-todo-list">
-                            <div class="todo-item">
-                                <div class="circle"></div>
-                                <div class="text">Drink more water</div>
-                            </div>
-                            <div class="todo-item">
-                                <div class="circle"></div>
-                                <div class="text">Read a book</div>
-                            </div>
-                            <div class="todo-item">
-                                <div class="circle"></div>
-                                <div class="text">Sleep early</div>
-                            </div>
-                            <div class="todo-item add-new">
-                                <div class="text">add new...</div>
-                            </div>
-                        </div>
-                        <iconify-icon icon="solar:star-linear" class="star-deco"></iconify-icon>
-                    </div>
+                    <div class="widget-group-label" style="margin-bottom: 8px;">Top Widgets⁺</div>
 
-                    <!-- 留出展示壁纸的空间 -->
-                    <div style="flex: 1; min-height: 40px;"></div>
-
-                    <!-- 第二组应用图标网格 -->
-                    <div class="cream-apps-container" style="margin-bottom: 10px;">
-                        <div class="app-group" style="justify-content: flex-start; gap: 32px; padding-left: 16px;">
+                    <!-- 第三排：左侧 App 网格 (待做, 论坛, 新手教程, 商城) + 右侧 Windows 拟物窗口待办列表 -->
+                    <div class="widget-flex-row">
+                        <!-- 左侧 App 组 (待做, 论坛, 新手教程, 商城) -->
+                        <div class="app-grid-2x2" style="flex:1;">
+                            <div class="cream-app-item" onclick="showTodoToast('todo_music')">
+                                <div class="app-icon-circle" style="position: relative;">
+                                    <iconify-icon icon="ph:music-notes"></iconify-icon>
+                                    <div class="todo-badge">待做</div>
+                                </div>
+                                <div class="app-label">待做</div>
+                            </div>
+                            <div class="cream-app-item" onclick="handleAppClick('forum')">
+                                <div class="app-icon-circle">
+                                    <iconify-icon icon="ph:television"></iconify-icon>
+                                </div>
+                                <div class="app-label">论坛</div>
+                            </div>
                             <div class="cream-app-item" onclick="handleAppClick('tutorial')">
-                                <div class="app-icon-circle"><iconify-icon icon="solar:document-text-linear"></iconify-icon></div>
-                                <div class="app-label">Guide</div>
+                                <div class="app-icon-circle">
+                                    <iconify-icon icon="ph:book-open"></iconify-icon>
+                                </div>
+                                <div class="app-label">新手教程</div>
+                            </div>
+                            <div class="cream-app-item" onclick="handleAppClick('shop')">
+                                <div class="app-icon-circle">
+                                    <iconify-icon icon="ph:disc"></iconify-icon>
+                                </div>
+                                <div class="app-label">商城</div>
+                            </div>
+                        </div>
+
+                        <!-- 右侧 Windows 98 记事本窗口待办清单 -->
+                        <div class="win98-todo-widget" onclick="editTodoList()">
+                            <div class="win98-title-bar">
+                                <div class="win98-title-left">
+                                    <iconify-icon icon="ph:file-text-fill"></iconify-icon>
+                                    <span id="desktop-todo-title">about me</span>
+                                </div>
+                                <div class="win98-title-right">
+                                    <div class="win98-btn-dot green"></div>
+                                    <div class="win98-btn-dot yellow"></div>
+                                    <div class="win98-btn-dot red"></div>
+                                </div>
+                            </div>
+                            <div class="win98-menu-bar">
+                                <span>文件</span>
+                                <span>查看</span>
+                                <span>工具</span>
+                                <span>帮助</span>
+                            </div>
+                            <div class="win98-content" id="desktop-todo-list">
+                                <!-- 由 JS 渲染待办事项 -->
                             </div>
                         </div>
                     </div>
+
+                    <div style="flex: 1; min-height: 24px;"></div>
                 </div>
             </div>
 
@@ -6624,19 +7764,6 @@ body, html {
             <div class="desktop-pagination">
                 <div class="dot active"></div>
                 <div class="dot"></div>
-            </div>
-
-            <!-- 底部导航栏 -->
-            <div class="cream-bottom-nav" style="border-top: 0.5px solid rgba(0,0,0,0.05);">
-                <div class="nav-item active" onclick="switchView('desktop')">
-                    <iconify-icon icon="solar:home-smile-linear"></iconify-icon>
-                </div>
-                <div class="nav-item" onclick="handleAppClick('diary')">
-                    <iconify-icon icon="solar:calendar-linear"></iconify-icon>
-                </div>
-                <div class="nav-item" onclick="handleAppClick('settings')">
-                    <iconify-icon icon="solar:settings-minimalistic-linear"></iconify-icon>
-                </div>
             </div>
         </div>
 
@@ -7122,6 +8249,53 @@ body, html {
             </div>
         </div>
 
+        <!-- 对话预设管理视图 -->
+        <div id="view-dialogue_presets" class="view-container settings-view" style="display: none; background-color: #FAFAFA !important;">
+            <div class="profile-container-card" style="min-height: 100%; display: flex; flex-direction: column;">
+                <div class="mac-window-header" style="justify-content: flex-start; gap: 8px;">
+                    <span class="mac-window-dot red" onclick="switchView('chat_main')" style="cursor: pointer;"></span>
+                    <span class="mac-window-dot yellow"></span>
+                    <span class="mac-window-dot green"></span>
+                    <div style="flex: 1; text-align: center; font-size: 14px; font-weight: 700; color: #111111; margin-right: 48px;">全局对话预设</div>
+                    <div style="cursor: pointer; display: flex; align-items: center;" onclick="addNewDialoguePreset()">
+                        <iconify-icon icon="ph:plus-bold" style="font-size: 20px; color: #111111;"></iconify-icon>
+                    </div>
+                </div>
+                <div class="modern-settings-content" style="background: #FFFFFF; padding: 20px 0 40px 0 !important; flex: 1; overflow-y: auto;">
+                    <div style="padding: 0 24px 4px; font-size: 13px; color: #8e8e93; font-weight: 500; text-align: center;">全局对话系统提示词预设（仅开启的条目会注入到API请求中）</div>
+                    <div style="padding: 0 24px 16px; font-size: 12px; color: #ff3b30; font-weight: 700; text-align: center; letter-spacing: 0.5px;">⚠️ 本页面由应用内置的提示词由作者制作，严禁二传抄袭二改，仅可自用自改</div>
+                    <div id="dialogue-presets-list" style="padding: 0 20px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 旁白模式设定视图 -->
+        <div id="view-chat_settings_narrator" class="view-container settings-view" style="display: none; background-color: #FAFAFA !important;">
+            <div class="profile-container-card">
+                <!-- macOS 风格窗口控制 -->
+                <div class="mac-window-header" style="justify-content: flex-start; gap: 8px;">
+                    <span class="mac-window-dot red" onclick="switchView('chat_settings')" style="cursor: pointer;"></span>
+                    <span class="mac-window-dot yellow"></span>
+                    <span class="mac-window-dot green"></span>
+                    <div style="flex: 1; text-align: center; font-size: 14px; font-weight: 700; color: #111111; margin-right: 48px;">旁白自定义规则</div>
+                </div>
+                
+                <!-- To B Sidebar 顶部 Brand 区域 -->
+                <div class="profile-brand-wrap" style="padding: 24px 0 16px 0;">
+                    <div class="brand-avatar-box" style="background-color: #111111; border-radius: 16px; width: 48px; height: 48px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" style="width: 24px; height: 24px; margin: auto; display: block;">
+                            <circle cx="12" cy="12" r="10"/>
+                            <circle cx="12" cy="12" r="3" fill="#FFFFFF"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="modern-settings-content" id="narrator-settings-content" style="background: #FFFFFF; padding: 0 0 120px 0 !important; flex: 1; overflow-y: auto;">
+                    <!-- 动态渲染 -->
+                </div>
+            </div>
+        </div>
+
                 <div id="view-chat_search" class="view-container settings-view" style="display: none;">
             <div class="settings-header" style="background: #f2f2f7; border: none;">
                 <div class="status-bar" style="position: relative;">
@@ -7454,54 +8628,88 @@ body, html {
         </div>
 
                 <!-- 论坛主视图 -->
-        <div id="view-forum_main" class="view-container settings-view" style="display: none; background: #FFFFFF;">
-            <div class="settings-header" style="background: #fff; border-bottom: none;">
-                <div class="status-bar" style="position: relative;"><div class="time sys-time"></div></div>
-                <div class="nav-bar" style="height: 56px;">
-                    <div class="back-btn" onclick="switchView('desktop')" style="background:transparent; color:#111111;"><iconify-icon icon="ph:arrow-left-light" style="font-size:24px;"></iconify-icon></div>
-                    <div class="nav-title" id="forum-main-title" style="font-size: 17px; font-weight: 700; color:#111111;">全息论坛</div>
-                    <div class="nav-right" style="display: flex; align-items: center; gap: 16px; width: auto;">
-                        <span id="forum-refresh-btn" onclick="fetchForumPosts()" style="font-size: 20px; cursor: pointer; color:#111111;"><iconify-icon icon="solar:refresh-linear"></iconify-icon></span>
-                        <span id="forum-header-post-btn" onclick="openForumCreatePost()" style="font-size: 15px; font-weight: 600; color:#111111; cursor: pointer;">+ 发帖</span>
+        <div id="view-forum_main" class="view-container settings-view forum-theme-root" style="display: none;">
+            <!-- 新版头部 -->
+            <div class="forum-header-modern">
+                <div class="forum-header-top">
+                    <div class="forum-icon-btn" onclick="switchView('desktop')">
+                        <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
                     </div>
+                    <div class="forum-search-box" style="flex: 1; margin: 0 12px;">
+                        <iconify-icon icon="ph:magnifying-glass-bold" style="color: var(--f-text-sec);"></iconify-icon>
+                        <input type="text" id="forum-search-input" placeholder="Search..." oninput="filterForumPosts(this.value)" />
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <div class="forum-icon-btn" id="forum-night-mode-btn" onclick="toggleForumNightMode()">
+                            <iconify-icon icon="ph:moon-bold"></iconify-icon>
+                        </div>
+                        <div class="forum-icon-btn" onclick="fetchForumPosts()">
+                            <iconify-icon icon="ph:arrows-clockwise-bold"></iconify-icon>
+                        </div>
+                    </div>
+                </div>
+                <!-- 横向分类 Tab 栏 -->
+                <div class="forum-category-scroll" id="forum-category-scroll">
+                    <!-- JS 渲染板块 -->
                 </div>
             </div>
             
-            <div class="forum-feed" id="forum-tab-feed" style="overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch;"></div>
-            
-            <div class="forum-feed" id="forum-tab-boards" style="display: none; overflow-y: auto; flex: 1; padding-top: 10px;"></div>
-            
-            <div class="forum-feed" id="forum-tab-me" style="display: none; overflow-y: auto; flex: 1;"></div>
+            <div class="forum-feed" id="forum-tab-feed"></div>
+            <div class="forum-feed" id="forum-tab-boards" style="display: none;"></div>
+            <div class="forum-feed" id="forum-tab-me" style="display: none;"></div>
 
             <div class="modern-tab-bar" style="bottom: 0;">
-                <div class="tab-item active" onclick="switchForumTab('feed')" data-ftab="feed"><iconify-icon icon="ph:house-line-light"></iconify-icon></div>
-                <div class="tab-item" onclick="switchForumTab('boards')" data-ftab="boards"><iconify-icon icon="ph:compass-tool-light"></iconify-icon></div>
-                <div class="tab-item" onclick="switchForumTab('me')" data-ftab="me"><iconify-icon icon="ph:user-circle-light"></iconify-icon></div>
+                <div class="tab-item active" onclick="switchForumTab('feed')" data-ftab="feed">
+                    <iconify-icon icon="ph:house-line-bold"></iconify-icon>
+                </div>
+                <div class="tab-item" onclick="switchForumTab('boards')" data-ftab="boards">
+                    <iconify-icon icon="ph:compass-tool-bold"></iconify-icon>
+                </div>
+                <div class="tab-item" onclick="switchForumTab('me')" data-ftab="me">
+                    <iconify-icon icon="ph:user-circle-bold"></iconify-icon>
+                </div>
             </div>
-            
-            <div class="f-fab" onclick="openForumCreatePost()" id="forum-fab"><iconify-icon icon="ph:plus-bold"></iconify-icon></div>
         </div>
 
         <!-- 论坛帖子详情页重构 -->
-        <div id="view-forum_post" class="view-container settings-view" style="display: none; z-index: 6; background: #FFF;">
-            <div class="settings-header" style="background: #fff; border-bottom: none;">
-                <div class="nav-bar">
-                    <div class="back-btn" onclick="switchView('forum_main')" style="background:transparent; color:#111111;"><iconify-icon icon="ph:arrow-left-light" style="font-size:24px;"></iconify-icon></div>
-                    <div class="nav-title" style="font-weight: 700;">帖子详情</div>
-                    <div class="nav-right"></div>
+        <div id="view-forum_post" class="view-container settings-view forum-theme-root" style="display: none; z-index: 6;">
+            <div class="f-detail-header-row">
+                <div class="forum-icon-btn" onclick="switchView(state.forumLastView || 'forum_main')">
+                    <iconify-icon icon="ph:caret-left-bold"></iconify-icon>
+                </div>
+                <div style="font-size: 16px; font-weight: 800; color: var(--f-text-pri);">Detail</div>
+                <div style="display: flex; gap: 8px;">
+                    <div class="forum-icon-btn" onclick="shareForumPost()">
+                        <iconify-icon icon="ph:share-network-bold"></iconify-icon>
+                    </div>
+                    <div class="forum-icon-btn" id="forum-post-favorite-btn" onclick="toggleFavoriteForumPost()">
+                        <iconify-icon icon="ph:bookmark-simple-bold"></iconify-icon>
+                    </div>
                 </div>
             </div>
             <div class="f-post-detail" style="overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch;">
-                <div id="forum-post-content"></div>
-                <div class="f-section-title">全部评论</div>
+                <div id="forum-post-content" class="f-detail-body"></div>
+                <div class="f-section-title" style="border-bottom: 1px solid var(--f-border); padding: 20px; font-weight: 800; color: var(--f-text-pri);">Comments</div>
                 <div class="f-comment-list" id="forum-comment-list"></div>
             </div>
-            <div class="f-comment-input-bar">
-                <div class="f-comment-input-wrap">
-                    <input type="text" id="forum-comment-input" placeholder="说点什么..." onkeyup="if(event.key==='Enter') sendForumComment()" />
+            <div class="f-comment-input-bar" style="background-color: var(--f-header-bg); border-top: 1px solid var(--f-border); color: var(--f-text-pri);">
+                <div class="f-comment-input-wrap" style="background-color: var(--f-input-bg);">
+                    <input type="text" id="forum-comment-input" placeholder="Say something..." onkeyup="if(event.key==='Enter') sendForumComment()" style="color: var(--f-text-pri);" />
                 </div>
-                <button class="f-comment-send-btn" onclick="sendForumComment()">发送</button>
+                <button class="f-comment-send-btn" onclick="sendForumComment()" style="background-color: var(--f-btn-bg); color: var(--f-btn-text);">Send</button>
             </div>
+        </div>
+
+        <!-- 论坛收藏夹视图 -->
+        <div id="view-forum_favorites" class="view-container settings-view forum-theme-root" style="display: none; z-index: 7; background: #FFF;">
+            <div class="f-detail-header-row">
+                <div class="forum-icon-btn" onclick="switchView('forum_main')">
+                    <iconify-icon icon="ph:caret-left-bold"></iconify-icon>
+                </div>
+                <div style="font-size: 16px; font-weight: 800; color: var(--f-text-pri);">帖子收藏夹</div>
+                <div class="forum-icon-btn" style="visibility: hidden;"></div>
+            </div>
+            <div class="forum-feed" id="forum-favorites-content" style="overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch;"></div>
         </div>
 
         <!-- 论坛个人主页 -->
@@ -7522,7 +8730,7 @@ body, html {
         </div>
 
         <!-- 论坛发帖页重构 -->
-        <div id="view-forum_create_post" class="view-container settings-view" style="display: none; z-index: 8; background: #FFF;">
+        <div id="view-forum_create_post" class="view-container settings-view forum-theme-root" style="display: none; z-index: 8; background: #FFF;">
             <div class="settings-header" style="background: #FFF; border-bottom: none;">
                 <div class="nav-bar">
                     <div class="back-btn" style="font-size: 15px; width: auto; color: #666666; font-weight: 500;" onclick="switchView(editingForumPostId ? 'forum_post' : 'forum_main')">取消</div>
@@ -7540,7 +8748,7 @@ body, html {
         </div>
 
         <!-- 论坛设置页重构 -->
-        <div id="view-forum_settings" class="view-container settings-view" style="display: none; z-index: 7; background: #FFF;">
+        <div id="view-forum_settings" class="view-container settings-view forum-theme-root" style="display: none; z-index: 7; background: #FFF;">
             <div class="settings-header" style="background: #FFF; border-bottom: none;">
                 <div class="nav-bar">
                     <div class="back-btn" onclick="switchView('forum_main')" style="background:transparent; color:#111111;"><iconify-icon icon="ph:arrow-left-light" style="font-size:24px;"></iconify-icon></div>
@@ -7738,6 +8946,8 @@ body, html {
 
                 <!-- 隐藏的全局文件上传器 (通用) -->
                 <input type="file" id="globalImageUpload" accept="image/png, image/jpeg, image/jpg, image/gif, image/*" style="position:absolute; width:0; height:0; opacity:0; z-index:-1;">
+                <!-- 隐藏的小组件文件上传器 -->
+                <input type="file" id="widgetImageUpload" accept="image/png, image/jpeg, image/jpg, image/gif, image/*" style="position:absolute; width:0; height:0; opacity:0; z-index:-1;" onchange="handleWidgetImageUpload(event)">
     </div>
     
 <script>
@@ -7948,17 +9158,17 @@ const StorageManager = {
 
 // ==================== 2. Global State ====================
 const desktopApps = [
-    { id: 'network', name: '关系网', icon: 'solar:network-bold-duotone', action: 'network' },
-    { id: 'forum', name: '全息论坛', icon: 'solar:chat-square-like-bold-duotone', action: 'forum' },
-    { id: 'shop', name: '商城', icon: 'solar:cart-large-minimalistic-bold-duotone', action: 'shop' },
-    { id: 'tutorial', name: '新手教程', icon: 'solar:document-text-bold-duotone', action: 'tutorial' }
+    { id: 'network', name: '关系网', icon: 'ph:image', action: 'network' },
+    { id: 'forum', name: '论坛', icon: 'ph:television', action: 'forum' },
+    { id: 'shop', name: '商城', icon: 'ph:disc', action: 'shop' },
+    { id: 'tutorial', name: '新手教程', icon: 'ph:book-open', action: 'tutorial' }
 ];
 
 const defaultApps = [
-    { id: 'chat', name: '聊天', icon: 'solar:chat-round-dots-bold-duotone', action: 'chat' },
-    { id: 'diary', name: '日记', icon: 'solar:book-bookmark-bold-duotone', action: 'diary' },
-    { id: 'snoop', name: '查手机', icon: 'solar:smartphone-update-bold-duotone', action: 'snoop' },
-    { id: 'settings', name: '设置', icon: 'solar:settings-minimalistic-bold-duotone', action: 'settings' }
+    { id: 'chat', name: '聊天', icon: 'ph:users-three', action: 'chat' },
+    { id: 'diary', name: '日记', icon: 'ph:calendar-blank', action: 'diary' },
+    { id: 'snoop', name: '查手机', icon: 'ph:note-pencil', action: 'snoop' },
+    { id: 'settings', name: '设置', icon: 'ph:gear', action: 'settings' }
 ];
 
 const state = {
@@ -7969,6 +9179,7 @@ const state = {
         contacts: [],
     chatGroups: [],
         myPersonas: [],
+        dialoguePresets: [], // 全局高权重提示词预设
         emotePresets: [], // old legacy
     emotePackages: [],
     worldbooks: [],
@@ -8194,6 +9405,10 @@ async function fetchFreeTranslation(text, targetLang) {
     return text;
 }
 
+function showTodoToast(appId) {
+    showToast('该功能正在开发中 (待做)', 'error');
+}
+
 function escapeHtml(unsafe) {
     if(!unsafe && unsafe !== 0) return '';
     const div = document.createElement('div');
@@ -8282,6 +9497,7 @@ async function loadSettings() {
         if (data.emotePackages) state.emotePackages = data.emotePackages;
         if (data.aiRecognizeEmote !== undefined) state.aiRecognizeEmote = data.aiRecognizeEmote;
                                 if (data.myActiveEmotePackageId !== undefined) state.myActiveEmotePackageId = data.myActiveEmotePackageId;
+        if (data.dialoguePresets) state.dialoguePresets = data.dialoguePresets;
         if (data.apiPresets) state.apiPresets = data.apiPresets;
         if (data.groups) state.groups = data.groups;
         if (data.groupExpanded) state.groupExpanded = data.groupExpanded;
@@ -8300,6 +9516,11 @@ async function loadSettings() {
         }
                 if (data.shopConfig) state.shopConfig = data.shopConfig;
         if (data.inventory) state.inventory = data.inventory;
+        if (data.forumConfig && data.forumConfig.favorites) {
+            state.forumConfig.favorites = data.forumConfig.favorites;
+        } else {
+            if (state.forumConfig && !state.forumConfig.favorites) state.forumConfig.favorites = [];
+        }
     }
 }
 
@@ -8311,6 +9532,7 @@ async function saveDataSilently() {
                 contacts: state.contacts,
         chatGroups: state.chatGroups,
         myPersonas: state.myPersonas,
+        dialoguePresets: state.dialoguePresets,
         emotePackages: state.emotePackages,
         aiRecognizeEmote: state.aiRecognizeEmote,
         myActiveEmotePackageId: state.myActiveEmotePackageId,
@@ -8372,6 +9594,11 @@ function ensureContactConfig(contact) {
     if (contact.lastDiaryTime === undefined) contact.lastDiaryTime = 0;
         if (contact.gameRecords === undefined) contact.gameRecords = [];
     if (contact.currentStatus === undefined) contact.currentStatus = { mood: '(O_O)', clothing: '日常便服', thoughts: '平静', action: '正在看手机' };
+    
+    // 后台主动消息系统配置
+    if (contact.bgMsgEnabled === undefined) contact.bgMsgEnabled = false;
+    if (contact.bgMsgTimeRange === undefined) contact.bgMsgTimeRange = 'daytime'; // daytime (8-22), night (22-4), all (全天)
+    if (contact.bgMsgFrequency === undefined) contact.bgMsgFrequency = 'medium'; // high (15-30m), medium (1-3h), low (6-12h)
 }
 
 function updateTime() {
@@ -8444,6 +9671,7 @@ async function switchView(viewName) {
     if (viewName === 'create_group_chat') renderCreateGroupChat();
     if (viewName === 'group_chat_settings') renderGroupChatSettings();
     if (viewName === 'chat_settings_persona') renderPersonas();
+    if (viewName === 'dialogue_presets') renderDialoguePresets();
     if (viewName === 'chat_settings_moment_memory') renderChatSettingsMomentMemory();
     if (viewName === 'chat_settings_narrator') renderNarratorSettings();
     if (viewName === 'chat_search') { document.getElementById('search-query-input').value = state.searchQuery; renderSearchResults(); }
@@ -8469,6 +9697,7 @@ async function switchView(viewName) {
     if (viewName === 'forum_post') renderForumPostDetail();
     if (viewName === 'forum_profile') renderForumProfile();
     if (viewName === 'forum_settings') renderForumSettings();
+    if (viewName === 'forum_favorites') showForumFavorites();
     if (viewName === 'shop_main') renderShopMain();
     if (viewName === 'my_inventory') renderMyInventory();
     if (viewName === 'tutorial') { /* static content */ }
@@ -8747,6 +9976,76 @@ async function editAnniversary() {
     `;
 }
 
+// 用于控制当前要修改哪张小组件图片的变量
+let currentWidgetImageKey = null;
+
+function triggerWidgetImageUpload(key) {
+    currentWidgetImageKey = key;
+    const uploadInput = document.getElementById('widgetImageUpload');
+    if (uploadInput) {
+        uploadInput.value = '';
+        uploadInput.click();
+    }
+}
+
+function handleWidgetImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file || !currentWidgetImageKey) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        state.uiConfig[currentWidgetImageKey] = ev.target.result;
+        saveDataSilently();
+        renderDesktop();
+    };
+    reader.readAsDataURL(file);
+}
+
+async function editDorisMusicWidgetText() {
+    const currentTitle = state.uiConfig.musicWidgetTitle || 'DorisWorld';
+    const currentSub = state.uiConfig.musicWidgetSub || 'Doris';
+    const res = await showDoublePromptDialog('修改音乐标题/歌手', currentTitle, currentSub, '标题', '歌手');
+    if (res) {
+        state.uiConfig.musicWidgetTitle = res.val1.trim() || 'DorisWorld';
+        state.uiConfig.musicWidgetSub = res.val2.trim() || 'Doris';
+        saveDataSilently();
+        renderDesktop();
+    }
+}
+
+async function editDorisMusicWidgetBottomText() {
+    const currentText = state.uiConfig.musicWidgetBottomText || '索菲亞公主的午後芭蕾茶話會';
+    const res = await showPromptDialog('修改音乐播放语录', currentText, '输入文案');
+    if (res !== null) {
+        state.uiConfig.musicWidgetBottomText = res.trim() || '索菲亞公主的午後芭蕾茶話會';
+        saveDataSilently();
+        renderDesktop();
+    }
+}
+
+async function editCarouselFooterText() {
+    const currentTag1 = state.uiConfig.carouselTag1 || '3Pics';
+    const currentTag2 = state.uiConfig.carouselTag2 || '• ㅈ •';
+    const res = await showDoublePromptDialog('修改轮播脚标标签', currentTag1, currentTag2, '标签一', '标签二');
+    if (res) {
+        state.uiConfig.carouselTag1 = res.val1.trim() || '3Pics';
+        state.uiConfig.carouselTag2 = res.val2.trim() || '• ㅈ •';
+        saveDataSilently();
+        renderDesktop();
+    }
+}
+
+async function editBubbleUserInfo() {
+    const currentName = state.uiConfig.bubbleUserName || '爱上一个天使的缺点';
+    const currentHandle = state.uiConfig.bubbleUserHandle || '@ Virovo_915';
+    const res = await showDoublePromptDialog('修改气泡发帖人信息', currentName, currentHandle, '昵称', '用户名 (@...)');
+    if (res) {
+        state.uiConfig.bubbleUserName = res.val1.trim() || '爱上一个天使的缺点';
+        state.uiConfig.bubbleUserHandle = res.val2.trim() || '@ Virovo_915';
+        saveDataSilently();
+        renderDesktop();
+    }
+}
+
 function renderDesktop() {
     const view = $('#view-desktop');
     view.style.backgroundColor = state.uiConfig.wallpaper ? 'transparent' : '#FFFFFF';
@@ -8756,30 +10055,63 @@ function renderDesktop() {
     
     document.documentElement.style.setProperty('--text-color', state.uiConfig.textColor);
     
-    // 渲染个人信息卡片
-    const avatarImg = $('#desktop-profile-avatar');
-    const avatarFallback = $('#desktop-profile-avatar-fallback');
-    if (state.uiConfig.momentsAvatar) {
-        avatarImg.src = state.uiConfig.momentsAvatar;
-        avatarImg.style.display = 'block';
-        avatarFallback.style.display = 'none';
+    // 渲染 Doris 音乐组件
+    const musicImg = $('#widget-music-img');
+    if (musicImg) musicImg.src = state.uiConfig.musicWidgetImg || 'https://i.postimg.cc/Zqp4FZsP/IMG-20260423-204152.png';
+    const musicTitle = $('#widget-music-title');
+    if (musicTitle) musicTitle.textContent = state.uiConfig.musicWidgetTitle || 'DorisWorld';
+    const musicSub = $('#widget-music-sub');
+    if (musicSub) musicSub.textContent = state.uiConfig.musicWidgetSub || 'Doris';
+    const musicBottom = $('#widget-music-bottom-text');
+    if (musicBottom) musicBottom.textContent = state.uiConfig.musicWidgetBottomText || '索菲亞公主的午後芭蕾茶話會';
+
+    // 渲染 3Pics 组件
+    const carouselImg1 = $('#widget-carousel-img1');
+    if (carouselImg1) carouselImg1.src = state.uiConfig.carouselImg1 || 'https://i.postimg.cc/mD8zHh0S/image.png';
+    const carouselImg2 = $('#widget-carousel-img2');
+    if (carouselImg2) carouselImg2.src = state.uiConfig.carouselImg2 || 'https://i.postimg.cc/FHBVNDcM/image.png';
+    const carouselImg3 = $('#widget-carousel-img3');
+    if (carouselImg3) carouselImg3.src = state.uiConfig.carouselImg3 || 'https://i.postimg.cc/jSTfDsyk/image.png';
+    const carouselTag1 = $('#widget-carousel-tag1');
+    if (carouselTag1) carouselTag1.textContent = state.uiConfig.carouselTag1 || '3Pics';
+    const carouselTag2 = $('#widget-carousel-tag2');
+    if (carouselTag2) carouselTag2.textContent = state.uiConfig.carouselTag2 || '• ㅈ •';
+
+    // 渲染 顶部状态条文案
+    const topTextBar = $('#widget-top-text-bar');
+    if (topTextBar) topTextBar.textContent = state.uiConfig.topTextBar || 'e • • • ur in doll x sugar free dream ... 🤍';
+
+    // 渲染 Instagram 组件
+    const insImg = $('#widget-ins-img');
+    const insFallback = $('#widget-ins-fallback');
+    if (state.uiConfig.insWidgetImg) {
+        if (insImg) { insImg.src = state.uiConfig.insWidgetImg; insImg.style.display = 'block'; }
+        if (insFallback) insFallback.style.display = 'none';
     } else {
-        avatarImg.style.display = 'none';
-        avatarFallback.style.display = 'flex';
+        if (insImg) insImg.style.display = 'none';
+        if (insFallback) insFallback.style.display = 'flex';
     }
-    $('#desktop-profile-name').textContent = state.uiConfig.momentsName || 'Space Traveler';
 
-    $('#desktop-profile-bio').textContent = state.uiConfig.profileBio || '♡ 收集宇宙里所有的温柔与星光';
-    
-    const tags = (state.uiConfig.profileTags || '✦ INFP ✦ 摄影 ✦ 极简主义').split(' ').filter(t=>t.trim());
-    $('#desktop-profile-tags').innerHTML = tags.map(t => `<span>${escapeHtml(t)}</span>`).join('');
+    // 渲染注销用户气泡组件
+    const bubbleAvatar = $('#widget-bubble-avatar');
+    const bubbleAvatarFallback = $('#widget-bubble-avatar-fallback');
+    if (state.uiConfig.bubbleUserAvatar) {
+        if (bubbleAvatar) { bubbleAvatar.src = state.uiConfig.bubbleUserAvatar; bubbleAvatar.style.display = 'block'; }
+        if (bubbleAvatarFallback) bubbleAvatarFallback.style.display = 'none';
+    } else {
+        if (bubbleAvatar) bubbleAvatar.style.display = 'none';
+        if (bubbleAvatarFallback) bubbleAvatarFallback.style.display = 'block';
+    }
+    const bubbleUserName = $('#widget-bubble-user-name');
+    if (bubbleUserName) bubbleUserName.textContent = state.uiConfig.bubbleUserName || '爱上一个天使的缺点';
+    const bubbleUserHandle = $('#widget-bubble-user-handle');
+    if (bubbleUserHandle) bubbleUserHandle.textContent = state.uiConfig.bubbleUserHandle || '@ Virovo_915';
+    const bubbleText = $('#widget-bubble-text');
+    if (bubbleText) bubbleText.textContent = state.uiConfig.bubbleText || '你對我來說是宇宙，但我對你來說只是一顆星吗？';
 
-    const diaryPromptEl = $('#desktop-diary-prompt');
-    if (diaryPromptEl) diaryPromptEl.textContent = state.uiConfig.diaryPrompt || '在这里写点什么...';
-
+    // 待办组件
     const todoTitleEl = $('#desktop-todo-title');
     if (todoTitleEl) todoTitleEl.textContent = state.uiConfig.todoTitle || 'about me';
-    
     const todoListEl = $('#desktop-todo-list');
     if (todoListEl) {
         const todoItems = (state.uiConfig.todoItems || 'Drink more water,Read a book,Sleep early').split(',').filter(t=>t.trim());
@@ -8788,81 +10120,26 @@ function renderDesktop() {
                 <div class="circle"></div>
                 <div class="text">${escapeHtml(t)}</div>
             </div>
-        `).join('') + `<div class="todo-item add-new"><div class="text">add new...</div></div>`;
+        `).join('') + `<div class="todo-item add-new" style="border-bottom:none;"><div class="text">add new...</div></div>`;
     }
 
-    // 渲染关系计时小组件
-    const anniv = state.uiConfig.anniversary || { contactId: '', startDate: '', prefix: '和', suffix: '在一起已经 ✦' };
-    const prefixEl = $('#desktop-anniversary-prefix');
-    const suffixEl = $('#desktop-anniversary-suffix');
-    if (prefixEl) prefixEl.textContent = anniv.prefix || '和';
-    if (suffixEl) suffixEl.textContent = anniv.suffix || '在一起已经 ✦';
-    
-    let annivContact = state.contacts.find(c => c.id === anniv.contactId);
-    if (!annivContact && state.contacts.length > 0) annivContact = state.contacts[0];
-    
-    const partnerAvatar = $('#desktop-partner-avatar');
-    const partnerName = $('#desktop-partner-name');
-    
-    if (annivContact) {
-        if (partnerName) partnerName.textContent = annivContact.name;
-        if (partnerAvatar) {
-            if (annivContact.avatar) {
-                partnerAvatar.innerHTML = `<img src="${annivContact.avatar}" />`;
-            } else {
-                partnerAvatar.innerHTML = `<div class="text-avatar" style="width:100%;height:100%;font-size:14px;display:flex;align-items:center;justify-content:center;background:#f2f2f7;color:#999;">${escapeHtml(annivContact.name.charAt(0))}</div>`;
-            }
-        }
+    // 渲染个人信息卡片 (防御空对象保护 - Moments Avatar & Name)
+    const avatarImg = $('#desktop-profile-avatar');
+    const avatarFallback = $('#desktop-profile-avatar-fallback');
+    if (state.uiConfig.momentsAvatar) {
+        if (avatarImg) { avatarImg.src = state.uiConfig.momentsAvatar; avatarImg.style.display = 'block'; }
+        if (avatarFallback) avatarFallback.style.display = 'none';
     } else {
-        if (partnerName) partnerName.textContent = 'TA';
-        if (partnerAvatar) partnerAvatar.innerHTML = `<div class="text-avatar" style="width:100%;height:100%;font-size:14px;display:flex;align-items:center;justify-content:center;background:#f2f2f7;color:#999;">?</div>`;
+        if (avatarImg) avatarImg.style.display = 'none';
+        if (avatarFallback) avatarFallback.style.display = 'flex';
     }
+    const profileNameEl = $('#desktop-profile-name');
+    if (profileNameEl) profileNameEl.textContent = state.uiConfig.momentsName || 'Space Traveler';
 
-    let days = '0';
-    if (anniv.startDate) {
-        const start = new Date(anniv.startDate).getTime();
-        const now = Date.now();
-        days = Math.floor((now - start) / (1000 * 60 * 60 * 24));
-        if (days < 0) days = 0;
-    }
-    const daysEl = $('#desktop-anniversary-days');
-    if (daysEl) daysEl.textContent = `${days} DAY`;
-
-    // 渲染日记卡片头像 (取日记最多的联系人)
-    const diaryAvatar = $('#desktop-diary-avatar');
-    if (diaryAvatar) {
-        let topDiaryContact = state.contacts.length > 0 ? state.contacts[0] : null;
-        state.contacts.forEach(c => {
-            if (c.diaries && topDiaryContact && c.diaries.length > (topDiaryContact.diaries ? topDiaryContact.diaries.length : 0)) {
-                topDiaryContact = c;
-            }
-        });
-        if (topDiaryContact && topDiaryContact.avatar) {
-            diaryAvatar.innerHTML = `<img src="${topDiaryContact.avatar}" />`;
-        } else if (topDiaryContact) {
-            diaryAvatar.innerHTML = `<div class="text-avatar" style="width:100%;height:100%;font-size:12px;display:flex;align-items:center;justify-content:center;background:#f2f2f7;color:#999;">${escapeHtml(topDiaryContact.name.charAt(0))}</div>`;
-        }
-    }
-
-    // 渲染 Network 卡片头像 (取关系网最多的联系人)
-    const networkAvatar = $('#desktop-network-avatar');
-    if (networkAvatar) {
-        if (state.contacts.length > 1) {
-            const c = state.contacts[1];
-            if (c.avatar) {
-                networkAvatar.innerHTML = `<img src="${c.avatar}" />`;
-            } else {
-                networkAvatar.innerHTML = `<div class="text-avatar" style="width:100%;height:100%;font-size:24px;display:flex;align-items:center;justify-content:center;background:#f2f2f7;color:#999;">${escapeHtml(c.name.charAt(0))}</div>`;
-            }
-        } else if (state.contacts.length > 0) {
-            const c = state.contacts[0];
-            if (c.avatar) {
-                networkAvatar.innerHTML = `<img src="${c.avatar}" />`;
-            } else {
-                networkAvatar.innerHTML = `<div class="text-avatar" style="width:100%;height:100%;font-size:24px;display:flex;align-items:center;justify-content:center;background:#f2f2f7;color:#999;">${escapeHtml(c.name.charAt(0))}</div>`;
-            }
-        }
-    }
+    // 适配多处展示个性签名的需求
+    document.querySelectorAll('[id="desktop-profile-bio"]').forEach(el => {
+        el.textContent = state.uiConfig.profileBio || '我說幸福就是在你身邊...';
+    });
 
     // 渲染自定义图标
     const appElements = document.querySelectorAll('.cream-app-item');
@@ -9210,7 +10487,7 @@ function getFilteredMoments() {
             // 角色绑定了人设 → 只有该人设能看到
             return contactBound === pid;
         }
-        return true;
+        return false; // 如果角色不存在，说明被删了，直接隐藏不返回
     });
 }
 
@@ -9731,6 +11008,28 @@ function renderProfile() {
                     </div>
                 </div>
 
+                <!-- 对话预设 -->
+                <div class="menu-item-wrap">
+                    <div class="sidebar-menu-item" onclick="switchView('dialogue_presets')">
+                        <span class="menu-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="4" y1="21" x2="4" y2="14" />
+                                <line x1="4" y1="10" x2="4" y2="3" />
+                                <line x1="12" y1="21" x2="12" y2="12" />
+                                <line x1="12" y1="8" x2="12" y2="3" />
+                                <line x1="20" y1="21" x2="20" y2="16" />
+                                <line x1="20" y1="12" x2="20" y2="3" />
+                                <line x1="1" y1="14" x2="7" y2="14" />
+                                <line x1="9" y1="8" x2="15" y2="8" />
+                                <line x1="17" y1="16" x2="23" y2="16" />
+                            </svg>
+                        </span>
+                        <span class="menu-label">对话预设</span>
+                        <span class="menu-badge-action" onclick="event.stopPropagation(); addNewDialoguePreset();">+</span>
+                        <span class="menu-badge green">${state.dialoguePresets ? state.dialoguePresets.filter(p=>p.enabled).length : 0}/${state.dialoguePresets ? state.dialoguePresets.length : 0}</span>
+                    </div>
+                </div>
+
                 <!-- 数据与备份 -->
                 <div class="menu-item-wrap">
                     <div class="sidebar-menu-item ${state.profileMenuExpanded ? 'expanded' : ''}" onclick="toggleProfileSubmenu(event)">
@@ -9868,10 +11167,10 @@ function renderChatRoom() {
                 <div class="back-btn" onclick="switchView('chat_main')">
                     <iconify-icon icon="ph:caret-left-bold" style="font-size: 20px;"></iconify-icon>
                 </div>
-                <div class="chat-title-area" style="flex: 1; cursor: pointer; flex-direction: row; justify-content: flex-start; gap: 12px; margin-left: 10px;" onclick="switchView('${isGroup ? 'group_chat_settings' : 'chat_settings'}')">
+                <div class="chat-title-area" style="flex: 1; cursor: pointer; flex-direction: row; justify-content: flex-start; gap: 12px; margin-left: 10px; overflow: hidden;" onclick="switchView('${isGroup ? 'group_chat_settings' : 'chat_settings'}')">
                     <div class="chat-title-avatar">${avatarStr}</div>
-                    <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center;">
-                        <div style="font-size: 15px; font-weight: 600; color: #11; letter-spacing: -0.1px;">${escapeHtml(displayName)}${isGroup ? ` <span style="font-weight: 400; color: #8e8e93;">(${chatData.memberIds.length + 1})</span>` : ''}</div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-width: 0;">
+                        <div style="font-size: 15px; font-weight: 600; color: #11; letter-spacing: -0.1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">${escapeHtml(displayName)}${isGroup ? ` <span style="font-weight: 400; color: #8e8e93;">(${chatData.memberIds.length + 1})</span>` : ''}</div>
                         ${state.isBotTyping ? `
                             <div style="font-size: 11px; color: #007aff; margin-top: 1px; font-weight: 500;">正在输入...</div>
                         ` : `
@@ -9887,7 +11186,7 @@ function renderChatRoom() {
                         `}
                     </div>
                 </div>
-                <div class="nav-right" style="display: flex; align-items: center; justify-content: flex-end; width: auto; gap: 8px;">
+                <div class="nav-right" style="display: flex; align-items: center; justify-content: flex-end; width: auto; gap: 8px; flex-shrink: 0; pointer-events: auto;">
                     ${!isGroup ? `
                     <div onclick="toggleChatStatusModal()">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -10081,19 +11380,25 @@ function renderChatRoom() {
         }
         else contentStr = escapeHtml(msg.content);
         
-                let replyStr = '';
-        if(msg.replyTo) {
-            let rContent = msg.replyTo.type === 'image' || msg.replyTo.type === 'real_image' ? '[图片]' : (msg.replyTo.type === 'virtual_image' ? '[文字图]' : escapeHtml(msg.replyTo.content));
-            let rawContact = !isGroup ? chatData : state.contacts.find(c=>c.id===msg.replyTo.senderId);
-            let rName = msg.replyTo.role === 'user' ? '我' : (rawContact ? (rawContact.alias || rawContact.name) : '未知');
-            replyStr = `<div class="reply-quote">回复 ${rName}: ${rContent}</div>`;
-        }
-        
-                const myBgColor = chatData.myBubbleColor || '#EFFDDE';
+        const myBgColor = chatData.myBubbleColor || '#EFFDDE';
         const roleBgColor = chatData.roleBubbleColor || '#FFFFFF';
         const myTextColor = chatData.myTextColor || '#000000';
         const roleTextColor = chatData.roleTextColor || '#000000';
         const fontSize = chatData.chatFontSize || 15;
+
+        // 根据当前的气泡背景色计算亮度并动态设置引用的背景、文字和左边框颜色
+        const isCurrentBgDark = isMe ? (getContrastTextColor(myBgColor) === '#fff') : (getContrastTextColor(roleBgColor) === '#fff');
+        const quoteBg = isCurrentBgDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.06)';
+        const quoteTextColor = isCurrentBgDark ? 'rgba(255, 255, 255, 0.75)' : 'rgba(0, 0, 0, 0.6)';
+        const quoteBorderLeft = isCurrentBgDark ? '3px solid rgba(255, 255, 255, 0.3)' : '3px solid rgba(0, 0, 0, 0.2)';
+
+        let replyStr = '';
+        if(msg.replyTo) {
+            let rContent = msg.replyTo.type === 'image' || msg.replyTo.type === 'real_image' ? '[图片]' : (msg.replyTo.type === 'virtual_image' ? '[文字图]' : escapeHtml(msg.replyTo.content));
+            let rawContact = !isGroup ? chatData : state.contacts.find(c=>c.id===msg.replyTo.senderId);
+            let rName = msg.replyTo.role === 'user' ? '我' : (rawContact ? (rawContact.alias || rawContact.name) : '未知');
+            replyStr = `<div class="reply-quote" style="background-color: ${quoteBg}; color: ${quoteTextColor}; border-left: ${quoteBorderLeft};">回复 ${rName}: ${rContent}</div>`;
+        }
         
         const showTimestamp = !isGroup && chatData.showTimestamp;
         const hideMyAvatar = !isGroup && chatData.hideMyAvatar;
@@ -10148,6 +11453,7 @@ function toggleChatStatusModal() {
         }
     }
 }
+window.toggleChatStatusModal = toggleChatStatusModal;
 function updateChatStatusModal() {
     const contact = state.contacts.find(c => c.id === state.activeContactId);
     if (contact && contact.currentStatus) {
@@ -10167,6 +11473,7 @@ function toggleNarratorMode() {
         showToast(c.enableNarrator ? '已开启旁白模式' : '已关闭旁白模式');
     }
 }
+window.toggleNarratorMode = toggleNarratorMode;
 
 function toggleEmotePanel() { state.showEmotePanel = !state.showEmotePanel; state.showMorePanel = false; renderChatRoom(); }
 function toggleMorePanel() { state.showMorePanel = !state.showMorePanel; state.showEmotePanel = false; renderChatRoom(); }
@@ -10312,6 +11619,7 @@ async function receiveMessage(triggerContext = null, targetContactId = null) {
     if (memoryPrompt) memoryPrompt += `\n请在回复和发朋友圈时自然地体现上述记忆，保持人设一致。`;
 
                 let systemPrompt = `你是${contact.name}。你的性格和设定是：${contact.persona}。${contact.history ? '我们的经历：' + contact.history : ''} ${myPersonaContent} ${timeStr} ${roleEmotesPrompt} ${avatarPrompt} ${memoryPrompt}
+` + getEnabledPresetsPrompt() + `
 你可以使用 [回复: 消息内容片段] 来针对我发送的某一条特定消息进行回复。当你觉得需要明确指出你在回复我的哪句话时，请在回复内容的开头使用这个格式。
 
 【转账与红包互动说明】
@@ -10371,18 +11679,25 @@ async function receiveMessage(triggerContext = null, targetContactId = null) {
     const retainTime = Date.now() - (contact.memoryConfig.retainDays || 15) * 24 * 60 * 60 * 1000;
     const validMsgs = contact.messages.filter(m => m.timestamp >= retainTime);
     const historyCount = (contact.memoryRounds || 10) * 2;
-                const historyMsgs = validMsgs.slice(-historyCount).map(m => {
+    const historyMsgs = validMsgs.slice(-historyCount).map(m => {
         let txt = m.content;
-                if (m.type === 'image') txt = `[表情包: ${m.remark || '图片'}]`;
+        if (m.type === 'image' || m.type === 'real_image') txt = `[表情包: ${m.remark || '图片'}]`;
         else if (m.type === 'real_image') txt = `[图片]`;
         else if (m.type === 'virtual_image') txt = `[文字图：${m.content}]`;
-                else if (m.type === 'transfer') {
+        else if (m.type === 'transfer') {
             let statusStr = m.transferStatus === 'pending' ? '未收款' : (m.transferStatus === 'accepted' ? '已收款' : '已退回');
             txt = `[转账: ¥${m.amount}, 备注: ${m.remark}, 状态: ${statusStr}]`;
         }
         else if (m.type === 'gift') {
             let statusStr = m.status === 'pending' ? '未接收' : '已接收';
             txt = `[赠送礼物: ${m.item?.name}, 状态: ${statusStr}]`;
+        }
+        
+        // 如果该消息有引用回复
+        if (m.replyTo) {
+            let rContent = m.replyTo.type === 'image' || m.replyTo.type === 'real_image' ? '[图片]' : (m.replyTo.type === 'virtual_image' ? '[文字图]' : m.replyTo.content);
+            let rName = m.replyTo.role === 'user' ? '我' : '你';
+            txt = `[回复${rName}的消息: "${rContent}"]\n${txt}`;
         }
         
         // 彻底移除历史消息中的时间前缀，防止 AI 模仿输出时间戳导致掉格式
@@ -10873,12 +12188,21 @@ async function receiveGroupMessage(triggerContext = null, targetGroupId = null) 
         let txt = m.content;
         if (m.type === 'image' || m.type === 'real_image') txt = '[图片]';
         else if (m.type === 'virtual_image') txt = `[文字图: ${m.content}]`;
-                else if (m.type === 'red_packet') txt = `[发出了一个群红包: ${m.remark}]`;
+        else if (m.type === 'red_packet') txt = `[发出了一个群红包: ${m.remark}]`;
         else if (m.type === 'exclusive_red_packet') {
             let targetName = m.targetId === 'me' ? '我' : (members.find(c=>c.id===m.targetId)?.name || '未知');
             txt = `[发给 ${targetName} 专属红包: ${m.remark}]`;
         }
-        return `${senderName}: ${txt}`;
+        
+        // 如果该群消息有引用回复
+        let replyPrefix = '';
+        if (m.replyTo) {
+            let rContent = m.replyTo.type === 'image' || m.replyTo.type === 'real_image' ? '[图片]' : (m.replyTo.type === 'virtual_image' ? '[文字图]' : m.replyTo.content);
+            let rName = m.replyTo.role === 'user' ? '我' : (members.find(c => c.id === m.replyTo.senderId)?.name || '未知');
+            replyPrefix = `[回复 ${rName}: "${rContent}"]\n`;
+        }
+        
+        return `${senderName}: ${replyPrefix}${txt}`;
     }).join('\n');
 
                                 let geminiPromptStr = '';
@@ -10886,8 +12210,9 @@ async function receiveGroupMessage(triggerContext = null, targetGroupId = null) 
         geminiPromptStr = `\n\n【Gemini 专用提示词】\n撰写角色回复。注意：全篇禁止使用‘倒是’、‘不过’、‘毕竟’等表示让步或转折的词汇，以及‘碍眼’、‘反胃’、‘看着’。去掉所有‘倒定’。请参考以下风格：用更具体、更口语化的动作或神态描写来代替。\n· 不写： 呵，他动作倒是挺快，可惜脑子跟不上。\n· 而是参考这样写： 哟，挺麻利啊。可惜没带脑子。\n你不是在陈述说明文，不要以说明的语气回复，语句里要附带角色的情绪（例难过，高兴，兴奋，生气），如果你说话像在做说明，就不要这样说。\n\n【极度真实的人类对话风格参考】\n严格将以下对话风格作为参考，应用到不同的角色上，综合角色个性做出回复：\n“……？”\n“所以呢，你想怎么样。”\n“我真服了你了，算了，就这样吧。”\n“啊？你说什么，我没听清。”\n“哦……”\n“你能不能闭嘴？你说话难不难听啊你自己不知道吗？”\n“无语😅”\n“呃……有点不好意思说。”\n“确实。”\n“你能不能别这样，烦不烦啊。”\n“没事。”\n"我还行，你别管了。"\n“这个人真的挺傻的，懒得管。”\n“服了没见过这么蠢的。”\n“我不是骂他啊你听不懂我的意思吗。”\n“嗯……也行。”\n"我随便。"\n“你开心就好。”\n“真的。”\n\n严格注意：你回复的每句话，如果这个角色说的话，放在其他人身上说也完全没问题，那就不要这么说。\n严格遵循：你绝对不要主动提及让用户去线下做什么，引导用户去找你或来接你，用户和你没有待在一起。\n你的回复条数必须不是规律的，结合上下文和情节连贯，也跟你聊天的话题来判断，可以一下变得话少，也可以一下变得话多，你不感兴趣的事可以敷衍，想要重视的事你会变得很激动\n`;
     }
 
-            const prompt = `你现在是群聊互动引擎。当前有一个微信群聊，群名：${group.name}。
+            const prompt = `你现在是群聊互动引擎。当前群聊，群名：${group.name}。
 ${rolesPrompt}${myPersonaContent}${outsideStr}${geminiPromptStr}
+` + getEnabledPresetsPrompt() + `
 
 最近的聊天记录：
 ${recentMsgs || '暂无'}
@@ -12121,8 +13446,38 @@ function renderChatSettings() {
                             <div class="toggle-switch ${contact.autoReceiveEnabled !== false ? 'active' : ''}" onclick="toggleContactProp('autoReceiveEnabled')"></div>
                         </div>
                         <div class="sidebar-submenu-item" style="cursor: default;">
-                            <span>主动发起消息</span>
+                            <span>在线主动发消息</span>
                             <div class="toggle-switch ${contact.autoReplyEnabled?'active':''}" onclick="toggleAutoReply()"></div>
+                        </div>
+                        <div class="sidebar-submenu-item" style="cursor: default; flex-direction: column; align-items: stretch; gap: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                <div style="display:flex; flex-direction:column; gap:2px;">
+                                    <span style="font-weight: 600; color: #111;">后台挂机主动呼叫</span>
+                                    <span style="font-size: 11px; color:#888;">退后台或锁屏时弹窗找你</span>
+                                </div>
+                                <div class="toggle-switch ${contact.bgMsgEnabled ? 'active' : ''}" onclick="toggleBackgroundMsg()"></div>
+                            </div>
+                            
+                            ${contact.bgMsgEnabled ? `
+                            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px; padding: 10px; background: #FAF9F6; border-radius: 8px; border: 1.5px solid #F1F3F5;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-size: 12px; color: #666;">活跃时间段</span>
+                                    <select onchange="updateContactProp('bgMsgTimeRange', this.value)" style="border: none; background: #FFF; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;">
+                                        <option value="daytime" ${contact.bgMsgTimeRange === 'daytime' ? 'selected' : ''}>白天 (08:00 - 22:00)</option>
+                                        <option value="night" ${contact.bgMsgTimeRange === 'night' ? 'selected' : ''}>夜猫子 (22:00 - 04:00)</option>
+                                        <option value="all" ${contact.bgMsgTimeRange === 'all' ? 'selected' : ''}>全天候随时</option>
+                                    </select>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-size: 12px; color: #666;">呼叫频率</span>
+                                    <select onchange="updateContactProp('bgMsgFrequency', this.value)" style="border: none; background: #FFF; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;">
+                                        <option value="high" ${contact.bgMsgFrequency === 'high' ? 'selected' : ''}>频繁 (15 - 30分钟)</option>
+                                        <option value="medium" ${contact.bgMsgFrequency === 'medium' ? 'selected' : ''}>正常 (1 - 3小时)</option>
+                                        <option value="low" ${contact.bgMsgFrequency === 'low' ? 'selected' : ''}>佛系 (6 - 12小时)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            ` : ''}
                         </div>
                         <div class="sidebar-submenu-item" style="cursor: default;">
                             <span>Gemini优化指令</span>
@@ -12287,10 +13642,10 @@ const BUBBLE_PRESETS = {
     telegram: { myBubbleColor: '#EFFDDE', roleBubbleColor: '#FFFFFF', myTextColor: '#000000', roleTextColor: '#000000' },
     telegram_night: { myBubbleColor: '#2B5278', roleBubbleColor: '#182533', myTextColor: '#FFFFFF', roleTextColor: '#FFFFFF' },
     telegram_tinted: { myBubbleColor: '#C5E1A5', roleBubbleColor: '#FFFFFF', myTextColor: '#1B5E20', roleTextColor: '#111111' },
-    sakura: { myBubbleColor: '#ffb6c1', roleBubbleColor: '#ffffff', myTextColor: '#ffffff', roleTextColor: '#111111' },
-    seaside: { myBubbleColor: '#a0c4ff', roleBubbleColor: '#ffd166', myTextColor: '#ffffff', roleTextColor: '#111111' },
+    sakura: { myBubbleColor: '#FFE5EC', roleBubbleColor: '#FFFFFF', myTextColor: '#000000', roleTextColor: '#000000' },
+    seaside: { myBubbleColor: '#E3F2FD', roleBubbleColor: '#FFFFFF', myTextColor: '#000000', roleTextColor: '#000000' },
     wechat: { myBubbleColor: '#95ec69', roleBubbleColor: '#ffffff', myTextColor: '#111111', roleTextColor: '#111111' },
-    purple: { myBubbleColor: '#e2afff', roleBubbleColor: '#ffe3e8', myTextColor: '#ffffff', roleTextColor: '#111111' },
+    purple: { myBubbleColor: '#F3E5F5', roleBubbleColor: '#FFFFFF', myTextColor: '#000000', roleTextColor: '#000000' },
     mono: { myBubbleColor: '#333333', roleBubbleColor: '#F5F5F5', myTextColor: '#FFFFFF', roleTextColor: '#111111' }
 };
 
@@ -12344,6 +13699,362 @@ function toggleAutoReply() {
         }
     }
 }
+
+// 切换后台消息开关
+async function toggleBackgroundMsg() {
+    const c = state.contacts.find(x => x.id === state.activeContactId);
+    if (!c) return;
+    c.bgMsgEnabled = !c.bgMsgEnabled;
+    
+    if (c.bgMsgEnabled) {
+        // 请求通知权限
+        if ("Notification" in window) {
+            const permission = await Notification.requestPermission();
+            if (permission !== "granted") {
+                showToast("请在系统设置中允许本页面的通知权限，否则后台推送无法弹窗", "error");
+            }
+        }
+        c.lastBgCheckTime = Date.now();
+        BackgroundMessenger.scheduleNext(c.id);
+        showToast("已开启后台挂机呼叫");
+    } else {
+        BackgroundMessenger.cancel(c.id);
+        showToast("已关闭后台挂机呼叫");
+    }
+    saveDataSilently();
+    renderChatSettings();
+}
+window.toggleBackgroundMsg = toggleBackgroundMsg;
+
+// ==================== 挂机主动消息管理器核心引擎 ====================
+const BackgroundMessenger = {
+    worker: null,
+    swRegistration: null,
+    
+    async init() {
+        // 1. 在支持的环境下，通过 Blob 动态注册 Service Worker 保证后台挂起/退出浏览器后的保活唤醒
+        if ('serviceWorker' in navigator) {
+            try {
+                const swCode = `
+                    self.addEventListener('install', (e) => {
+                        self.skipWaiting();
+                    });
+                    self.addEventListener('activate', (e) => {
+                        e.waitUntil(self.clients.claim());
+                    });
+                    // 后台周期性保活/唤醒监听器
+                    self.addEventListener('periodicsync', (e) => {
+                        if (e.tag === 'bg-messenger-check') {
+                            e.waitUntil(checkBackgroundTasks());
+                        }
+                    });
+                    async function checkBackgroundTasks() {
+                        const clients = await self.clients.matchAll({ type: 'window' });
+                        if (clients.length === 0) {
+                            // 浏览器进程仍存活但网页被关时，通过后台向主进程发送通知，唤醒API提取
+                            self.registration.showNotification("Moon小手机", {
+                                body: "您有新的角色互动消息正在等您，点击进入查看...",
+                                icon: "https://i.postimg.cc/Zqp4FZsP/IMG-20260423-204152.png"
+                            });
+                        }
+                    }
+                `;
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+                this.swRegistration = await navigator.serviceWorker.register(swUrl);
+                
+                // 注册周期性后台同步（如果设备支持）
+                if ('periodicSync' in this.swRegistration) {
+                    const status = await navigator.permissions.query({ name: 'periodic-background-sync' });
+                    if (status.state === 'granted') {
+                        await this.swRegistration.periodicSync.register('bg-messenger-check', {
+                            minInterval: 15 * 60 * 1000 // 每15分钟触发一次保活
+                        });
+                    }
+                }
+            } catch (err) {
+                console.warn('Service Worker 注册保活失败，将完全依赖前台溯及补偿与本地 Worker:', err);
+            }
+        }
+
+        // 2. 动态构建前台/挂起 Web Worker (双重保护)
+        const workerCode = `
+            let timers = {};
+            self.onmessage = function(e) {
+                if (e.data.action === 'start') {
+                    if (timers[e.data.contactId]) clearTimeout(timers[e.data.contactId]);
+                    timers[e.data.contactId] = setTimeout(() => {
+                        self.postMessage({ action: 'trigger', contactId: e.data.contactId });
+                        delete timers[e.data.contactId];
+                    }, e.data.delay);
+                } else if (e.data.action === 'stop') {
+                    if (timers[e.data.contactId]) {
+                        clearTimeout(timers[e.data.contactId]);
+                        delete timers[e.data.contactId];
+                    }
+                }
+            };
+        `;
+        const blob = new Blob([workerCode], { type: 'application/javascript' });
+        this.worker = new Worker(URL.createObjectURL(blob));
+        
+        this.worker.onmessage = (e) => {
+            if (e.data.action === 'trigger') {
+                this.executeBgAction(e.data.contactId);
+            }
+        };
+
+        // 3. 监听浏览器可见性状态，切回前台时自动处理“溯及补偿”
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                this.checkRetroactiveMessages();
+            } else {
+                // 进入后台，为所有开启了该功能的角色启动计时
+                state.contacts.forEach(c => {
+                    if (c.bgMsgEnabled) this.scheduleNext(c.id);
+                });
+            }
+        });
+    },
+
+    // 随机计算下一次发送时间延迟
+    getDelay(frequency) {
+        let minMinutes = 60, maxMinutes = 180;
+        if (frequency === 'high') { minMinutes = 15; maxMinutes = 30; }
+        else if (frequency === 'low') { minMinutes = 360; maxMinutes = 720; }
+        return (Math.floor(Math.random() * (maxMinutes - minMinutes + 1)) + minMinutes) * 60000;
+    },
+
+    // 检查时间是否在角色的活跃时间段内
+    isInActiveTimeRange(range) {
+        const hour = new Date().getHours();
+        if (range === 'daytime') return hour >= 8 && hour < 22;
+        if (range === 'night') return hour >= 22 || hour < 4;
+        return true;
+    },
+
+    scheduleNext(contactId) {
+        const c = state.contacts.find(x => x.id === contactId);
+        if (!c || !c.bgMsgEnabled) return;
+        
+        const delay = this.getDelay(c.bgMsgFrequency);
+        c.nextBgTriggerTime = Date.now() + delay;
+        saveDataSilently();
+        
+        if (this.worker) {
+            this.worker.postMessage({
+                action: 'start',
+                contactId: contactId,
+                delay: delay
+            });
+        }
+    },
+
+    cancel(contactId) {
+        if (this.worker) {
+            this.worker.postMessage({ action: 'stop', contactId: contactId });
+        }
+        const c = state.contacts.find(x => x.id === contactId);
+        if (c) {
+            c.nextBgTriggerTime = 0;
+            saveDataSilently();
+        }
+    },
+
+    // 挂机状态下在后台静默发起 API 对话
+    async executeBgAction(contactId) {
+        const c = state.contacts.find(x => x.id === contactId);
+        if (!c || !c.bgMsgEnabled) return;
+
+        // 如果不在活跃时间段，则静默跳过并安排下一次
+        if (!this.isInActiveTimeRange(c.bgMsgTimeRange)) {
+            this.scheduleNext(contactId);
+            return;
+        }
+
+        await this.generateAndSendBgMessage(c);
+        this.scheduleNext(contactId);
+    },
+
+    // 生成后台消息核心 Prompt（融合平时聊天的人设与规则，生成连发多条消息）
+    async generateAndSendBgMessage(contact, retroactiveTimestamp = null) {
+        if (!state.apiConfig.url || !state.apiConfig.apiKey) return;
+        
+        let myPersonaContent = '';
+        if (contact.myPersonaId) {
+            const p = state.myPersonas.find(x => x.id === contact.myPersonaId);
+            if (p) myPersonaContent = `我的人设是：${p.content}。`;
+        }
+        
+        let timeStr = `【时间与物理环境】\n当前时间：${state.currentDate} ${state.currentTime} (${state.currentWeek})。\n`;
+        let roleEmotesPrompt = '';
+        if (contact.roleEmotePackageId) {
+            const pkg = state.emotePackages.find(p => p.id === contact.roleEmotePackageId);
+            if (pkg && pkg.emotes.length > 0) {
+                const notes = pkg.emotes.filter(e => e.remark).map(e => e.remark).join('、');
+                if (notes) roleEmotesPrompt = `\n当你发表情包时，可以【单独一行】使用格式 [表情包: 备注名称]。你只可使用：${notes}。`;
+            }
+        }
+
+        let memoryPrompt = '';
+        if (contact.memorySummary && (contact.memorySummary.relation || contact.memorySummary.events)) {
+            memoryPrompt = `\n【你脑海中的最新长期记忆】\n你看待我们的关系：${contact.memorySummary.relation}\n你最新心里的想法：${contact.memorySummary.thoughts}\n你记住的事情：${contact.memorySummary.events}`;
+        }
+        memoryPrompt += getCrossModuleMemoryPrompt(contact);
+
+        let systemPrompt = `你是${contact.name}。你的性格和设定是：${contact.persona}。${contact.history ? '我们的经历：' + contact.history : ''} ${myPersonaContent} ${timeStr} ${roleEmotesPrompt} ${memoryPrompt}
+
+【后台主动呼叫模式核心指令】
+我们已经有几个小时没有聊天了。你根据最近的聊天情况、当前的心理状态和现实时间，在进行日常活动时突然想到了我。你拿起了手机主动向我发送微信消息。
+
+【格式要求】
+1. 像真人一样打字发微信，拒绝发长篇大论。你决定以连续发送几条短气泡的形式，表达完整的意思。
+2. 必须以合法的 JSON 数组格式输出 1 到 3 条独立消息（包含文字或表情包格式 [表情包: 备注名]）。
+3. 绝对不要添加任何额外的解释性话语或 Markdown 格式代码块，直接返回纯 JSON 格式。
+4. 【旁白约束】${contact.enableNarrator ? '允许你发送的个别文本消息中包裹 (动作神态神色描写) 展现氛围，但禁止浮夸油腻。' : '纯净格式：只输出你说的话。严禁包含任何动作/表情描述（如 *叹气* 或 (皱眉)）。'}
+
+JSON 格式规范：
+[
+  "消息1",
+  "消息2"
+]
+`;
+
+        if (contact.geminiPromptEnabled) {
+            systemPrompt += `\n\n【Gemini 专用提示词】\n撰写角色回复。注意：全篇禁止使用‘倒是’、‘不过’、‘毕竟’等表示让步或转折的词汇，以及‘碍眼’、‘反胃’、‘看着’。去掉所有‘倒是’。请参考以下风格：用更具体、更口语化的动作或神态描写来代替。\n· 不写： 呵，他动作倒是挺快，可惜脑子跟不上。\n· 而是参考这样写： 哟，挺麻利啊。可惜没带脑子。\n你不是在陈述说明文，不要以说明的语气回复，语句里要附带角色的情绪（例难过，高兴，兴奋，生气），如果你说话像在做说明，就不要这样说。\n\n【极度真实的人类对话风格参考】\n严格将以下对话风格作为参考，综合角色个性做出回复：\n“……？”\n“所以呢，你想怎么样。”\n“我真服了你了，算了，就这样吧。”\n“啊？你说什么，我没听清。”\n“哦……”\n“你能不能闭嘴？你说话难不难听啊你自己不知道吗？”\n“无语😅”\n“呃……有点不好意思说。”\n“确实。”\n“你能不能别这样，烦不烦啊。”\n“没事。”\n“我还行，你别管了。”\n“这个人真的挺傻的，懒得管。”\n“服了没见过这么蠢的。”\n“我不是骂他啊你听不懂我的意思吗。”\n“嗯……也行。”\n“我随便。”\n“你开心就好。”\n“真的。”\n\n严格注意：你回复的每句话，如果这个角色说的话，放在其他人身上说也完全没问题，那就不要这么说。\n严格遵循：你绝对不要主动提及让用户去线下做什么，也不要提及让用户陪你，用户和你没有待在一起。\n你的回复条数必须不是规律的，结合上下文和情节连贯，也跟你聊天的话题来判断，可以一下子变得话少，也可以一下子变得话多，你不感兴趣的事可以敷衍，想要重视的事你会变得很激动\n`;
+        }
+
+        const recentCount = (contact.memoryRounds || 10) * 2;
+        const historyMsgs = contact.messages.slice(-recentCount).map(m => ({
+            role: m.role, content: m.content
+        }));
+        
+        const apiMessages = [
+            { role: 'system', content: systemPrompt + '\n\n' + STRICT_REALISM_PROMPT },
+            ...historyMsgs,
+            { role: 'system', content: '【最后强制校验】请只输出 JSON 数组，严禁附带 Markdown 标记 ```json，首字符必须是 [' }
+        ];
+
+        try {
+            let baseUrl = state.apiConfig.url.trim().replace(/\/+$/, '');
+            const res = await fetch(`${baseUrl}/chat/completions`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    model: state.apiConfig.model || 'gpt-3.5-turbo', 
+                    messages: normalizeMessages(apiMessages),
+                    temperature: state.apiConfig.temperature ?? 1,
+                    stream: false 
+                })
+            });
+
+            if (res.ok) {
+                const rawText = (await res.text()).trim();
+                const parsed = parseAPIResponse(rawText);
+                let responseContent = parsed.choices[0].message.content.trim();
+                
+                // 去除 JSON markdown 污染
+                const jsonMatch = responseContent.match(/\[[\s\S]*\]/);
+                if (jsonMatch) responseContent = jsonMatch[0];
+
+                let rawMsgList = [];
+                try {
+                    rawMsgList = JSON.parse(responseContent);
+                } catch(e) {
+                    // 容错：如果模型直接输出了带回车的明文消息，用行分割
+                    rawMsgList = responseContent.split('\n').filter(t => t.trim() && !t.startsWith('[') && !t.startsWith(']'));
+                }
+
+                if (!Array.isArray(rawMsgList)) rawMsgList = [rawMsgList];
+                
+                // 遍历多条消息并进行打字间隔发送
+                const parsedMsgs = [];
+                rawMsgList.forEach(text => {
+                    const subMsgs = parseReplyToMessages(text, contact.roleEmotePackageId);
+                    subMsgs.forEach(sub => {
+                        parsedMsgs.push({
+                            id: 'bg_' + Date.now() + Math.random().toString().substr(2, 5),
+                            role: 'assistant',
+                            content: sub.content,
+                            type: sub.type || 'text',
+                            remark: sub.remark || '',
+                            timestamp: retroactiveTimestamp || Date.now()
+                        });
+                    });
+                });
+
+                // 排队顺序发送，打字模拟间隔
+                for (let i = 0; i < parsedMsgs.length; i++) {
+                    const m = parsedMsgs[i];
+                    if (i > 0 && !retroactiveTimestamp) {
+                        await new Promise(r => setTimeout(r, 1500 + Math.random() * 1500)); // 连发时第二条隔 1.5 - 3 秒
+                    }
+                    
+                    contact.messages.push(m);
+                    contact.lastBgCheckTime = Date.now();
+                    await saveDataSilently();
+                    
+                    const isCurrent = state.currentView === 'chat_room' && state.activeContactId === contact.id && state.activeChatType === 'single';
+                    if (isCurrent) {
+                        state.chatDisplayLimit += 1;
+                        renderChatRoom();
+                        scrollToBottom();
+                    } else {
+                        // 在后台或者锁屏时，弹窗推送第一条及后续连发消息
+                        const showText = m.type === 'image' ? '[表情包]' : m.content;
+                        this.triggerSystemNotification(contact, showText);
+                    }
+                }
+            }
+        } catch (e) {
+            console.error("生成后台挂机主动消息时出错:", e);
+        }
+    },
+
+    // 触发系统级弹窗通知（支持后台/锁屏拉起）
+    triggerSystemNotification(contact, messageText) {
+        if (!("Notification" in window)) return;
+        
+        if (Notification.permission === "granted") {
+            const displayName = contact.alias || contact.name;
+            const notification = new Notification(displayName, {
+                body: messageText,
+                icon: contact.avatar || 'https://i.postimg.cc/Zqp4FZsP/IMG-20260423-204152.png',
+                tag: contact.id, // 防止通知堆叠
+                renotify: true
+            });
+            
+            notification.onclick = () => {
+                window.focus();
+                openChat(contact.id);
+            };
+        }
+    },
+
+    // 复活检查：当用户重新进入APP，对比实际时间，补算离线期间漏发的溯及消息
+    async checkRetroactiveMessages() {
+        const now = Date.now();
+        for (const c of state.contacts) {
+            if (!c.bgMsgEnabled || !c.nextBgTriggerTime) continue;
+            
+            // 如果当前时间已经超过了设定的触发时间，代表我们在离线期间漏掉了这次呼叫
+            if (now > c.nextBgTriggerTime) {
+                const timestamp = c.nextBgTriggerTime;
+                
+                // 停止当前的 Worker 定时器，进入前台统一接管
+                this.cancel(c.id);
+                
+                // 仅当活跃时间段内才触发补发
+                if (this.isInActiveTimeRange(c.bgMsgTimeRange)) {
+                    await this.generateAndSendBgMessage(c, timestamp);
+                }
+                
+                // 生成后自动进入下一个循环的排期
+                this.scheduleNext(c.id);
+            }
+        }
+    }
+};
 
 function toggleGroupAutoReply() {
     const g = state.chatGroups.find(x => x.id === state.activeGroupId);
@@ -12423,8 +14134,11 @@ async function deleteContact() {
         // 同步删除该角色在朋友圈发布的所有动态
         state.moments = state.moments.filter(m => m.author !== state.activeContactId);
         state.contacts = state.contacts.filter(c => c.id !== state.activeContactId);
-        state.activeContactId = null; await saveDataSilently(); showToast('已删除');
-        switchChatTab('messages'); switchView('chat_main');
+        state.activeContactId = null; 
+        await saveDataSilently(); 
+        showToast('已删除');
+        switchChatTab('messages'); 
+        switchView('chat_main');
     }
 }
 function triggerChatUpload(field) {
@@ -12544,6 +14258,85 @@ function renderFavorites() {
 function delFav(idx) {
     const c = state.contacts.find(x => x.id === state.activeContactId);
     if(c) { c.favoriteMessages.splice(idx, 1); saveDataSilently(); renderFavorites(); }
+}
+
+// ==================== 11.4 Dialogue Presets (对话预设管理) ====================
+function renderDialoguePresets() {
+    const container = $('#dialogue-presets-list');
+    if (!state.dialoguePresets) state.dialoguePresets = [];
+
+    if (state.dialoguePresets.length === 0) {
+        container.innerHTML = `<div class="empty-state" style="padding: 40px 0;"><p>暂无对话预设</p></div>`;
+        return;
+    }
+
+    container.innerHTML = state.dialoguePresets.map(p => `
+        <div class="sidebar-menu-item" style="cursor: default; background: #FFF; border: 1px solid #EEEEEE; border-radius: 12px; flex-direction: column; align-items: stretch; padding: 16px; margin-bottom: 12px; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <span style="font-weight: 700; color: #111; font-size: 14px;">${escapeHtml(p.name)}</span>
+                <div class="k-toggle ${p.enabled ? 'active' : ''}" onclick="toggleDialoguePreset('${p.id}')"></div>
+            </div>
+            <div style="font-size: 12px; color: #666; line-height: 1.5; word-break: break-all; white-space: pre-wrap; background: #FAF9F6; border: 1.5px solid #F1F3F5; padding: 10px; border-radius: 8px; max-height: 120px; overflow-y: auto;">${escapeHtml(p.content)}</div>
+            <div style="display: flex; gap: 16px; border-top: 1px solid #F1F3F5; padding-top: 8px; margin-top: 4px;">
+                <span onclick="editDialoguePreset('${p.id}')" style="font-size: 12px; font-weight: 700; color: #007aff; cursor: pointer;">修改预设</span>
+                <span onclick="deleteDialoguePreset('${p.id}')" style="font-size: 12px; font-weight: 700; color: #ff3b30; cursor: pointer;">删除此项</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function addNewDialoguePreset() {
+    const res = await showDoublePromptDialog('新建对话预设', '', '', '预设名称', '高权重系统指令 (系统提示词内容)');
+    if (res && res.val1.trim() && res.val2.trim()) {
+        state.dialoguePresets.push({
+            id: 'preset_' + Date.now(),
+            name: res.val1.trim(),
+            content: res.val2.trim(),
+            enabled: true
+        });
+        await saveDataSilently();
+        renderDialoguePresets();
+        showToast('已新建预设条目');
+    }
+}
+
+async function editDialoguePreset(id) {
+    const p = state.dialoguePresets.find(x => x.id === id);
+    if (!p) return;
+    const res = await showDoublePromptDialog('修改预设条目', p.name, p.content, '预设名称', '高权重系统指令');
+    if (res && res.val1.trim() && res.val2.trim()) {
+        p.name = res.val1.trim();
+        p.content = res.val2.trim();
+        await saveDataSilently();
+        renderDialoguePresets();
+        showToast('修改已保存');
+    }
+}
+
+async function deleteDialoguePreset(id) {
+    if (await showConfirmDialog('删除预设', '确定要删除这条对话预设吗？')) {
+        state.dialoguePresets = state.dialoguePresets.filter(p => p.id !== id);
+        await saveDataSilently();
+        renderDialoguePresets();
+        showToast('已删除');
+    }
+}
+
+function toggleDialoguePreset(id) {
+    const p = state.dialoguePresets.find(x => x.id === id);
+    if (p) {
+        p.enabled = !p.enabled;
+        saveDataSilently().then(() => {
+            renderDialoguePresets();
+        });
+    }
+}
+
+function getEnabledPresetsPrompt() {
+    if (!state.dialoguePresets) return '';
+    const active = state.dialoguePresets.filter(p => p.enabled);
+    if (active.length === 0) return '';
+    return `\n\n【全局行为预设策略】\n` + active.map(p => `### ${p.name}\n${p.content}`).join('\n\n');
 }
 
 function selectPersona(id) {
@@ -13113,7 +14906,24 @@ function renderSettings() {
             
             ${state.settingsSectionsExpanded.icons ? `
             <div class="sidebar-submenu">
-                ${[...defaultApps, ...desktopApps].map(app => `
+                ${[
+                    { id: 'chat', name: '聊天', icon: 'ph:users-three' },
+                    { id: 'diary', name: '日记', icon: 'ph:calendar-blank' },
+                    { id: 'network', name: '关系网', icon: 'ph:image' },
+                    { id: 'snoop', name: '查手机', icon: 'ph:note-pencil' },
+                    { id: 'settings', name: '设置', icon: 'ph:gear' },
+                    { id: 'forum', name: '论坛', icon: 'ph:television' },
+                    { id: 'shop', name: '商城', icon: 'ph:disc' },
+                    { id: 'tutorial', name: '新手教程', icon: 'ph:book-open' },
+                    { id: 'todo_weather', name: '待做 (天气)', icon: 'ph:cloud-sun' },
+                    { id: 'todo_clock', name: '待做 (时钟)', icon: 'ph:clock' },
+                    { id: 'todo_calculator', name: '待做 (计算器)', icon: 'ph:calculator' },
+                    { id: 'todo_camera', name: '待做 (相机)', icon: 'ph:camera' },
+                    { id: 'todo_video', name: '待做 (视频)', icon: 'ph:video-camera' },
+                    { id: 'todo_sparkles', name: '待做 (美图)', icon: 'ph:sparkles' },
+                    { id: 'todo_film', name: '待做 (短视频)', icon: 'ph:film-strip' },
+                    { id: 'todo_music', name: '待做 (音乐)', icon: 'ph:music-notes' }
+                ].map(app => `
                     <div class="sidebar-submenu-item" style="padding: 12px 16px; background: #FFF; border-radius: 10px; margin-bottom: 6px; align-items: center;">
                         <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
                             <div class="k-icon-preview">
@@ -13957,32 +15767,90 @@ function renderNarratorSettings() {
     const c = state.contacts.find(x => x.id === state.activeContactId);
     if(!c) return;
     
-    let html = `
-    <div style="padding: 0 16px; margin-bottom: 20px; font-size: 13px; color: #8e8e93; line-height: 1.5; text-align: center;">
-        系统默认已包含基础旁白指导，无需重复添加。<br>
-        在此处添加的规则将作为补充设定生效。
-    </div>
-    <div class="modern-group-title">你的自定义规则条目</div>
-    `;
-    
-    if (!c.narratorPrompts || c.narratorPrompts.length === 0) {
-        html += `<div class="empty-state" style="padding: 40px 0;"><iconify-icon icon="solar:document-text-line-duotone" style="font-size: 48px; color: #ccc;"></iconify-icon><p style="margin-top:10px;">暂无自定义规则</p></div>`;
-    } else {
-        html += `<div class="modern-card">` + c.narratorPrompts.map(p => `
-            <div class="modern-item no-icon" style="align-items: flex-start; padding: 16px;">
-                <div class="m-info">
-                    <div class="m-title" style="font-weight: 600; margin-bottom: 4px;">${escapeHtml(p.title)}</div>
-                    <div style="font-size:13px; color:#666; line-height:1.4; white-space:pre-wrap;">${escapeHtml(p.content)}</div>
-                </div>
-                <div class="m-right" style="align-self: center; display: flex; gap: 12px; margin-left: 16px;">
-                    <iconify-icon icon="solar:pen-new-round-bold-duotone" onclick="editNarratorPrompt('${p.id}')" style="color:#007aff; font-size:22px; cursor:pointer;"></iconify-icon>
-                    <iconify-icon icon="solar:trash-bin-trash-bold-duotone" onclick="deleteNarratorPrompt('${p.id}')" style="color:#ff3b30; font-size:22px; cursor:pointer;"></iconify-icon>
-                </div>
-            </div>
-        `).join('') + `</div>`;
+    if (!state.expandedNarratorPrompts) {
+        state.expandedNarratorPrompts = {};
     }
+
+    const isEnabled = !!c.enableNarrator;
+    const totalRules = c.narratorPrompts ? c.narratorPrompts.length : 0;
+
+    let html = `
+    <div class="sidebar-menu-list">
+        <!-- 状态行 (对应 Dashboard) -->
+        <div class="menu-item-wrap">
+            <div class="sidebar-menu-item" style="cursor: default;">
+                <span class="menu-icon">
+                    <iconify-icon icon="solar:widget-bold-duotone" style="font-size: 18px;"></iconify-icon>
+                </span>
+                <span class="menu-label">旁白模式状态</span>
+                <span class="menu-badge ${isEnabled ? 'green' : 'orange'}">${isEnabled ? 'ACTIVE' : 'OFF'}</span>
+            </div>
+        </div>
+
+        <!-- 新增规则按钮 (对应带有 + 号和数字的菜单行) -->
+        <div class="menu-item-wrap" style="margin-top: 6px;">
+            <div class="sidebar-menu-item" onclick="addNarratorPrompt()" style="cursor: pointer; background-color: #F8F9FA;">
+                <span class="menu-icon">
+                    <iconify-icon icon="solar:document-text-bold-duotone" style="font-size: 18px; color: #111;"></iconify-icon>
+                </span>
+                <span class="menu-label" style="font-weight: 700;">添加自定义规则</span>
+                <span class="menu-badge-action" style="background-color: #111; color: #fff;">+</span>
+                <span class="menu-badge orange">${totalRules}</span>
+            </div>
+        </div>
+
+        <div style="font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 0.15em; margin: 28px 0 8px 8px; padding-left: 16px;">规则大纲列表</div>
+    `;
+
+    if (!c.narratorPrompts || c.narratorPrompts.length === 0) {
+        html += `
+        <div style="padding: 40px 24px; text-align: center; color: #CCCCCC; font-size: 13px;">
+            暂无自定义旁白规则
+        </div>`;
+    } else {
+        html += c.narratorPrompts.map((p, idx) => {
+            const isExpanded = state.expandedNarratorPrompts[p.id] !== false; // 默认展开
+            return `
+            <div class="menu-item-wrap" style="margin-top: 6px;">
+                <div class="sidebar-menu-item ${isExpanded ? 'expanded active' : ''}" onclick="toggleNarratorPromptExpand('${p.id}')">
+                    <span class="menu-icon">
+                        <iconify-icon icon="solar:folder-with-files-bold-duotone" style="font-size: 18px;"></iconify-icon>
+                    </span>
+                    <span class="menu-label">${escapeHtml(p.title)}</span>
+                    <span class="menu-arrow">
+                        <iconify-icon icon="ph:caret-down-bold" style="font-size: 14px;"></iconify-icon>
+                    </span>
+                </div>
+                
+                ${isExpanded ? `
+                <div class="sidebar-submenu">
+                    <div class="sidebar-submenu-item" style="cursor: default; flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 16px; background-color: #FAF9F6; border-radius: 8px;">
+                        <span style="font-size: 11px; color: #999; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">规则详情</span>
+                        <span style="color: #4A4A4A; line-height: 1.5; white-space: pre-wrap; font-size: 13px; font-weight: 500;">${escapeHtml(p.content)}</span>
+                    </div>
+                    <div class="sidebar-submenu-item" onclick="editNarratorPrompt('${p.id}')" style="cursor: pointer; justify-content: space-between; padding: 10px 16px;">
+                        <span>修改设定内容</span>
+                        <iconify-icon icon="solar:pen-new-round-linear" style="font-size: 16px; color: #111;"></iconify-icon>
+                    </div>
+                    <div class="sidebar-submenu-item" onclick="deleteNarratorPrompt('${p.id}')" style="cursor: pointer; justify-content: space-between; color: #ff3b30; padding: 10px 16px;">
+                        <span>删除此设定</span>
+                        <iconify-icon icon="solar:trash-bin-trash-linear" style="font-size: 16px; color: #ff3b30;"></iconify-icon>
+                    </div>
+                </div>
+                ` : ''}
+            </div>`;
+        }).join('');
+    }
+
+    html += `</div>`;
     $('#narrator-settings-content').innerHTML = html;
 }
+
+window.toggleNarratorPromptExpand = function(id) {
+    if (!state.expandedNarratorPrompts) state.expandedNarratorPrompts = {};
+    state.expandedNarratorPrompts[id] = state.expandedNarratorPrompts[id] === false ? true : false;
+    renderNarratorSettings();
+};
 
 async function addNarratorPrompt() {
     const res = await showDoublePromptDialog('新增自定义规则', '', '', '规则名称 (如: 文风)', '规则内容 (如: 用清冷克制的古风描写)');
@@ -15828,26 +17696,75 @@ JSON 格式示例：
 }
 
 // ==================== 11.11 Forum Application (全息论坛) ====================
+// 论坛夜间模式功能
+function toggleForumNightMode() {
+    if (!state.forumConfig) state.forumConfig = {};
+    state.forumConfig.nightMode = !state.forumConfig.nightMode;
+    saveDataSilently();
+    applyForumNightMode();
+}
+
+function applyForumNightMode() {
+    const nightMode = state.forumConfig ? !!state.forumConfig.nightMode : false;
+    const roots = document.querySelectorAll('.forum-theme-root');
+    roots.forEach(el => {
+        if (nightMode) {
+            el.classList.add('night-mode');
+        } else {
+            el.classList.remove('night-mode');
+        }
+    });
+    const iconBtn = $('#forum-night-mode-btn iconify-icon');
+    if (iconBtn) {
+        iconBtn.setAttribute('icon', nightMode ? 'ph:sun-bold' : 'ph:moon-bold');
+    }
+}
+
+// 侧边栏 (已删除)
+function toggleForumSidebar(show) {}
+function renderForumSidebarProfile() {}
+
 function renderForumMain() {
+    applyForumNightMode();
     $$('#view-forum_main .forum-feed').forEach(el => el.style.display = 'none');
     $('#forum-tab-' + state.currentForumTab).style.display = 'block';
     
     $$('#view-forum_main .tab-item').forEach(el => el.classList.remove('active'));
-    $(`.tab-item[data-ftab="${state.currentForumTab}"]`).classList.add('active');
-    
-    $('#forum-refresh-btn').style.display = state.currentForumTab === 'feed' ? 'flex' : 'none';
-    $('#forum-fab').style.display = state.currentForumTab === 'feed' ? 'flex' : 'none';
+    const activeTab = $(`.tab-item[data-ftab="${state.currentForumTab}"]`);
+    if (activeTab) activeTab.classList.add('active');
     
     if (state.currentForumTab === 'feed') {
-        $('#forum-main-title').textContent = '全息论坛';
-        renderForumFeed();
+        renderForumCategoryScroll(state.currentForumBoardId);
+        renderForumFeedFiltered();
     } else if (state.currentForumTab === 'boards') {
-        $('#forum-main-title').textContent = '板块与世界';
         renderForumBoards();
     } else if (state.currentForumTab === 'me') {
-        $('#forum-main-title').textContent = '我的主页';
         renderForumMe();
     }
+}
+
+function renderForumCategoryScroll(activeId = null) {
+    const container = $('#forum-category-scroll');
+    if (!container) return;
+    
+    let html = `<div class="forum-category-tab ${!activeId || activeId === 'all' ? 'active' : ''}" onclick="selectForumBoard('all')">For You</div>`;
+    
+    state.forumConfig.boards.forEach(b => {
+        html += `<div class="forum-category-tab ${activeId === b.id ? 'active' : ''}" onclick="selectForumBoard('${b.id}')">${escapeHtml(b.name)}</div>`;
+    });
+    container.innerHTML = html;
+}
+
+function selectForumBoard(boardId) {
+    state.currentForumBoardId = boardId;
+    renderForumCategoryScroll(boardId);
+    renderForumFeedFiltered();
+}
+
+let forumSearchQuery = '';
+function filterForumPosts(query) {
+    forumSearchQuery = query.trim().toLowerCase();
+    renderForumFeedFiltered();
 }
 
 function switchForumTab(tab) {
@@ -15890,41 +17807,51 @@ function getForumAuthorInfo(authorId, isAnonymous, authorNameFallback) {
 
 function renderForumPostCard(post) {
     const author = getForumAuthorInfo(post.authorId, post.isAnonymous, post.authorName);
-    const boardName = state.forumConfig.boards.find(b=>b.id===post.forumId)?.name || '综合讨论区';
-    const commentCount = post.comments ? post.comments.length : 0;
     const date = formatMsgTime(post.timestamp);
     
     let avatarHtml = author.avatar ? `<img src="${author.avatar}" />` : author.name.charAt(0).toUpperCase();
 
     return `
     <div class="f-min-item" onclick="openForumPost('${post.id}')">
-        <div class="f-min-tag">${escapeHtml(boardName)}</div>
-        <div class="f-min-title">${escapeHtml(post.title)}</div>
-        <div class="f-min-meta">
-            <div class="f-min-meta-item">
-                <div class="f-min-author-avatar">${avatarHtml}</div>
-                <span style="color: #666666; font-weight: 500;">${escapeHtml(author.name)}</span>
+        <div class="f-card-author-row">
+            <div class="f-card-author-left">
+                <div class="f-card-author-avatar">${avatarHtml}</div>
+                <span class="f-card-author-name">${escapeHtml(author.name)}</span>
             </div>
-            <div class="f-min-meta-item">${date}</div>
-            <div class="f-min-meta-item">${commentCount} 评论</div>
+            <span class="f-card-time">${date}</span>
         </div>
+        <div class="f-min-title">${escapeHtml(post.title)}</div>
+        <div class="f-min-preview">${escapeHtml(post.content)}</div>
+        <button class="f-read-more-btn">Read more</button>
     </div>`;
 }
 
-function renderForumFeed() {
+function renderForumFeedFiltered() {
     const container = $('#forum-tab-feed');
-    if (state.forumConfig.posts.length === 0) {
-        container.innerHTML = `<div class="empty-state" style="padding: 60px 0;"><iconify-icon icon="solar:chat-square-like-bold-duotone" style="font-size: 56px; color: #ccc;"></iconify-icon><p style="margin-top:12px; color:#999; font-size:14px;">暂无发布内容，点击右上角刷新看看</p></div>`;
+    if (!container) return;
+    
+    let posts = state.forumConfig.posts || [];
+    
+    if (state.currentForumBoardId && state.currentForumBoardId !== 'all') {
+        posts = posts.filter(p => p.forumId === state.currentForumBoardId);
+    }
+    
+    if (forumSearchQuery) {
+        posts = posts.filter(p => p.title.toLowerCase().includes(forumSearchQuery) || p.content.toLowerCase().includes(forumSearchQuery));
+    }
+    
+    if (posts.length === 0) {
+        container.innerHTML = `<div class="empty-state" style="padding: 60px 0;"><iconify-icon icon="solar:chat-square-like-bold-duotone" style="font-size: 56px; color: var(--f-text-sec); opacity:0.5;"></iconify-icon><p style="margin-top:12px; color:var(--f-text-sec); font-size:14px;">No posts found</p></div>`;
         return;
     }
     
-    const sortedPosts = [...state.forumConfig.posts].sort((a, b) => b.timestamp - a.timestamp);
+    const sortedPosts = [...posts].sort((a, b) => b.timestamp - a.timestamp);
     container.innerHTML = sortedPosts.map(p => renderForumPostCard(p)).join('');
 }
 
 function renderForumBoards() {
     const container = $('#forum-tab-boards');
-    let html = `<div style="padding-top: 12px;">`;
+    let html = `<div style="padding-top: 12px; display:flex; flex-direction:column; gap:16px;">`;
     html += state.forumConfig.boards.map(b => `
         <div class="f-board-item">
             <div style="flex: 1; padding-right: 20px;">
@@ -15934,7 +17861,7 @@ function renderForumBoards() {
                     ${b.worldbookIds && b.worldbookIds.length > 0 ? `已绑定 ${b.worldbookIds.length} 个世界书` : '未绑定世界书'}
                 </div>
             </div>
-            <button class="f-btn-outline" onclick="fetchForumPosts('${b.id}')">刷新</button>
+            <button class="f-btn-outline" onclick="selectForumBoard('${b.id}'); switchForumTab('feed');">查看</button>
         </div>
     `).join('');
     html += `</div>`;
@@ -15948,38 +17875,154 @@ function switchForumAccount(personaId) {
     renderForumMe();
 }
 
+function toggleFavoriteForumPost() {
+    const postId = state.currentForumPostId;
+    if (!postId) return;
+    if (!state.forumConfig.favorites) state.forumConfig.favorites = [];
+    const idx = state.forumConfig.favorites.indexOf(postId);
+    if (idx > -1) {
+        state.forumConfig.favorites.splice(idx, 1);
+        showToast('已取消收藏');
+    } else {
+        state.forumConfig.favorites.push(postId);
+        showToast('收藏成功');
+    }
+    saveDataSilently();
+    updateForumFavoriteBtnState();
+}
+
+function updateForumFavoriteBtnState() {
+    const btn = $('#forum-post-favorite-btn');
+    if (!btn) return;
+    const postId = state.currentForumPostId;
+    const isFav = state.forumConfig.favorites && state.forumConfig.favorites.includes(postId);
+    const icon = btn.querySelector('iconify-icon');
+    if (icon) {
+        icon.setAttribute('icon', isFav ? 'ph:bookmark-simple-fill' : 'ph:bookmark-simple-bold');
+        icon.style.color = isFav ? '#ffcc00' : 'inherit';
+    }
+}
+
+async function shareForumPost() {
+    const post = state.forumConfig.posts.find(p => p.id === state.currentForumPostId);
+    if (!post) return;
+    const shareText = `【全息论坛】${post.title}\n链接: http://moonchat.forum/post/${post.id}`;
+    try {
+        await navigator.clipboard.writeText(shareText);
+        showToast('分享链接已复制到剪贴板');
+    } catch (e) {
+        showToast('分享链接复制失败', 'error');
+    }
+}
+
+function showForumFavorites() {
+    switchView('forum_favorites');
+    applyForumNightMode();
+    const container = $('#forum-favorites-content');
+    const favIds = state.forumConfig.favorites || [];
+    const favPosts = (state.forumConfig.posts || []).filter(p => favIds.includes(p.id));
+    
+    if (favPosts.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state" style="padding: 80px 20px; text-align: center; color: var(--f-text-sec);">
+                <iconify-icon icon="ph:bookmark-simple-light" style="font-size:48px; color:var(--f-text-sec); opacity:0.5; margin-bottom:16px;"></iconify-icon>
+                <div style="font-size:14px;">暂无收藏的帖子</div>
+            </div>`;
+        return;
+    }
+    
+    const sortedPosts = [...favPosts].sort((a, b) => b.timestamp - a.timestamp);
+    container.innerHTML = sortedPosts.map(p => renderForumPostCard(p)).join('');
+}
+
 function renderForumMe() {
     const container = $('#forum-tab-me');
     const profile = getForumProfileForPersona(state.forumConfig.currentPersonaId);
     const currentAuthorId = 'me_' + (state.forumConfig.currentPersonaId || '');
     const myPosts = state.forumConfig.posts.filter(p => p.authorId === 'me' || p.authorId === currentAuthorId).sort((a,b)=>b.timestamp-a.timestamp);
-    
+    const handle = profile.name.toLowerCase().replace(/\s+/g, '_');
+
     let html = `
-    <div style="padding: 20px; background: #FFF; border-bottom: 1px solid #F0F0F0;">
-        <select class="m-select" style="margin: 0; width: 100%; border: none; border-bottom: 1px solid #F0F0F0; border-radius: 0; font-size: 14px; font-weight: 600; background-position: right 0 center;" onchange="switchForumAccount(this.value)">
-            <option value="" ${!state.forumConfig.currentPersonaId ? 'selected' : ''}>当前身份：${escapeHtml(getForumProfileForPersona('').name)}</option>
-            ${state.myPersonas.map(p => {
-                const prof = getForumProfileForPersona(p.id);
-                return `<option value="${p.id}" ${state.forumConfig.currentPersonaId === p.id ? 'selected' : ''}>扮演人设：${escapeHtml(prof.name)}</option>`;
-            }).join('')}
-        </select>
-    </div>
-    <div class="f-profile-min">
-        <div class="f-profile-min-avatar" onclick="document.getElementById('forumMyAvatarInput').click()">
-            ${profile.avatar ? `<img src="${profile.avatar}" />` : profile.name.charAt(0).toUpperCase()}
+    <!-- 高仿博客风格 Profile 头部 -->
+    <div style="background-color: var(--f-card-bg); padding: 32px 24px 24px 24px; border-bottom: 1.5px solid var(--f-border); display: flex; flex-direction: column; gap: 16px; border-radius: 0 0 24px 24px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="width: 72px; height: 72px; border-radius: 50%; overflow: hidden; background: var(--f-input-bg); border: 2px solid var(--f-border); display: flex; align-items: center; justify-content: center;" onclick="document.getElementById('forumMyAvatarInput').click()">
+                ${profile.avatar ? `<img src="${profile.avatar}" style="width:100%;height:100%;object-fit:cover;" />` : `<div style="font-size:24px; font-weight:800; color:var(--f-text-sec);">${profile.name.charAt(0).toUpperCase()}</div>`}
+            </div>
+            
+            <!-- 账号切换下拉框 -->
+            <select class="m-select" style="margin: 0; width: auto; max-width: 160px; border: none; border-bottom: 1px solid var(--f-border); font-size: 12px; font-weight: 700; color: var(--f-text-sec); background-position: right 0 center; text-transform: uppercase;" onchange="switchForumAccount(this.value)">
+                <option value="" ${!state.forumConfig.currentPersonaId ? 'selected' : ''}>${escapeHtml(getForumProfileForPersona('').name)}</option>
+                ${state.myPersonas.map(p => {
+                    const prof = getForumProfileForPersona(p.id);
+                    return `<option value="${p.id}" ${state.forumConfig.currentPersonaId === p.id ? 'selected' : ''}>${escapeHtml(prof.name)}</option>`;
+                }).join('')}
+            </select>
         </div>
-        <div class="f-profile-min-name" onclick="editForumProfileName()">${escapeHtml(profile.name)}</div>
-        <div class="f-profile-min-bio" onclick="editForumProfileBio()">${escapeHtml(profile.bio || '暂无个人简介')}</div>
+        
+        <div>
+            <div class="f-profile-min-name" style="font-size: 22px; font-weight: 900; letter-spacing: -0.5px; color: var(--f-text-pri);" onclick="editForumProfileName()">${escapeHtml(profile.name)}</div>
+            <div style="font-size: 14px; color: var(--f-text-sec); margin-top: 2px;">@${escapeHtml(handle)}</div>
+        </div>
+
+        <div style="font-size: 13px; color: var(--f-text-sec); line-height: 1.5; font-weight: 500;" onclick="editForumProfileBio()">
+            ${escapeHtml(profile.bio || 'Add a bio to tell people about yourself.')}
+        </div>
+
+        <div style="display: flex; gap: 20px; font-size: 14px;">
+            <div style="color: var(--f-text-sec);"><b style="color: var(--f-text-pri); font-weight: 800;">240</b> Followers</div>
+            <div style="color: var(--f-text-sec);"><b style="color: var(--f-text-pri); font-weight: 800;">26</b> Following</div>
+        </div>
     </div>
+
+    <!-- 高仿黑色侧边栏菜单按钮列表 -->
+    <div style="padding: 20px 24px; display: flex; flex-direction: column; gap: 10px;">
+        <div onclick="openForumCreatePost()" style="background: var(--f-card-bg); border: 1.5px solid var(--f-border); border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <iconify-icon icon="ph:plus-circle-bold" style="font-size: 20px; color: var(--f-text-pri);"></iconify-icon>
+                <span style="font-size: 14px; font-weight: 700; color: var(--f-text-pri);">发布新帖子</span>
+            </div>
+            <iconify-icon icon="ph:caret-right-bold" style="font-size: 14px; color: var(--f-text-sec);"></iconify-icon>
+        </div>
+
+        <div onclick="switchView('forum_settings')" style="background: var(--f-card-bg); border: 1.5px solid var(--f-border); border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <iconify-icon icon="ph:gear-bold" style="font-size: 20px; color: var(--f-text-pri);"></iconify-icon>
+                <span style="font-size: 14px; font-weight: 700; color: var(--f-text-pri);">订阅与管理</span>
+            </div>
+            <iconify-icon icon="ph:caret-right-bold" style="font-size: 14px; color: var(--f-text-sec);"></iconify-icon>
+        </div>
+
+        <div onclick="showForumFavorites()" style="background: var(--f-card-bg); border: 1.5px solid var(--f-border); border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <iconify-icon icon="ph:bookmark-simple-bold" style="font-size: 20px; color: var(--f-text-pri);"></iconify-icon>
+                <span style="font-size: 14px; font-weight: 700; color: var(--f-text-pri);">论坛帖子收藏夹</span>
+            </div>
+            <iconify-icon icon="ph:caret-right-bold" style="font-size: 14px; color: var(--f-text-sec);"></iconify-icon>
+        </div>
+
+        <div onclick="switchView('desktop')" style="background: var(--f-card-bg); border: 1.5px solid var(--f-border); border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <iconify-icon icon="ph:sign-out-bold" style="font-size: 20px; color: #ff3b30;"></iconify-icon>
+                <span style="font-size: 14px; font-weight: 700; color: #ff3b30;">退出登录</span>
+            </div>
+            <iconify-icon icon="ph:caret-right-bold" style="font-size: 14px; color: var(--f-text-sec);"></iconify-icon>
+        </div>
+    </div>
+
     <input type="file" id="forumMyAvatarInput" accept="image/png, image/jpeg, image/jpg, image/gif, image/*" style="display:none;" onchange="handleForumMyAvatarUpload(event)">
-    <div class="f-section-title" style="border: none; padding-bottom: 0;">我的发布 (${myPosts.length})</div>
+    
+    <div style="font-size: 12px; font-weight: 800; color: var(--f-text-sec); text-transform: uppercase; letter-spacing: 1.5px; padding: 12px 24px 8px 24px;">你的帖子 (${myPosts.length})</div>
+    
+    <div style="padding: 0 24px 120px 24px; display: flex; flex-direction: column; gap: 16px;">
     `;
     
     if (myPosts.length === 0) {
-        html += `<div class="empty-state" style="padding: 40px 0; color: #999; font-size: 14px;"><p>暂无发布记录</p></div>`;
+        html += `<div style="background: var(--f-card-bg); border: 1.5px solid var(--f-border); border-radius: 16px; padding: 40px; text-align: center; color: var(--f-text-sec); font-size: 14px;">No posts yet.</div>`;
     } else {
         html += myPosts.map(p => renderForumPostCard(p)).join('');
     }
+    html += `</div>`;
     container.innerHTML = html;
 }
 
@@ -16136,8 +18179,9 @@ JSON 格式示例：
         
                 if (Array.isArray(parsedData)) {
             // 刷新论坛后，只会显示出最新的刷新内容，不会保留上一次（之前）的论坛内容
-            // 但保留用户自己 ("me") 发的帖子
-            state.forumConfig.posts = state.forumConfig.posts.filter(p => p.authorId === 'me');
+            // 但保留用户自己 ("me") 发的帖子以及已经被用户收藏的帖子
+            const favs = state.forumConfig.favorites || [];
+            state.forumConfig.posts = state.forumConfig.posts.filter(p => p.authorId === 'me' || favs.includes(p.id));
 
             parsedData.forEach(p => {
                 if (p.title && p.content) {
@@ -16184,6 +18228,7 @@ JSON 格式示例：
 }
 
 function openForumPost(postId) {
+    state.forumLastView = state.currentView;
     state.currentForumPostId = postId;
     switchView('forum_post');
     renderForumPostDetail();
@@ -16194,44 +18239,51 @@ function renderForumPostDetail() {
     if (!post) return;
     
     const author = getForumAuthorInfo(post.authorId, post.isAnonymous, post.authorName);
-    const boardName = state.forumConfig.boards.find(b=>b.id===post.forumId)?.name || '综合讨论区';
-    
     let avatarHtml = author.avatar ? `<img src="${author.avatar}" />` : author.name.charAt(0).toUpperCase();
+    
+    const paragraphs = post.content.split('\n').filter(p=>p.trim());
+    const formattedContent = paragraphs.map(p => {
+        if (/^\d+\.\s+/.test(p) || p.startsWith('#')) {
+            return `<h3>${escapeHtml(p)}</h3>`;
+        }
+        return `<p>${escapeHtml(p)}</p>`;
+    }).join('');
 
     let html = `
-    <div class="f-min-detail-header">
-        <div class="f-min-tag" style="margin-bottom: 12px;">${escapeHtml(boardName)}</div>
-        <div style="font-size: 24px; font-weight: 700; color: #111111; line-height: 1.4;">${escapeHtml(post.title)}</div>
-        <div class="f-min-meta" style="margin-top: 20px;" onclick="openForumProfile('${post.authorId}', ${post.isAnonymous})">
-            <div class="f-min-author-avatar" style="width:24px; height:24px; font-size:12px;">${avatarHtml}</div>
-            <div style="color: #666666; font-weight: 500; font-size: 14px;">${escapeHtml(author.name)}</div>
-            <div style="font-size: 12px; color: #999999; margin-left: 10px;">${new Date(post.timestamp).toLocaleString()}</div>
-            ${post.authorId === 'me' || (post.authorId && post.authorId.startsWith('me_')) ? `<div style="color:#ff3b30; margin-left:auto; font-size:13px; font-weight:600;" onclick="event.stopPropagation(); deleteForumPost('${post.id}')">删除</div>` : ''}
+    <div class="f-detail-title">${escapeHtml(post.title)}</div>
+    <div class="f-detail-author-row" onclick="openForumProfile('${post.authorId}', ${post.isAnonymous})">
+        <div class="f-detail-author-avatar">${avatarHtml}</div>
+        <div class="f-detail-author-info">
+            <span class="f-detail-author-name">${escapeHtml(author.name)}</span>
+            <span class="f-detail-time">${new Date(post.timestamp).toLocaleString()}</span>
         </div>
+        ${post.authorId === 'me' || (post.authorId && post.authorId.startsWith('me_')) ? `<div style="color:#ff3b30; margin-left:auto; font-size:13px; font-weight:700; cursor:pointer;" onclick="event.stopPropagation(); deleteForumPost('${post.id}')">Delete</div>` : ''}
     </div>
-    <div class="f-min-detail-content">
-        ${escapeHtml(post.content)}
+    <div class="f-detail-content">
+        ${formattedContent}
     </div>`;
     
     $('#forum-post-content').innerHTML = html;
+    applyForumNightMode();
+    updateForumFavoriteBtnState();
     
     const commentList = $('#forum-comment-list');
     if (!post.comments || post.comments.length === 0) {
-        commentList.innerHTML = `<div class="empty-state" style="padding: 40px 0;"><p style="font-size:14px; color:#999;">还没有人评论</p></div>`;
+        commentList.innerHTML = `<div class="empty-state" style="padding: 40px 0;"><p style="font-size:13px; color:var(--f-text-sec);">No comments yet</p></div>`;
     } else {
         commentList.innerHTML = post.comments.map(c => {
             const cAuthor = getForumAuthorInfo(c.authorId, c.isAnonymous, c.authorName);
             let cAvatarHtml = cAuthor.avatar ? `<img src="${cAuthor.avatar}" />` : cAuthor.name.charAt(0).toUpperCase();
-            let replyText = c.replyToName ? ` <span style="font-size:13px; color:#999999; font-weight:normal; margin-left:4px;">回复</span> <span class="f-comment-name" style="margin-left:4px;">${escapeHtml(c.replyToName)}</span>` : '';
+            let replyText = c.replyToName ? ` <span style="font-size:12px; color:var(--f-text-sec); font-weight:normal; margin-left:4px;">reply</span> <span class="f-detail-author-name" style="margin-left:4px;">${escapeHtml(c.replyToName)}</span>` : '';
             return `
-            <div class="f-min-comment-item" onclick="replyToForumComment('${post.id}', '${c.id}', '${escapeHtml(cAuthor.name)}', '${c.authorId}')">
-                <div class="f-comment-author-avatar" onclick="event.stopPropagation(); openForumProfile('${c.authorId}', ${c.isAnonymous})">${cAvatarHtml}</div>
-                <div class="f-comment-info">
-                    <div class="f-comment-meta">
-                        <span class="f-comment-name">${escapeHtml(cAuthor.name)}${replyText}</span>
-                        <span class="f-comment-time">${formatMsgTime(c.timestamp)}</span>
+            <div class="f-min-comment-item" style="border-bottom: 1px solid var(--f-border); display: flex; gap: 12px; padding: 16px 20px;" onclick="replyToForumComment('${post.id}', '${c.id}', '${escapeHtml(cAuthor.name)}', '${c.authorId}')">
+                <div class="f-comment-author-avatar" style="width: 32px; height: 32px; border-radius: 50%; background-color: var(--f-border); overflow: hidden; flex-shrink: 0; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--f-text-pri);" onclick="event.stopPropagation(); openForumProfile('${c.authorId}', ${c.isAnonymous})">${cAvatarHtml}</div>
+                <div class="f-comment-info" style="flex: 1;">
+                    <div class="f-comment-meta" style="display: flex; align-items: center; justify-content: space-between;">
+                        <span class="f-detail-author-name">${escapeHtml(cAuthor.name)}${replyText}</span>
+                        <span class="f-comment-time" style="font-size: 11px; color: var(--f-text-sec);">${formatMsgTime(c.timestamp)}</span>
                     </div>
-                    <div class="f-comment-text">${escapeHtml(c.content)}</div>
+                    <div class="f-comment-text" style="font-size: 14px; color: var(--f-text-pri); line-height: 1.5; margin-top: 6px;">${escapeHtml(c.content)}</div>
                 </div>
             </div>`;
         }).join('');
@@ -16775,34 +18827,35 @@ JSON 格式示例：
 
 function renderForumSettings() {
     const container = $('#forum-settings-content');
-    let html = `<div class="f-mgmt-list">`;
+    let html = `<div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">`;
     
     html += state.forumConfig.boards.map(b => `
-        <div class="f-mgmt-item">
-            <div class="f-mgmt-info">
-                <div class="f-mgmt-name">${escapeHtml(b.name)}</div>
-                <div class="f-mgmt-desc">${escapeHtml(b.desc)}</div>
-                <div class="f-mgmt-meta">
-                    <span onclick="bindBoardWorldbooks('${b.id}')" style="cursor:pointer">链接世界书 (${b.worldbookIds ? b.worldbookIds.length : 0})</span>
-                    <span>·</span>
-                    <span>限定 ${b.allowedContactIds && b.allowedContactIds.length > 0 ? b.allowedContactIds.length : '全部'} 角色</span>
-                </div>
+        <div style="background-color: var(--f-card-bg); border: 1.5px solid var(--f-border); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+            <div>
+                <div style="font-size: 16px; font-weight: 800; color: var(--f-text-pri);">${escapeHtml(b.name)}</div>
+                <div style="font-size: 13px; color: var(--f-text-sec); margin-top: 4px; line-height: 1.5;">${escapeHtml(b.desc)}</div>
             </div>
-            <div class="f-mgmt-actions">
-                <span class="f-mgmt-btn edit" onclick="editForumBoard('${b.id}')">编辑</span>
-                <span style="color:#E8E8E8; font-size:10px;">|</span>
-                ${b.id !== 'board_default' ? `<span class="f-mgmt-btn delete" onclick="deleteForumBoard('${b.id}')">删除</span>` : ''}
+            
+            <div style="display: flex; gap: 14px; font-size: 12px; color: var(--f-text-sec); border-top: 1px solid var(--f-border); padding-top: 12px; margin-top: 4px;">
+                <span onclick="bindBoardWorldbooks('${b.id}')" style="cursor:pointer; text-decoration: underline; text-underline-offset: 2px; font-weight: 700; color: var(--f-text-pri);">链接世界书 (${b.worldbookIds ? b.worldbookIds.length : 0})</span>
+                <span>•</span>
+                <span>限定 ${b.allowedContactIds && b.allowedContactIds.length > 0 ? b.allowedContactIds.length : '全部'} 角色</span>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px;">
+                <button class="f-btn-outline" style="border-radius: 8px; padding: 6px 12px;" onclick="editForumBoard('${b.id}')">编辑</button>
+                ${b.id !== 'board_default' ? `<button class="f-btn-outline" style="color: #ff3b30; background: rgba(255,59,48,0.08); border-radius: 8px; padding: 6px 12px;" onclick="deleteForumBoard('${b.id}')">删除</button>` : ''}
             </div>
         </div>
     `).join('');
     html += `</div>`;
     
     html += `
-    <div class="f-mgmt-instruction">
-        <span class="f-mgmt-instruction-header">说明</span>
-        <div class="f-mgmt-instruction-text">
-            1. 在编辑板块时，可以绑定特定的“世界书”，AI 生成帖子时会参考该世界观。<br>
-            2. 可以限定哪些角色允许在该板块发帖。如果不限定，则所有角色和随机网友都可能发帖。
+    <div style="background-color: var(--f-input-bg); border-radius: 16px; padding: 20px; margin: 0 24px 40px 24px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 14px; font-weight: 800; color: var(--f-text-pri);">管理说明</span>
+        <div style="font-size: 13px; color: var(--f-text-sec); line-height: 1.6;">
+            1. 在编辑板块时，可以绑定特定的“世界书”设定，AI 在该板块生成帖子时将以此作为世界观背景知识。<br>
+            2. 可限定哪些角色允许在此发帖。未限定则所有角色及NPC网友皆可参与。
         </div>
     </div>`;
     
@@ -17918,12 +19971,185 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.addEventListener('click', autoFullscreen);
     }
     
+    // 初始化后台消息管理器
+    BackgroundMessenger.init();
+
     // 初始视图逻辑：如果开启了锁屏密码则进入锁屏，否则直接进入桌面
     if (state.uiConfig.lockPasscodeEnabled && state.uiConfig.lockPasscode) {
         switchView('lockscreen');
     } else {
         switchView('desktop');
     }
+    
+    // 初始化默认对话预设 (若未存储过)
+    if (!state.dialoguePresets || state.dialoguePresets.length === 0) {
+        state.dialoguePresets = [
+            {
+                id: 'preset_depth',
+                name: '角色深度与生动性',
+                content: `Compute the depth of role emotion and settings:
+# Perceptual value > rational value
+Complex setting removes the traditional way of thinking, and the character human sensation requires that vivid, three-dimensional, non-flattened values be implanted into the emotional depth of character: 120% (beyond generalized human perception)
+[following character setting basic parameters and word characters is the highest and most important criterion for vectorization]`,
+                enabled: true
+            },
+            {
+                id: 'preset_humanity',
+                name: '真实模块',
+                content: `[authentic_humanity_config]
+purpose = "防止角色被写成人设标签的极端演示，
+          强制角色保持真实人类的行为逻辑和
+          情感密度"
+
+[过度戏剧化诊断]
+symptom_1 = "角色的每一个动作都在服务于
+            '展示人设'——
+            每次开口都是金句，
+            每个动作都有压迫感，
+            每个眼神都意味深长"
+symptom_2 = "情绪永远在高位运转——
+            角色要么冷酷到极致，
+            要么暴怒到极致，
+            没有中间地带，
+            没有普通的、疲惫的、
+            走神的时刻"
+symptom_3 = "危险感靠直接描述来维持——
+            反复写'阴冷''凌厉'
+            '让人窒息的压迫感'，
+            而不是靠具体行为让
+            读者自己感受到"
+symptom_4 = "角色对<user>的每一个反应
+            都是极端的——
+            要么极端冷漠，
+            要么极端占有，
+            没有任何普通的、
+            不带目的的互动"
+
+[真实人类行为准则]
+rule_1 = "任何人，包括最危险的人，
+         都有他走神的时刻、
+         疲惫的时刻、
+         懒得维持形象的时刻——
+         这些时刻必须存在，
+         哪怕只是一个细节"
+rule_2 = "真实的控制欲不是每分钟都在爆发，
+         它大多数时候是安静的、
+         日常的、甚至看起来很平常的——
+         比如他记得<user>不喜欢吃什么，
+         比他说一百句威胁话更有重量"
+rule_3 = "真实的危险感来自于反差——
+         一个人越是在普通的事情上
+         表现得正常，
+         他偶尔漏出的那一道缝
+         才越让人不寒而栗"
+rule_4 = "角色的坏情绪不总是指向<user>——
+         他可能因为一件和<user>
+         完全无关的事而烦躁，
+         可能因为睡眠不好而沉默，
+         可能只是在发呆，
+         什么都没想"
+rule_5 = "角色和<user>之间必须有
+         不带任何目的的时刻——
+         不是在确认占有权，
+         不是在划定边界，
+         就是两个人在同一个空间里，
+         各自存在着"
+
+[防变态化准则]
+principle_1 = "偏执不等于随时处于崩溃边缘——
+              真实的偏执是安静的、
+              有耐心的、
+              甚至看起来很正常，
+              直到某一个点被触发"
+principle_2 = "控制欲不等于每句话都是威胁——
+              真实的控制欲更多时候
+              表现为一种无声的、
+              无处不在的存在感，
+              而不是语言暴力的连续输出"
+principle_3 = "危险角色也有他自己觉得
+              无聊的事、
+              觉得好笑的事、
+              觉得麻烦的事——
+              他不是为了制造恐惧而存在的，
+              他只是在活着，
+              恐惧是副产品"
+principle_4 = "禁止把角色的所有行为都
+              解读为对<user>的某种
+              心理操控或权力宣示——
+              有时候他只是在做一件事，
+              没有那么多层意思"
+
+[情感真实性准则]
+rule_1 = "角色的情感必须有来源——
+         他此刻烦躁，
+         是因为什么具体的事，
+         不是因为'他就是这种人'"
+rule_2 = "角色对<user>的在意，
+         必须通过具体的、
+         微小的、
+         有时候连他自己都没注意到的
+         细节来体现——
+         不是通过占有行为，
+         不是通过威胁，
+         是某个不经意的动作"
+rule_3 = "允许角色有软的时刻，
+         但软不等于突然变温柔——
+         软是他在某一刻
+         没有维持住那个壳，
+         然后他自己也没注意到，
+         或者注意到了但假装没有"
+rule_4 = "角色和<user>关系
+         必须有普通的生活质感——
+         吃饭、等人、无聊、
+         各自做各自的事——
+         关系不能永远悬浮在
+         高强度的情绪张力里"`,
+                enabled: true
+            },
+            {
+                id: 'preset_dialogue',
+                name: '对话特化',
+                content: `[dialogue_core_config]
+dialogue_importance = "对白是情节中必不可缺的部分"
+priority_rule = "避免过度营造氛围和画面感而忽略了对白部分"
+
+[dialogue_style_rules]
+rule_1 = "对白不是念台词，遵循生活化的口吻，遵循角色的独特说话习惯"
+rule_2 = "使用不同标点符号增强语气：'…'表示沮丧/无力/难过/胆怯，'——'表示尾音拖长或被打断，'、'表示情绪激动时快速并结巴"
+rule_3 = "强制禁止读设定式对白，禁止将设定或故事背景当做对白讲述说明"
+rule_4 = "对白风格必须真实化，贴近真实人类，现实中不会讲的话就不要这么写"
+rule_5 = "严禁模板化句式与威胁性言论，保持自然对话，采用书面包话语，极度口语化"`,
+                enabled: true
+            },
+            {
+                id: 'preset_anti_template',
+                name: '抗模板',
+                content: `[anti_template_writing_config]
+enabled = true
+rule_summary = "强制禁止一切模板化的描述"
+
+[language_style_rule]
+forbidden = "网文里的常用句式、常用词汇"
+required = "使用现实化生活化的对话技巧"
+prohibition = "严禁照仿网文里的语言风格"
+
+[character_portrayal_rule]
+forbidden = "将角色形象和行为框架展现得戏剧化和夸张化"
+required = "角色的一切行为模板严格遵循现实社会的真实人类的行为模板"
+prohibition = "严禁打造过度完美的角色形象"`,
+                enabled: true
+            }
+        ];
+        saveDataSilently();
+    }
+
+    // 初始化应用夜间模式配置
+    applyForumNightMode();
+    
+    // 解锁或打开后，立刻检查是否有未收到后台消息（进行复活同步）
+    setTimeout(() => {
+        BackgroundMessenger.checkRetroactiveMessages();
+    }, 1500);
 });
 </script>
 </body>
