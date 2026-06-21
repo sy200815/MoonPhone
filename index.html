@@ -5211,19 +5211,23 @@ input, textarea {
     animation: highlight-flash 1.6s ease-in-out;
 }
 
-/* ===== Telegram 风格顶栏（透明毛玻璃） ===== */
+/* ===== Telegram 风格顶栏（渐变磨砂液态玻璃顶栏） ===== */
 .glass-effect-header {
-    background: transparent !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    border-bottom: none !important;
-    display: flex;
-    flex-direction: column;
     position: absolute;
     top: 0;
     width: 100%;
     z-index: 10;
     padding-top: max(env(safe-area-inset-top), 10px);
+    padding-bottom: 28px; /* 留出底部空间让毛玻璃和白底渐变自然淡出过渡 */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.75) 55%, rgba(255, 255, 255, 0) 100%) !important;
+    backdrop-filter: blur(20px) saturate(190%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+    /* 使用 CSS Mask 遮罩，使背景白色和高斯模糊在底部 55% 到 100% 的区域内平滑淡出，创造丝滑过渡 */
+    mask-image: linear-gradient(to bottom, black 0%, black 55%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 55%, transparent 100%);
+    border-bottom: none !important;
+    display: flex;
+    flex-direction: column;
     box-shadow: none !important;
 }
 
@@ -14211,7 +14215,7 @@ ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
                         const res = await fetch(`${baseUrl}/chat/completions`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ model: state.apiConfig.model || 'gpt-3.5-turbo', messages: normalizeMessages(apiMessages), temperature: state.apiConfig.temperature ?? 1, stream: false })
+                                body: JSON.stringify({ model: state.apiConfig.model || 'gpt-3.5-turbo', messages: normalizeMessages(apiMessages), temperature: 1, stream: false })
             });
             if (res.ok) {
                 const data = parseAPIResponse(await res.text());
@@ -14284,7 +14288,7 @@ ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
                                 body: JSON.stringify({ model: state.apiConfig.model || 'gpt-3.5-turbo', messages: normalizeMessages([
                         {role: 'user', content: prompt},
                         {role: 'system', content: '【系统最后强制校验】请直接输出。'}
-                    ]), temperature: state.apiConfig.temperature ?? 1, stream: false })
+                    ]), temperature: 1, stream: false })
                 });
         if (res.ok) {
             const data = parseAPIResponse(await res.text());
@@ -14354,7 +14358,7 @@ ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
                                 body: JSON.stringify({ model: state.apiConfig.model || 'gpt-3.5-turbo', messages: normalizeMessages([
                         {role: 'user', content: prompt},
                         {role: 'system', content: '【系统最后强制校验】如果不想回直接输出 NONE。'}
-                    ]), temperature: state.apiConfig.temperature ?? 1, stream: false })
+                    ]), temperature: 1, stream: false })
                 });
         if (res.ok) {
             const data = parseAPIResponse(await res.text());
@@ -15363,13 +15367,13 @@ ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
         state.isBotTyping = true; 
         renderChatRoom();
     }
-    try {
-        let baseUrl = state.apiConfig.url.trim().replace(/\/+$/, '');
-                const res = await fetch(`${baseUrl}/chat/completions`, {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: state.apiConfig.model || 'gpt-3.5-turbo', messages: normalizeMessages(apiMessages), stream: false })
-        });
+        try {
+            let baseUrl = state.apiConfig.url.trim().replace(/\/+$/, '');
+                        const res = await fetch(`${baseUrl}/chat/completions`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: state.apiConfig.model || 'gpt-3.5-turbo', messages: normalizeMessages(apiMessages), temperature: 1, stream: false })
+            });
         if (!res.ok) throw new Error(`[Status ${res.status}] ${await res.text()}`);
         const data = parseAPIResponse(await res.text());
                 if (data.choices && data.choices[0] && data.choices[0].message) {
@@ -15925,7 +15929,7 @@ JSON 格式示例：
                     { role: 'user', content: prompt },
                     { role: 'system', content: '【系统最后强制校验】请务必直接输出纯JSON数组格式，不要包含任何其他解释性文字，不要使用Markdown代码块包裹。' }
                 ]),
-                temperature: state.apiConfig.temperature ?? 1,
+                temperature: 1,
                 stream: false
             })
         });
@@ -18763,11 +18767,6 @@ function renderSettings() {
                         `<input type="text" id="api-model" class="k-input" style="padding: 6px 0;" placeholder="获取或直接输入模型..." value="${state.apiConfig.model || ''}" onchange="state.apiConfig.model = this.value.trim(); saveDataSilently();" />`
                     }
                 </div>
-                
-                <div class="sidebar-submenu-item" style="flex-direction: column; align-items: stretch; gap: 4px; padding: 12px 16px; background: #FFF; border-radius: 10px; margin-bottom: 6px;">
-                    <span style="font-weight: 600; color: #111;">温度值</span>
-                    <input type="number" id="api-temperature" class="k-input" style="padding: 6px 0;" min="0" max="1" step="0.1" value="${state.apiConfig.temperature ?? 1}" onchange="state.apiConfig.temperature = parseFloat(this.value) || 1; saveDataSilently();" />
-                </div>
 
                 <div class="sidebar-submenu-item" style="padding: 0; margin-bottom: 12px; background: transparent;">
                     <button class="m-btn" onclick="testConnection()" id="btn-test-conn" style="width: 100%; margin-top: 6px; border-radius: 10px;">
@@ -18966,11 +18965,10 @@ function applyApiPreset(id) {
     }
     const preset = state.apiPresets.find(p => p.id === id);
     if (preset) {
-                state.apiConfig.presetId = preset.id;
+        state.apiConfig.presetId = preset.id;
         state.apiConfig.url = preset.url;
         state.apiConfig.apiKey = preset.apiKey;
         state.apiConfig.model = preset.model;
-        if (preset.temperature !== undefined) state.apiConfig.temperature = preset.temperature;
         renderSettings();
     }
 }
@@ -18978,9 +18976,7 @@ function applyApiPreset(id) {
 async function saveApiPreset() {
     const url = $('#api-url').value.trim();
     const apiKey = $('#api-key').value.trim();
-        const model = $('#api-model')?.value.trim() || '';
-        let tempVal = parseFloat($('#api-temperature').value);
-        const temperature = isNaN(tempVal) ? 1 : tempVal;
+    const model = $('#api-model')?.value.trim() || '';
     
     if (!url || !apiKey) {
         showToast('请先填写完整的接口地址和密钥', 'error');
@@ -18999,7 +18995,6 @@ async function saveApiPreset() {
             existing.url = url;
             existing.apiKey = apiKey;
             existing.model = model;
-            existing.temperature = temperature;
             state.apiConfig.presetId = existing.id;
         } else {
             const newPreset = {
@@ -19007,8 +19002,7 @@ async function saveApiPreset() {
                 name: name.trim(),
                 url,
                 apiKey,
-                model,
-                temperature
+                model
             };
             state.apiPresets.push(newPreset);
             state.apiConfig.presetId = newPreset.id;
@@ -19017,7 +19011,6 @@ async function saveApiPreset() {
         state.apiConfig.url = url;
         state.apiConfig.apiKey = apiKey;
         state.apiConfig.model = model;
-        state.apiConfig.temperature = temperature;
         await saveDataSilently();
         renderSettings();
         showToast('已保存预设');
@@ -19075,7 +19068,7 @@ async function testConnection() {
     try {
                             const res = await fetch(`${url.replace(/\/+$/, '')}/chat/completions`, {
                 method: 'POST', headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ model: $('#api-model')?.value || 'gpt-3.5-turbo', messages: [{role:'user',content:'Hi'}], temperature: state.apiConfig.temperature ?? 1, stream: false })
+                            body: JSON.stringify({ model: $('#api-model')?.value || 'gpt-3.5-turbo', messages: [{role:'user',content:'Hi'}], temperature: 1, stream: false })
             });
         if(res.ok) showToast('连接成功'); else throw new Error(await res.text());
     } catch(e) { showToast('连接失败: ' + (e.message ? e.message.substring(0, 50) : ''), 'error'); console.error(e); }
@@ -19971,7 +19964,7 @@ async function summarizeMomentMemory(contactId, force = false) {
                     { role: 'user', content: prompt },
                     { role: 'system', content: '【系统最后强制校验】请直接输出。' }
                 ]),
-                temperature: state.apiConfig.temperature ?? 1,
+                temperature: 1,
                 stream: false
             })
         });
@@ -20247,8 +20240,8 @@ async function summarizeMemory(contactId, force = false) {
     ${historyText}`;
 
     try {
-                let baseUrl = state.apiConfig.url.trim().replace(/\/+$/, '');
-        const res = await fetch(`${baseUrl}/chat/completions`, {
+        let baseUrl = state.apiConfig.url.trim().replace(/\/+$/, '');
+                const res = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
@@ -20257,7 +20250,7 @@ async function summarizeMemory(contactId, force = false) {
                     { role: 'user', content: prompt },
                     { role: 'system', content: '【系统最后强制校验】请直接输出。' }
                 ]),
-                temperature: state.apiConfig.temperature ?? 1
+                temperature: 1
             })
         });
         if (!res.ok) {
@@ -20908,7 +20901,7 @@ async function tryTriggerRoleDiary(contact) {
         return `${m.role === 'user' ? '我' : contact.name}: ${txt}`;
     }).join('\n');
 
-        const prompt = `你是${contact.name}。你的性格和设定是：${contact.persona}。${wbPrompt}${memoryPrompt}
+        const prompt = `你是${contact.name}。你的性格和设定 is：${contact.persona}。${wbPrompt}${memoryPrompt}
 ${STRICT_REALISM_PROMPT}
 
 【核心任务】
@@ -20954,7 +20947,7 @@ SAFEGUARD CHECK: Before outputting, scan for asterisks (*), excessive adjectives
                     { role: 'user', content: prompt },
                                         { role: 'system', content: '【系统最后强制校验】请直接输出正文。' }
                 ]),
-                temperature: state.apiConfig.temperature ?? 1,
+                temperature: 1,
                 stream: false
             })
         });
@@ -21274,6 +21267,7 @@ JSON 必须是一个数组，数组中每个对象包含以下字段：
             body: JSON.stringify({ 
                 model: state.apiConfig.model || 'gpt-3.5-turbo', 
                 messages: normalizeMessages([{ role: 'user', content: prompt }]),
+                temperature: 1,
                 stream: false
             })
         });
@@ -21607,13 +21601,13 @@ JSON 格式示例：
 
     try {
         let baseUrl = state.apiConfig.url.trim().replace(/\/+$/, '');
-        const res = await fetch(`${baseUrl}/chat/completions`, {
+                const res = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
                 model: state.apiConfig.model || 'gpt-3.5-turbo', 
                 messages: normalizeMessages([{ role: 'user', content: prompt }]),
-                temperature: state.apiConfig.temperature ?? 1
+                temperature: 1
             })
         });
         
@@ -22154,7 +22148,7 @@ JSON 格式示例：
     "likes": 12,
     "comments": [
       {
-        "authorId": "已知角色ID或 'npc_random'",
+        "authorId": "已知角色ID or 'npc_random'",
         "authorName": "评论人名字",
         "isAnonymous": false,
         "content": "评论的具体内容"
@@ -22170,7 +22164,8 @@ JSON 格式示例：
             headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 model: state.apiConfig.model || 'gpt-3.5-turbo', 
-                messages: normalizeMessages([{ role: 'user', content: prompt }])
+                messages: normalizeMessages([{ role: 'user', content: prompt }]),
+                temperature: 1
             })
         });
         
