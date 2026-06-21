@@ -5540,25 +5540,63 @@ input, textarea {
     margin-left: 6px !important;
 }
 
-/* Telegram 风格繁体时间戳（气泡下方极小字） */
-.tg-msg-timestamp {
-    font-size: 9px;
-    color: #AAAAAA;
-    margin-top: 3px;
-    white-space: nowrap;
-    opacity: 0.7;
-    font-family: 'Noto Sans SC', sans-serif;
-    letter-spacing: 0.3px;
+>>>>>>> REPLACE
+
+### 2. 移除繁体时间格式化函数 `toTraditionalChineseTime`
+<<<<<<< SEARCH
+function toTraditionalChineseTime(ts) {
+    if (!ts) return '';
+    const date = new Date(ts);
+    const numMap = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+    
+    const year = date.getFullYear().toString().split('').map(n => numMap[parseInt(n)]).join('') + '年';
+    
+    const monthVal = date.getMonth() + 1;
+    const month = (monthVal <= 10 ? numMap[monthVal] : '十' + numMap[monthVal % 10]) + '月';
+    
+    const dayVal = date.getDate();
+    let day = '';
+    if (dayVal <= 10) day = numMap[dayVal];
+    else if (dayVal < 20) day = '十' + numMap[dayVal % 10];
+    else if (dayVal === 20) day = '二十';
+    else if (dayVal < 30) day = '二十' + numMap[dayVal % 10];
+    else if (dayVal === 30) day = '三十';
+    else day = '三十' + numMap[dayVal % 10];
+    day += '日';
+    
+    let hourVal = date.getHours();
+    hourVal = hourVal % 12;
+    if (hourVal === 0) hourVal = 12;
+    let hour = '';
+    if (hourVal <= 10) hour = numMap[hourVal];
+    else hour = '十' + numMap[hourVal % 10];
+    hour += '点';
+    
+    const minVal = date.getMinutes();
+    let min = '';
+    if (minVal === 0) {
+        min = '整';
+    } else {
+        if (minVal <= 10) min = numMap[minVal];
+        else if (minVal < 20) min = '十' + numMap[minVal % 10];
+        else {
+            const tens = Math.floor(minVal / 10);
+            const units = minVal % 10;
+            min = numMap[tens] + '十' + (units > 0 ? numMap[units] : '');
+        }
+        min += '分';
+    }
+    
+    return year + month + day + hour + min;
 }
-.tg-ts-right { text-align: right; margin-right: 4px; }
-.tg-ts-left { text-align: left; margin-left: 4px; }
+=======
 
 /* 消息多选框 */
 .msg-checkbox {
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    border: 1px solid #c7c7cc;
+    border: 1px solid #111111;
     margin-right: 10px;
     margin-bottom: 8px;
     display: flex;
@@ -5569,9 +5607,9 @@ input, textarea {
     background: #fff;
 }
 .msg-checkbox.checked {
-    background-color: #007aff;
-    border-color: #007aff;
-    color: #fff;
+    background-color: #111111;
+    border-color: #111111;
+    color: #ffffff;
 }
 
 /* 加载更多消息按钮 */
@@ -10144,12 +10182,12 @@ input, textarea {
                 <div class="status-bar" style="position: relative;">
                     <div class="time sys-time"></div>
                 </div>
-                <div class="nav-bar" style="height: 48px; padding: 0 12px;">
-                    <div class="back-btn" style="font-size: 14px; color: #333; width: 40px; font-weight: 500;" onclick="cancelMultiSelect()">取消</div>
+                <div class="nav-bar" style="height: 48px; padding: 0 12px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <span style="font-size: 14px; color: #333; cursor: pointer; font-weight: 500; pointer-events: auto !important;" onclick="cancelMultiSelect()">取消</span>
                     <div class="nav-title" id="multi-select-count" style="font-size: 15px; font-weight: 600;">已选择 0 项</div>
-                    <div class="nav-right" style="display: flex; gap: 16px; width: auto;">
-                        <div style="font-size: 14px; cursor: pointer; color: #007aff; font-weight: 500;" onclick="forwardSelectedMsgs()">转发</div>
-                        <div class="text-danger" style="font-size: 14px; cursor: pointer; font-weight: 500;" onclick="deleteSelectedMsgs()">删除</div>
+                    <div class="nav-right" style="display: flex; gap: 16px; width: auto; pointer-events: auto !important;">
+                        <span style="font-size: 14px; cursor: pointer; color: #007aff; font-weight: 500; pointer-events: auto !important;" onclick="forwardSelectedMsgs()">转发</span>
+                        <span class="text-danger" style="font-size: 14px; cursor: pointer; font-weight: 500; pointer-events: auto !important;" onclick="deleteSelectedMsgs()">删除</span>
                     </div>
                 </div>
             </div>
@@ -12311,7 +12349,6 @@ function ensureContactConfig(contact) {
     if (contact.iViewHe === undefined) contact.iViewHe = '';
     if (contact.roleEmotePackageId === undefined) contact.roleEmotePackageId = '';
     if (contact.chatBackground === undefined) contact.chatBackground = '';
-    if (contact.showTimestamp === undefined) contact.showTimestamp = false;
     if (contact.avatarShape === undefined) contact.avatarShape = 'circle';
     if (contact.memoryRounds === undefined) contact.memoryRounds = 10;
     if (contact.messageSound === undefined) contact.messageSound = 'none';
@@ -14811,7 +14848,7 @@ function renderChatRoom() {
                                                 let contentStr = '';
         if(msg.type === 'real_image') {
             contentStr = `
-            <div class="msg-photo-card" onclick="openPhotoPopup('${msg.content}')">
+            <div class="msg-photo-card" onclick="if(state.isMultiSelecting){ toggleMsgSelect('${msg.id}'); } else { openPhotoPopup('${msg.content}'); }">
                 <img src="${msg.content}" class="photo-card-img" />
                 <div class="photo-card-badge">
                     <iconify-icon icon="ph:image-square-fill" style="font-size: 14px;"></iconify-icon>
@@ -14823,7 +14860,7 @@ function renderChatRoom() {
         else if(msg.type === 'music_share') {
             const isPlaying = state.currentPlayingMusic && state.currentPlayingMusic.id === msg.musicId && !state.isMusicPaused;
             contentStr = `
-            <div class="msg-music-share-card" onclick="playMusicFromCard('${msg.musicId}')">
+            <div class="msg-music-share-card" onclick="if(state.isMultiSelecting){ toggleMsgSelect('${msg.id}'); } else { playMusicFromCard('${msg.musicId}'); }">
                 <div class="msg-music-card-left">
                     <div class="msg-music-card-title">${escapeHtml(msg.musicTitle)}</div>
                     <div class="msg-music-card-artist">${escapeHtml(msg.musicArtist)}</div>
@@ -14838,7 +14875,7 @@ function renderChatRoom() {
                 </div>
             </div>`;
         }
-                        else if(msg.type === 'transfer') {
+        else if(msg.type === 'transfer') {
             const isProcessed = msg.transferStatus !== 'pending';
             const icon = msg.transferStatus === 'accepted' ? 'ph:check-circle-fill' : (msg.transferStatus === 'rejected' ? 'ph:x-circle-fill' : 'ph:currency-cny-bold');
             const statusText = msg.transferStatus === 'accepted' ? '已收款' : (msg.transferStatus === 'rejected' ? '已退回' : '转账给对方');
@@ -14849,7 +14886,7 @@ function renderChatRoom() {
             
             contentStr = `<div class="msg-transfer-bubble ${isProcessed ? 'processed' : ''}" style="${coverStyle}" onclick="handleTransferClick('${msg.id}')"><div class="msg-transfer-header"><div class="msg-transfer-icon"><iconify-icon icon="${icon}"></iconify-icon></div><div class="msg-transfer-info"><div class="msg-transfer-amount">¥${msg.amount.toFixed(2)}</div><div class="msg-transfer-remark">${escapeHtml(msg.remark)}</div></div></div><div class="msg-transfer-footer">${isMe ? statusText : roleStatusText}</div></div>`;
         }
-                else if(msg.type === 'red_packet') {
+        else if(msg.type === 'red_packet') {
             const isProcessed = msg.transferStatus === 'finished';
             const icon = isProcessed ? 'ph:envelope-open-fill' : 'ph:envelope-simple-fill';
             const statusText = isProcessed ? '已领完' : '查看红包';
@@ -14876,10 +14913,10 @@ function renderChatRoom() {
             
             contentStr = `<div class="msg-transfer-bubble ${isProcessed ? 'processed' : ''}" style="${coverStyle}" onclick="handleExclusiveRedPacketClick('${msg.id}')"><div class="msg-transfer-header"><div class="msg-transfer-icon"><iconify-icon icon="${icon}"></iconify-icon></div><div class="msg-transfer-info"><div class="msg-transfer-amount">¥${msg.amount.toFixed(2)}</div><div class="msg-transfer-remark">${escapeHtml(msg.remark)}</div></div></div><div class="msg-transfer-footer">${statusText}</div></div>`;
         }
-                else if(msg.type === 'forward_records') {
+        else if(msg.type === 'forward_records') {
             const title = `${msg.sourceName} 和 我的聊天记录`;
             contentStr = `
-            <div class="msg-forward-card" onclick="openForwardDetail('${msg.id}')">
+            <div class="msg-forward-card" onclick="if(state.isMultiSelecting){ toggleMsgSelect('${msg.id}'); } else { openForwardDetail('${msg.id}'); }">
                 <div class="msg-forward-title">${escapeHtml(title)}</div>
                 <div class="msg-forward-preview">${escapeHtml(msg.preview)}</div>
                 <div class="msg-forward-footer">聊天记录</div>
@@ -14903,7 +14940,7 @@ function renderChatRoom() {
         }
         else if(msg.type === 'forum_post') {
             contentStr = `
-            <div class="msg-forum-post-card" onclick="openForumPostFromChat('${msg.postId}')">
+            <div class="msg-forum-post-card" onclick="if(state.isMultiSelecting){ toggleMsgSelect('${msg.id}'); } else { openForumPostFromChat('${msg.postId}'); }">
                 <div class="msg-forum-card-header">
                     <iconify-icon icon="ph:television-bold"></iconify-icon>
                     <span>全息论坛 · ${escapeHtml(msg.boardName || '社区')}</span>
@@ -14913,24 +14950,6 @@ function renderChatRoom() {
                 <div class="msg-forum-card-footer">
                     <span>点击查看详情</span>
                     <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>
-                </div>
-            </div>`;
-        }
-        else if(msg.type === 'music_share') {
-            const isPlaying = state.currentPlayingMusic && state.currentPlayingMusic.id === msg.musicId && !state.isMusicPaused;
-            contentStr = `
-            <div class="msg-music-share-card" onclick="playMusicFromCard('${msg.musicId}')">
-                <div class="msg-music-card-left">
-                    <div class="msg-music-card-title">${escapeHtml(msg.musicTitle)}</div>
-                    <div class="msg-music-card-artist">${escapeHtml(msg.musicArtist)}</div>
-                    <div class="msg-music-card-badge">PLAY MUSIC</div>
-                </div>
-                <div class="msg-music-card-right">
-                    <div class="msg-music-disk-bg rotating-disk ${isPlaying ? '' : 'paused'}">
-                        <div class="msg-music-disk-cover">
-                            <img src="${msg.musicCover || 'https://placehold.co/100x100?text=Music'}" />
-                        </div>
-                    </div>
                 </div>
             </div>`;
         }
@@ -14947,13 +14966,13 @@ function renderChatRoom() {
             }
             
             contentStr = `
-            <div class="msg-lover-invite-card">
+            <div class="msg-lover-invite-card" onclick="if(state.isMultiSelecting){ toggleMsgSelect('${msg.id}'); }">
                 <div class="msg-lover-invite-icon">
                     <iconify-icon icon="ph:heart-straight-fill"></iconify-icon>
                 </div>
                 <div class="msg-lover-invite-title">情侣空间绑定邀请</div>
                 <div class="msg-lover-invite-desc">“我想与你开通独立的手账情侣日常空间，记录我们恋爱的点点滴滴。”</div>
-                <button class="msg-lover-invite-btn ${btnClass}" onclick="handleLoverInviteClick('${msg.id}', '${status}')">
+                <button class="msg-lover-invite-btn ${btnClass}" onclick="if(state.isMultiSelecting){ toggleMsgSelect('${msg.id}'); event.stopPropagation(); } else { handleLoverInviteClick('${msg.id}', '${status}'); }">
                     ${statusText}
                 </button>
             </div>`;
@@ -14970,7 +14989,7 @@ function renderChatRoom() {
                 footerClass = 'paid'; // 借用灰度置灰样式
             }
             contentStr = `
-            <div class="msg-takeout-pay-card" onclick="handleTakeoutPayCardClick('${msg.id}')">
+            <div class="msg-takeout-pay-card" onclick="if(state.isMultiSelecting){ toggleMsgSelect('${msg.id}'); } else { handleTakeoutPayCardClick('${msg.id}'); }">
                 <div class="msg-takeout-pay-header">
                     <iconify-icon icon="ph:shopping-bag-fill" style="color: #FF9E1B; font-size: 18px;"></iconify-icon>
                     <span class="msg-takeout-pay-title">${escapeHtml(msg.shopName)}</span>
@@ -15006,7 +15025,6 @@ function renderChatRoom() {
             replyStr = `<div class="reply-quote" style="background-color: ${quoteBg}; color: ${quoteTextColor}; border-left: ${quoteBorderLeft};">回复 ${rName}: ${rContent}</div>`;
         }
         
-        const showTimestamp = !isGroup && chatData.showTimestamp;
         const hideMyAvatar = !isGroup && chatData.hideMyAvatar;
 
         // 气泡内元数据（时间 + 已读双勾）
@@ -15014,13 +15032,12 @@ function renderChatRoom() {
         const metaHtml = `<span class="msg-meta"><span class="msg-time">${formatMsgTime(msg.timestamp)}</span>${isMe ? ticksSvg : ''}</span>`;
 
         return `
-                <div class="message-item ${msg.role}" data-id="${msg.id}" style="">
-            ${state.isMultiSelecting ? `<div class="msg-checkbox ${isSelected?'checked':''}" onclick="toggleMsgSelect('${msg.id}')"><iconify-icon ${isSelected?'icon="ph:check-bold" style="font-size: 14px;"':''}></iconify-icon></div>` : ''}
+                <div class="message-item ${msg.role}" data-id="${msg.id}" style="" onclick="if(state.isMultiSelecting) { toggleMsgSelect('${msg.id}'); }">
+            ${state.isMultiSelecting ? `<div class="msg-checkbox ${isSelected?'checked':''}" onclick="toggleMsgSelect('${msg.id}'); event.stopPropagation();"><iconify-icon ${isSelected?'icon="ph:check-bold" style="font-size: 14px;"':''}></iconify-icon></div>` : ''}
             ${!isMe ? `<div class="msg-avatar-wrap">${avatarStr}</div>` : ''}
             <div class="msg-bubble-container" ${isMe && hideMyAvatar ? `style="max-width: calc(100% - 20px);"` : ''}>
                 ${isGroup && !isMe && showAvatar ? `<div style="font-size: 11px; color: #999; margin-bottom: 2px; padding-left: 6px; display: flex; align-items: center; gap: 4px;">${escapeHtml(senderName)}${chatData.titles && chatData.titles[msg.senderId] ? `<span style="background: linear-gradient(135deg, #FFD700, #FFaa00); color: #fff; padding: 0 4px; border-radius: 4px; font-size: 9px; font-weight: bold; transform: scale(0.9); transform-origin: left center;">${escapeHtml(chatData.titles[msg.senderId])}</span>` : ''}</div>` : ''}
                 <div class="msg-bubble ${bubbleGroupClass} ${msg.type === 'image' || msg.type === 'real_image' ? 'msg-image-bubble' : ''} ${(msg.type === 'transfer' || msg.type === 'red_packet' || msg.type === 'exclusive_red_packet' || msg.type === 'forward_records' || msg.type === 'gift' || msg.type === 'forum_post' || msg.type === 'music_share' || msg.type === 'takeout_pay_request' || msg.type === 'lover_invite') ? 'msg-transfer-bubble-wrap' : ''}" style="${isMe ? `background-color: ${myBgColor}; color: ${myTextColor};` : `background-color: ${roleBgColor}; color: ${roleTextColor};`} font-size: ${fontSize}px;" onmousedown="startPress('${msg.id}', event)" onmouseup="endPress()" onmouseleave="endPress()" ontouchstart="startPress('${msg.id}', event)" ontouchend="endPress()" ontouchcancel="endPress()">${replyStr}${contentStr}${metaHtml}</div>
-                <div class="tg-msg-timestamp ${isMe ? 'tg-ts-right' : 'tg-ts-left'}">${toTraditionalChineseTime(msg.timestamp)}</div>
             </div>
             ${isMe ? (hideMyAvatar ? '' : `<div class="msg-avatar-wrap">${avatarStr}</div>`) : ''}
         </div>`;
@@ -16683,6 +16700,10 @@ async function continueSendExclusiveRedPacket(targetId, targetName) {
 }
 
 function handleTransferClick(msgId) {
+    if (state.isMultiSelecting) {
+        toggleMsgSelect(msgId);
+        return;
+    }
     const isGroup = state.activeChatType === 'group';
     if (isGroup) return;
     const contact = state.contacts.find(c => c.id === state.activeContactId);
@@ -16708,6 +16729,10 @@ function handleTransferClick(msgId) {
 }
 
 function handleRedPacketClick(msgId) {
+    if (state.isMultiSelecting) {
+        toggleMsgSelect(msgId);
+        return;
+    }
     const isGroup = state.activeChatType === 'group';
     if (!isGroup) return;
     const group = state.chatGroups.find(g => g.id === state.activeGroupId);
@@ -16777,6 +16802,10 @@ function handleRedPacketClick(msgId) {
 }
 
 function handleExclusiveRedPacketClick(msgId) {
+    if (state.isMultiSelecting) {
+        toggleMsgSelect(msgId);
+        return;
+    }
     const isGroup = state.activeChatType === 'group';
     if (!isGroup) return;
     const group = state.chatGroups.find(g => g.id === state.activeGroupId);
@@ -16842,6 +16871,10 @@ function processExclusiveRedPacket(msgId, status) {
 }
 
 function handleGiftClick(msgId) {
+    if (state.isMultiSelecting) {
+        toggleMsgSelect(msgId);
+        return;
+    }
     const contact = state.contacts.find(c => c.id === state.activeContactId);
     if (!contact) return;
     const msg = contact.messages.find(m => m.id === msgId);
@@ -17290,6 +17323,10 @@ function renderChatSettings() {
                             <iconify-icon icon="ph:caret-right-light" style="color:#CCC;"></iconify-icon>
                         </div>
                         <div class="sidebar-submenu-item" style="cursor: default;">
+                            <span>自动生成回复</span>
+                            <div class="toggle-switch ${contact.autoReceiveEnabled !== false ? 'active' : ''}" onclick="toggleContactProp('autoReceiveEnabled')"></div>
+                        </div>
+                        <div class="sidebar-submenu-item" style="cursor: default;">
                             <span>在线主动发消息</span>
                             <div class="toggle-switch ${contact.autoReplyEnabled?'active':''}" onclick="toggleAutoReply()"></div>
                         </div>
@@ -17305,13 +17342,13 @@ function renderChatSettings() {
                                 <div class="toggle-switch ${contact.enableAutoTranslate?'active':''}" onclick="toggleContactProp('enableAutoTranslate')"></div>
                             </div>
                         </div>
-                                <div class="sidebar-submenu-item" style="cursor: default;">
-                                    <span>感知现实时间</span>
-                                    <div class="toggle-switch ${contact.perceiveTime?'active':''}" onclick="toggleContactProp('perceiveTime')"></div>
-                                </div>
-                            </div>
-                        ` : ''}
+                        <div class="sidebar-submenu-item" style="cursor: default;">
+                            <span>感知现实时间</span>
+                            <div class="toggle-switch ${contact.perceiveTime?'active':''}" onclick="toggleContactProp('perceiveTime')"></div>
+                        </div>
                     </div>
+                ` : ''}
+            </div>
 
                     <!-- 高级智能互动 -->
                     <div class="menu-item-wrap" style="margin-top: 6px;">
@@ -17860,7 +17897,7 @@ JSON 格式规范：
                 body: JSON.stringify({ 
                     model: state.apiConfig.model || 'gpt-3.5-turbo', 
                     messages: normalizeMessages(apiMessages),
-                    temperature: state.apiConfig.temperature ?? 1,
+                    temperature: 1,
                     stream: false 
                 })
             });
@@ -22428,12 +22465,13 @@ JSON 格式示例：
 
     try {
         let baseUrl = state.apiConfig.url.trim().replace(/\/+$/, '');
-                const res = await fetch(`${baseUrl}/chat/completions`, {
+        const res = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 model: state.apiConfig.model || 'gpt-3.5-turbo', 
                 messages: normalizeMessages([{ role: 'user', content: prompt }]),
+                temperature: 1,
                 stream: false
             })
         });
@@ -22549,7 +22587,8 @@ JSON 格式示例：
             headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 model: state.apiConfig.model || 'gpt-3.5-turbo', 
-                messages: [{ role: 'user', content: prompt }]
+                messages: [{ role: 'user', content: prompt }],
+                temperature: 1
             })
         });
         
