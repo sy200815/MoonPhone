@@ -17509,6 +17509,10 @@ function renderChatSettings() {
                             </div>
                         </div>
                         <div class="sidebar-submenu-item" style="cursor: default;">
+                            <span>感知现实时间</span>
+                            <div class="toggle-switch ${contact.perceiveTime ? 'active' : ''}" onclick="toggleContactProp('perceiveTime')"></div>
+                        </div>
+                        <div class="sidebar-submenu-item" style="cursor: default;">
                             <span>显示气泡时间</span>
                             <div class="toggle-switch ${contact.showBubbleTimestamp !== false ? 'active' : ''}" onclick="toggleContactProp('showBubbleTimestamp')"></div>
                         </div>
