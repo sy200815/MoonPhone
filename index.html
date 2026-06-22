@@ -17,8 +17,8 @@
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- 异步加载 Google 字体，避免阻塞页面渲染 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Zhi+Mang+Xing&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <!-- 异步加载 Google 字体，包括韩系韩文+中文字体 Gowun Batang -->
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Zhi+Mang+Xing&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <style id="dynamic-global-font"></style>
  
 <style>   
@@ -34,7 +34,7 @@ body, html {
     height: 100%;
     overflow: hidden;
     background-color: #FFFFFF; /* 改为白色背景，匹配韩系简约风 */
-    font-family: "Noto Sans SC", "Source Han Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Gowun Batang", "Noto Sans SC", "Source Han Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     -webkit-text-size-adjust: none;
     text-size-adjust: none;
     -webkit-touch-callout: none;
@@ -5230,6 +5230,70 @@ input, textarea {
     flex-direction: column;
     box-shadow: none !important;
 }
+
+        /* 顶栏夜间模式 */
+        .glass-effect-header.night-mode {
+            background: linear-gradient(to bottom, rgba(20, 20, 20, 0.94) 0%, rgba(20, 20, 20, 0.75) 55%, rgba(20, 20, 20, 0) 100%) !important;
+        }
+        .glass-effect-header.night-mode .chat-title-area div,
+        .glass-effect-header.night-mode .nav-title,
+        .glass-effect-header.night-mode #multi-select-count {
+            color: #FFFFFF !important;
+        }
+        .glass-effect-header.night-mode .back-btn,
+        .glass-effect-header.night-mode .nav-right > div {
+            background: rgba(0, 0, 0, 0.4) !important;
+            color: rgba(255, 255, 255, 0.8) !important;
+            border: 1.2px solid rgba(255, 255, 255, 0.25) !important;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08), 
+                        inset 0 4px 8px rgba(255, 255, 255, 0.35) !important;
+        }
+
+        /* 输入区域夜间模式 */
+        .glass-effect-bottom.night-mode .input-wrap {
+            background: rgba(0, 0, 0, 0.4) !important;
+            border: 1.2px solid rgba(255, 255, 255, 0.15) !important;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2), 
+                        inset 0 4px 8px rgba(255, 255, 255, 0.1) !important;
+        }
+        .glass-effect-bottom.night-mode .input-wrap input {
+            color: #FFFFFF !important;
+        }
+        .glass-effect-bottom.night-mode .input-wrap input::placeholder {
+            color: rgba(255, 255, 255, 0.4) !important;
+        }
+        .glass-effect-bottom.night-mode .btn-plus,
+        .glass-effect-bottom.night-mode .input-action-btn {
+            background: rgba(0, 0, 0, 0.4) !important;
+            color: rgba(255, 255, 255, 0.8) !important;
+            border: 1.2px solid rgba(255, 255, 255, 0.15) !important;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2), 
+                        inset 0 4px 8px rgba(255, 255, 255, 0.1) !important;
+        }
+        .glass-effect-bottom.night-mode .btn-emote {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+        .glass-effect-bottom.night-mode .btn-emote:active {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+        .glass-effect-bottom.night-mode .more-panel,
+        .glass-effect-bottom.night-mode .emote-panel {
+            background: rgba(20, 20, 20, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
+        }
+        .glass-effect-bottom.night-mode .more-icon {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #FFFFFF !important;
+        }
+        .glass-effect-bottom.night-mode .more-text {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        .glass-effect-bottom.night-mode .emote-item {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
 
 .chat-title-area {
     display: flex;
@@ -11672,41 +11736,41 @@ function toTraditionalChineseTime(ts) {
 <script>
 function normalizeMessages(messages) {
     if (!messages || messages.length === 0) return messages;
-    const merged = [];
-    for (let i = 0; i < messages.length; i++) {
-        const msg = messages[i];
+    const systemContents = [];
+    const chatMessages = [];
+    
+    for (const msg of messages) {
         if (msg.role === 'system') {
-            if (i === 0) {
-                merged.push({ ...msg });
-            } else {
-                let contentStr = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
-                let lastMsg = merged[merged.length - 1];
-                if (lastMsg && lastMsg.role === 'user') {
-                    if (typeof lastMsg.content === 'string') {
-                        lastMsg.content += '\n\n[System Instruction]\n' + contentStr;
-                    } else if (Array.isArray(lastMsg.content)) {
-                        lastMsg.content.push({ type: 'text', text: '\n\n[System Instruction]\n' + contentStr });
-                    }
-                } else {
-                    merged.push({ role: 'user', content: '[System Instruction]\n' + contentStr });
-                }
-            }
+            let contentStr = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
+            systemContents.push(contentStr);
         } else {
-            let lastMsg = merged[merged.length - 1];
-            if (lastMsg && lastMsg.role === msg.role) {
-                if (typeof lastMsg.content === 'string' && typeof msg.content === 'string') {
-                    lastMsg.content += '\n\n' + msg.content;
-                } else {
-                    let prevContent = Array.isArray(lastMsg.content) ? lastMsg.content : [{ type: 'text', text: lastMsg.content }];
-                    let currContent = Array.isArray(msg.content) ? msg.content : [{ type: 'text', text: msg.content }];
-                    lastMsg.content = prevContent.concat(currContent);
-                }
-            } else {
-                merged.push({ ...msg });
-            }
+            chatMessages.push(msg);
         }
     }
-    return merged;
+    
+    const normalized = [];
+    if (systemContents.length > 0) {
+        normalized.push({ role: 'system', content: systemContents.join('\n\n') });
+    }
+    
+    // 严格交替合并 User/Assistant 连续的角色消息
+    let lastMsg = null;
+    for (const msg of chatMessages) {
+        if (lastMsg && lastMsg.role === msg.role) {
+            if (typeof lastMsg.content === 'string' && typeof msg.content === 'string') {
+                lastMsg.content += '\n\n' + msg.content;
+            } else {
+                let prevContent = Array.isArray(lastMsg.content) ? lastMsg.content : [{ type: 'text', text: lastMsg.content }];
+                let currContent = Array.isArray(msg.content) ? msg.content : [{ type: 'text', text: msg.content }];
+                lastMsg.content = prevContent.concat(currContent);
+            }
+        } else {
+            const newMsg = { ...msg };
+            normalized.push(newMsg);
+            lastMsg = newMsg;
+        }
+    }
+    return normalized;
 }
 
 function parseAPIResponse(responseText) {
@@ -12218,6 +12282,84 @@ function formatMsgTime(ts) {
 function toTraditionalChineseTime(ts) {
     if (!ts) return '';
     const date = new Date(ts);
+    const digits = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+    
+    // 年份转化 (如 2025 -> 二〇二五)
+    const yearStr = date.getFullYear().toString().split('').map(d => {
+        if (d === '0') return '〇';
+        return digits[parseInt(d, 10)];
+    }).join('') + '年';
+    
+    // 月份转化 (1-12 -> 一 to 十二)
+    const monthVal = date.getMonth() + 1;
+    let monthStr = '';
+    if (monthVal <= 10) {
+        monthStr = (monthVal === 10 ? '十' : digits[monthVal]);
+    } else {
+        monthStr = '十' + digits[monthVal % 10];
+    }
+    monthStr += '月';
+    
+    // 日期转化 (1-31 -> 一 to 三十一)
+    const dayVal = date.getDate();
+    let dayStr = '';
+    if (dayVal <= 10) {
+        dayStr = (dayVal === 10 ? '十' : digits[dayVal]);
+    } else if (dayVal < 20) {
+        dayStr = '十' + digits[dayVal % 10];
+    } else if (dayVal === 20) {
+        dayStr = '二十';
+    } else if (dayVal < 30) {
+        dayStr = '二十' + digits[dayVal % 10];
+    } else if (dayVal === 30) {
+        dayStr = '三十';
+    } else {
+        dayStr = '三十' + digits[dayVal % 10];
+    }
+    dayStr += '日';
+    
+    // 小时转化 (0-23 -> 零 to 二十三)
+    const hourVal = date.getHours();
+    let hourStr = '';
+    if (hourVal === 0) {
+        hourStr = '零';
+    } else if (hourVal <= 10) {
+        hourStr = (hourVal === 10 ? '十' : digits[hourVal]);
+    } else if (hourVal < 20) {
+        hourStr = '十' + digits[hourVal % 10];
+    } else if (hourVal === 20) {
+        hourStr = '二十';
+    } else {
+        hourStr = '二十' + digits[hourVal % 10];
+    }
+    hourStr += '点';
+    
+    // 分钟转化 (0-59 -> 零 to 五十九)
+    const minVal = date.getMinutes();
+    let minStr = '';
+    if (minVal === 0) {
+        minStr = '整';
+    } else {
+        if (minVal < 10) {
+            minStr = '零' + digits[minVal];
+        } else if (minVal === 10) {
+            minStr = '十';
+        } else if (minVal < 20) {
+            minStr = '十' + digits[minVal % 10];
+        } else {
+            const tens = Math.floor(minVal / 10);
+            const units = minVal % 10;
+            minStr = digits[tens] + '十' + (units > 0 ? digits[units] : '');
+        }
+        minStr += '分';
+    }
+    
+    return yearStr + monthStr + dayStr + hourStr + minStr;
+}
+
+function toTraditionalChineseTime(ts) {
+    if (!ts) return '';
+    const date = new Date(ts);
     const numMap = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
     
     const year = date.getFullYear().toString().split('').map(n => numMap[parseInt(n)]).join('') + '年';
@@ -12275,7 +12417,13 @@ async function loadSettings() {
             state.contacts = data.contacts;
             state.contacts.forEach(c => ensureContactConfig(c));
         }
-        if (data.chatGroups) state.chatGroups = data.chatGroups;
+        if (data.chatGroups) {
+            state.chatGroups = data.chatGroups;
+            state.chatGroups.forEach(g => {
+                if (g.showBubbleTimestamp === undefined) g.showBubbleTimestamp = true;
+                if (g.chatHeaderNightMode === undefined) g.chatHeaderNightMode = false;
+            });
+        }
         if (data.chatGroups) state.chatGroups = data.chatGroups;
         if (data.myPersonas) state.myPersonas = data.myPersonas;
         if (data.emotePackages) state.emotePackages = data.emotePackages;
@@ -12342,6 +12490,8 @@ async function saveDataSilently() {
 
 function ensureContactConfig(contact) {
     if (contact.alias === undefined) contact.alias = '';
+    if (contact.showBubbleTimestamp === undefined) contact.showBubbleTimestamp = true;
+    if (contact.chatHeaderNightMode === undefined) contact.chatHeaderNightMode = false;
     if (contact.chatAvatar === undefined) contact.chatAvatar = '';
     if (contact.myChatAvatar === undefined) contact.myChatAvatar = '';
     if (contact.myPersonaId === undefined) contact.myPersonaId = '';
@@ -14691,6 +14841,23 @@ function renderChatRoom() {
         fontStyleEl.innerHTML = fontStyleHtml;
     }
 
+    const headerNight = !!chatData.chatHeaderNightMode;
+    const headerNormal = $('#chat-room-header-normal');
+    const headerMulti = $('#chat-room-header-multi');
+    const inputArea = $('#chat-input-area');
+    if (headerNormal) {
+        if (headerNight) headerNormal.classList.add('night-mode');
+        else headerNormal.classList.remove('night-mode');
+    }
+    if (headerMulti) {
+        if (headerNight) headerMulti.classList.add('night-mode');
+        else headerMulti.classList.remove('night-mode');
+    }
+    if (inputArea) {
+        if (headerNight) inputArea.classList.add('night-mode');
+        else inputArea.classList.remove('night-mode');
+    }
+
     if (state.isMultiSelecting) {
         $('#chat-room-header-normal').style.display = 'none';
         $('#chat-room-header-multi').style.display = 'flex';
@@ -15031,6 +15198,9 @@ function renderChatRoom() {
         const ticksSvg = '<span class="msg-status-ticks"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L7 17l-5-5M22 10l-7.5 7.5-2-2"/></svg></span>';
         const metaHtml = `<span class="msg-meta"><span class="msg-time">${formatMsgTime(msg.timestamp)}</span>${isMe ? ticksSvg : ''}</span>`;
 
+        const showTime = chatData.showBubbleTimestamp !== false;
+        const timeHtml = showTime ? `<span class="msg-timestamp">${toTraditionalChineseTime(msg.timestamp)}</span>` : '';
+
         return `
                 <div class="message-item ${msg.role}" data-id="${msg.id}" style="" onclick="if(state.isMultiSelecting) { toggleMsgSelect('${msg.id}'); }">
             ${state.isMultiSelecting ? `<div class="msg-checkbox ${isSelected?'checked':''}" onclick="toggleMsgSelect('${msg.id}'); event.stopPropagation();"><iconify-icon ${isSelected?'icon="ph:check-bold" style="font-size: 14px;"':''}></iconify-icon></div>` : ''}
@@ -15038,6 +15208,7 @@ function renderChatRoom() {
             <div class="msg-bubble-container" ${isMe && hideMyAvatar ? `style="max-width: calc(100% - 20px);"` : ''}>
                 ${isGroup && !isMe && showAvatar ? `<div style="font-size: 11px; color: #999; margin-bottom: 2px; padding-left: 6px; display: flex; align-items: center; gap: 4px;">${escapeHtml(senderName)}${chatData.titles && chatData.titles[msg.senderId] ? `<span style="background: linear-gradient(135deg, #FFD700, #FFaa00); color: #fff; padding: 0 4px; border-radius: 4px; font-size: 9px; font-weight: bold; transform: scale(0.9); transform-origin: left center;">${escapeHtml(chatData.titles[msg.senderId])}</span>` : ''}</div>` : ''}
                 <div class="msg-bubble ${bubbleGroupClass} ${msg.type === 'image' || msg.type === 'real_image' ? 'msg-image-bubble' : ''} ${(msg.type === 'transfer' || msg.type === 'red_packet' || msg.type === 'exclusive_red_packet' || msg.type === 'forward_records' || msg.type === 'gift' || msg.type === 'forum_post' || msg.type === 'music_share' || msg.type === 'takeout_pay_request' || msg.type === 'lover_invite') ? 'msg-transfer-bubble-wrap' : ''}" style="${isMe ? `background-color: ${myBgColor}; color: ${myTextColor};` : `background-color: ${roleBgColor}; color: ${roleTextColor};`} font-size: ${fontSize}px;" onmousedown="startPress('${msg.id}', event)" onmouseup="endPress()" onmouseleave="endPress()" ontouchstart="startPress('${msg.id}', event)" ontouchend="endPress()" ontouchcancel="endPress()">${replyStr}${contentStr}${metaHtml}</div>
+                ${timeHtml}
             </div>
             ${isMe ? (hideMyAvatar ? '' : `<div class="msg-avatar-wrap">${avatarStr}</div>`) : ''}
         </div>`;
@@ -15297,7 +15468,29 @@ ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
         }
     }
 
-                let apiMessages = [{ role: 'system', content: systemPrompt + '\n\n' + STRICT_REALISM_PROMPT }];
+    // 构建集成的高级系统提示词，保持系统角色的全局性
+    let fullSystemPrompt = systemPrompt + '\n\n' + STRICT_REALISM_PROMPT;
+    
+    if (triggerContext) {
+        fullSystemPrompt += '\n\n【当前触发情景与上下文事件】\n' + triggerContext;
+    }
+    
+    // 补充最后的格式校验和头像约束
+    let forceCheckPrompt = '\n\n【系统最后强制校验】绝对不要在回复中带上任何时间前缀！\n\n【状态栏更新铁律】你必须且只能在回复的最末尾输出 <status> 标签，内容为包含 mood, clothing, thoughts, action 的 JSON 格式。例如：\n<status>{"mood": "(o^^o)", "clothing": "日常便服", "thoughts": "有些开心", "action": "正在看手机回复消息"}</status>';
+    if (!contact.enableNarrator) {
+        forceCheckPrompt += ' 再次确认：当前是纯对话模式，绝对不要输出任何动作/神态/表情描写！';
+    }
+    
+    if (contact.chatAvatar && contact.avatarLibrary && contact.avatarLibrary.length > 0) {
+        const currentAvatar = contact.avatarLibrary.find(a => a.url === contact.chatAvatar);
+        if (currentAvatar && currentAvatar.remark) {
+            forceCheckPrompt += `\n[系统提示：你当前的头像状态是“${currentAvatar.remark}”]。`;
+        }
+    }
+    
+    fullSystemPrompt += forceCheckPrompt;
+
+    let apiMessages = [{ role: 'system', content: fullSystemPrompt }];
     
     // 如果开启了识图且有用户头像，将用户头像作为背景信息传入
     if (state.aiRecognizeEmote && contact.myChatAvatar) {
@@ -15348,45 +15541,20 @@ ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
             txt = `[回复${rName}的消息: "${rContent}"]\n${txt}`;
         }
         
-        // 彻底移除历史消息中的时间前缀，防止 AI 模仿输出时间戳导致掉格式
-        // if(m.timestamp) txt = `[${formatMsgTime(m.timestamp)}] ${txt}`;
-        
         if ((m.type === 'image' || m.type === 'real_image') && state.aiRecognizeEmote) {
             return { role: m.role, content: [{ type: 'text', text: txt }, { type: 'image_url', image_url: { url: m.content } }] };
         }
         return { role: m.role, content: txt };
     });
-    apiMessages = apiMessages.concat(historyMsgs);
-    
-            if (triggerContext) {
-        apiMessages.push({ role: 'system', content: triggerContext });
-    }
+        apiMessages = apiMessages.concat(historyMsgs);
 
-    // 在最后追加一条系统级强制约束，确保模型不会因为上下文过长而遗忘核心规则
-        let forceCheckPrompt = '【系统最后强制校验】绝对不要在回复中带上任何时间前缀！\n\n【状态栏更新铁律】你必须且只能在回复的最末尾输出 <status> 标签，内容为包含 mood, clothing, thoughts, action 的 JSON 格式。例如：\n<status>{"mood": "(o^^o)", "clothing": "日常便服", "thoughts": "有些开心", "action": "正在看手机回复消息"}</status>';
-    if (!contact.enableNarrator) {
-        forceCheckPrompt += ' 再次确认：当前是纯对话模式，绝对不要输出任何动作/神态/表情描写！';
-    }
-    apiMessages.push({ role: 'system', content: forceCheckPrompt });
-
-    // 将最后一条用户消息加入到发送列表前，检查并附加当前头像状态，让AI知道自己当前的头像
-    if (contact.chatAvatar && contact.avatarLibrary && contact.avatarLibrary.length > 0) {
-        const currentAvatar = contact.avatarLibrary.find(a => a.url === contact.chatAvatar);
-        if (currentAvatar && currentAvatar.remark) {
-            apiMessages.push({
-                role: 'system',
-                content: `[系统提示：你当前的头像状态是“${currentAvatar.remark}”]`
-            });
+        if (isCurrent) {
+            state.isBotTyping = true; 
+            renderChatRoom();
         }
-    }
-
-    if (isCurrent) {
-        state.isBotTyping = true; 
-        renderChatRoom();
-    }
         try {
             let baseUrl = state.apiConfig.url.trim().replace(/\/+$/, '');
-                        const res = await fetch(`${baseUrl}/chat/completions`, {
+            const res = await fetch(`${baseUrl}/chat/completions`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ model: state.apiConfig.model || 'gpt-3.5-turbo', messages: normalizeMessages(apiMessages), temperature: 1, stream: false })
@@ -15890,13 +16058,10 @@ async function receiveGroupMessage(triggerContext = null, targetGroupId = null) 
         return `${senderName}: ${replyPrefix}${txt}`;
     }).join('\n');
 
-            const prompt = `你现在是群聊互动引擎。当前群聊，群名：${group.name}。
+    const prompt = `你现在是群聊互动引擎。当前群聊，群名：${group.name}。
 ${rolesPrompt}${myPersonaContent}${outsideStr}
 ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
 ` + getEnabledPresetsPrompt() + `
-
-最近的聊天记录：
-${recentMsgs || '暂无'}
 
 ${triggerContext ? `【特殊触发情境】\n${triggerContext}\n` : ''}
 ${packetContext ? `【红包动态】\n${packetContext}\n` : ''}
@@ -15905,11 +16070,11 @@ ${STRICT_REALISM_PROMPT}
 
 【红包互动说明】
 1. 发群红包：你可以使用指令 [发群红包: 金额, 备注, 个数] 发拼手气群红包。例如：[发群红包: 100, 节日快乐, 5]。
-2. 发专属红包：你可以使用指令 [发专属红包: 目标名字, 金额, 备注] 发给群里的某个人（包括“我”）。例如：[发专属红包: 我, 520, 拿去买奶茶]。
+2. 发专属红包：你可以使用指令 [发专属红包: 我, 520, 拿去买奶茶] 发给群里的某个人（包括“我”）。例如：[发专属红包: 我, 520, 拿去买奶茶]。
 3. 接收/退回专属红包：当有人在群里给你发专属红包时，你可以使用 [接收红包] 或 [退回红包] 指令，并在聊天中做出回应。
 
 【设计要求】
-1. 极度日常与平淡：请用最普通、最生活化的网友聊天语气。聊天大多是平淡的交流，不要用力过猛。
+1. 极度日常与平淡：请用最普通、最生活化的网友聊天语气。聊天大多是平淡的交流，不要用力过慢。
 2. 角色心情不好或平淡的时候话少，心情好或兴奋的时候话多。
 
 【核心任务】
@@ -15923,7 +16088,7 @@ ${STRICT_REALISM_PROMPT}
 6. 【管理员权限】如果某个角色是“群管理员”，且他觉得某个群成员（除了群主“我”）太吵、冒犯或者符合他禁言别人的性格动机，他可以在回复内容中加入指令 [禁言: 成员名字, 分钟数]（例如：[禁言: 张三, 10]）。系统会自动执行禁言。非管理员角色严禁使用此指令！
 7. 【管理员权限】如果某个角色是“群管理员”，他可以在回复内容中加入指令 [设置头衔: 成员名字, 头衔名称] 来给普通成员设置群头衔（例如：[设置头衔: 张三, 龙王]）。如果头衔名称写“无”，则代表清除头衔。非管理员角色严禁使用此指令！
 8. 【管理员权限】如果某个角色是“群管理员”，且他极度讨厌某个群成员（除了群主“我”），他可以在回复中加入指令 [踢出: 成员名字] 将其踢出群聊（例如：[踢出: 张三]）。非管理员角色严禁使用此指令！
-9. 【退群与拉人】如果某个角色感到极度无语、生气或被欺负，他可以在回复中加入指令 [退群] 来退出群聊。群里的任何人也可以使用指令 [邀请: 名字] 将不在群里的人拉进群（例如：[邀请: 张三]）。如果有人刚退群又被拉进来，请表现出极度的无语或抓狂。
+9. 【退群与拉人】如果某个角色感到极度无语、生气或被欺负，校正为 [退群] 来退出群聊。群里的任何人也可以使用指令 [邀请: 名字] 将不在群里的人拉进群（例如：[邀请: 张三]）。如果有人刚退群又被拉进来，请表现出极度的无语或抓狂。
 10. 必须输出纯 JSON 数组格式，不要包含 Markdown 代码块。
 
 JSON 格式示例：
@@ -15936,16 +16101,17 @@ JSON 格式示例：
         renderChatRoom();
     }
     try {
+        const apiMessages = [
+            { role: 'system', content: prompt + `\n\n最近的聊天记录：\n${recentMsgs || '暂无'}\n\n【系统最后强制校验】请务必直接输出纯JSON数组格式，不要包含任何其他解释性文字，不要使用Markdown代码块包裹。` },
+            { role: 'user', content: '请根据上述指令和最近的聊天记录，推演并生成下一轮群聊回复，直接以JSON数组格式输出。' }
+        ];
         let baseUrl = state.apiConfig.url.trim().replace(/\/+$/, '');
         const res = await fetch(`${baseUrl}/chat/completions`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
+            body: JSON.stringify({ 
                 model: state.apiConfig.model || 'gpt-3.5-turbo', 
-                messages: normalizeMessages([
-                    { role: 'user', content: prompt },
-                    { role: 'system', content: '【系统最后强制校验】请务必直接输出纯JSON数组格式，不要包含任何其他解释性文字，不要使用Markdown代码块包裹。' }
-                ]),
+                messages: normalizeMessages(apiMessages),
                 temperature: 1,
                 stream: false
             })
@@ -17343,8 +17509,12 @@ function renderChatSettings() {
                             </div>
                         </div>
                         <div class="sidebar-submenu-item" style="cursor: default;">
-                            <span>感知现实时间</span>
-                            <div class="toggle-switch ${contact.perceiveTime?'active':''}" onclick="toggleContactProp('perceiveTime')"></div>
+                            <span>显示气泡时间</span>
+                            <div class="toggle-switch ${contact.showBubbleTimestamp !== false ? 'active' : ''}" onclick="toggleContactProp('showBubbleTimestamp')"></div>
+                        </div>
+                        <div class="sidebar-submenu-item" style="cursor: default;">
+                            <span>顶栏夜间模式</span>
+                            <div class="toggle-switch ${contact.chatHeaderNightMode ? 'active' : ''}" onclick="toggleContactProp('chatHeaderNightMode')"></div>
                         </div>
                     </div>
                 ` : ''}
@@ -17462,6 +17632,10 @@ function renderChatSettings() {
                         <div class="sidebar-submenu-item" style="cursor: default;">
                             <span>隐藏我方头像</span>
                             <div class="toggle-switch ${contact.hideMyAvatar?'active':''}" onclick="toggleContactProp('hideMyAvatar')"></div>
+                        </div>
+                        <div class="sidebar-submenu-item" style="cursor: default;">
+                            <span>顶栏夜间模式</span>
+                            <div class="toggle-switch ${contact.chatHeaderNightMode ? 'active' : ''}" onclick="toggleContactProp('chatHeaderNightMode')"></div>
                         </div>
                         <div class="sidebar-submenu-item" style="flex-direction: column; align-items: stretch; gap: 8px; cursor: default;">
                             <span>气泡配色快捷方案</span>
@@ -19237,7 +19411,7 @@ function applyGlobalFont() {
     if (type === 'system') {
         familyStr = `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
     } else if (type === 'default') {
-        familyStr = `"Noto Sans SC", "Source Han Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
+        familyStr = `"Gowun Batang", "Noto Sans SC", "Source Han Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
     } else if (type === 'custom') {
         const url = state.uiConfig.globalFontUrl;
         const family = state.uiConfig.globalFontFamily;
@@ -24490,7 +24664,9 @@ async function submitCreateGroupChat() {
         roleTextColor: '#000000',
         myPersonaId: '',
         autoReplyEnabled: false,
-        autoReceiveEnabled: true
+        autoReceiveEnabled: true,
+        showBubbleTimestamp: true,
+        chatHeaderNightMode: false
     };
     state.chatGroups.unshift(newGroup);
     await saveDataSilently();
@@ -24569,6 +24745,10 @@ function renderGroupChatSettings() {
                                 <option value="" ${!group.myPersonaId ? 'selected' : ''}>不绑定</option>
                                 ${state.myPersonas.map(p => `<option value="${p.id}" ${group.myPersonaId === p.id ? 'selected' : ''}>${escapeHtml(p.name)}</option>`).join('')}
                             </select>
+                        </div>
+                        <div class="sidebar-submenu-item" style="cursor: default;">
+                            <span>显示气泡时间</span>
+                            <div class="toggle-switch ${group.showBubbleTimestamp !== false ? 'active' : ''}" onclick="toggleGroupChatProp('showBubbleTimestamp')"></div>
                         </div>
                     </div>
                 ` : ''}
