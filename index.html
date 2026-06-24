@@ -1673,7 +1673,221 @@ input, textarea {
     font-weight: 600;
 }
 
-/* 锁屏视图 */
+/* 查手机专属 UI 样式重构 */
+
+/* 1. 搜索记录 - 极简 Safari 风格 */
+.snoop-ui-search { background: #fff; padding: 10px; }
+.snoop-search-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px; border-bottom: 0.5px solid #eee;
+}
+.snoop-search-icon { color: #8e8e93; font-size: 18px; }
+.snoop-search-text { font-size: 14px; font-weight: 500; color: #1c1c1e; flex: 1; }
+.snoop-search-time { font-size: 11px; color: #aeaeb2; }
+
+/* 2. 购物订单 - 卡片流风格 */
+.snoop-ui-orders { background: #f2f2f7; padding: 12px; }
+.snoop-order-card {
+    background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.snoop-order-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 12px; color: #8e8e93; }
+.snoop-order-body { display: flex; gap: 12px; }
+.snoop-order-img { width: 50px; height: 50px; border-radius: 8px; background: #f8f8f8; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.snoop-order-info { flex: 1; }
+.snoop-order-name { font-size: 14px; font-weight: 700; color: #1c1c1e; margin-bottom: 4px; }
+.snoop-order-price { font-size: 15px; font-weight: 800; color: #ff3b30; }
+
+/* 3. 备忘录 - 拟物黄色便签 */
+.snoop-ui-notes { background: #fff; padding: 16px; }
+.snoop-note-sheet {
+    background: #fffbe6; border-left: 4px solid #ffe58f;
+    padding: 16px; border-radius: 4px; margin-bottom: 16px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
+}
+.snoop-note-title { font-size: 16px; font-weight: 800; color: #856404; margin-bottom: 8px; border-bottom: 1px solid rgba(133,100,4,0.1); padding-bottom: 4px; }
+.snoop-note-content { font-size: 14px; color: #856404; line-height: 1.6; }
+
+/* 4. 生活记录 (外卖/打车) - 地图节点风格 */
+.snoop-ui-o2o { padding: 20px; background: #fff; }
+.snoop-o2o-item {
+    position: relative; padding-left: 24px; border-left: 2px solid #e5e5ea;
+    margin-bottom: 24px; padding-bottom: 8px;
+}
+.snoop-o2o-dot { position: absolute; left: -7px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: #34c759; border: 2px solid #fff; }
+.snoop-o2o-time { font-size: 11px; font-weight: 700; color: #8e8e93; margin-bottom: 4px; }
+.snoop-o2o-title { font-size: 15px; font-weight: 700; color: #1c1c1e; }
+.snoop-o2o-desc { font-size: 12px; color: #8e8e93; margin-top: 2px; }
+
+/* 5. 社交小号 - 朋友圈/推文风格 */
+.snoop-ui-social { background: #fff; }
+.snoop-social-post {
+    padding: 16px; border-bottom: 1px solid #f2f2f7;
+}
+.snoop-social-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.snoop-social-avatar { width: 36px; height: 36px; border-radius: 50%; background: #eee; }
+.snoop-social-name { font-size: 14px; font-weight: 700; }
+.snoop-social-text { font-size: 14px; line-height: 1.5; color: #1c1c1e; }
+.snoop-social-footer { margin-top: 10px; font-size: 11px; color: #8e8e93; display: flex; gap: 15px; }
+
+/* 6. 最近删除相册 - 倒计时网格 */
+.snoop-ui-photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #fff; }
+.snoop-photo-item { position: relative; aspect-ratio: 1; background: #eee; overflow: hidden; }
+.snoop-photo-badge { position: absolute; bottom: 4px; left: 0; width: 100%; text-align: center; color: #fff; font-size: 9px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); font-weight: bold; }
+.snoop-photo-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 20px; filter: grayscale(1) opacity(0.5); }
+
+/* 7. 音乐播放历史 - 列表风格 */
+.snoop-ui-music { background: #fff; padding: 10px 16px; }
+.snoop-music-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid #f2f2f7; }
+.snoop-music-cover { width: 44px; height: 44px; border-radius: 4px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.snoop-music-info { flex: 1; }
+.snoop-music-name { font-size: 14px; font-weight: 600; color: #1c1c1e; }
+.snoop-music-artist { font-size: 12px; color: #8e8e93; margin-top: 2px; }
+
+/* 8. 屏幕使用时间 - 图表+应用 */
+.snoop-ui-screentime { background: #f2f2f7; padding: 16px; }
+.snoop-st-chart { display: flex; align-items: flex-end; gap: 8px; height: 100px; padding: 10px; background: #fff; border-radius: 12px; margin-bottom: 16px; }
+.snoop-st-bar { flex: 1; background: #007aff; border-radius: 4px 4px 0 0; opacity: 0.6; min-height: 10px; }
+.snoop-st-app { background: #fff; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.snoop-st-app-name { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+
+/* 9. 闹钟与日程 - 大字体列表 */
+.snoop-ui-alarms { background: #000; padding: 0 16px; height: 100%; min-height: 500px; }
+.snoop-alarm-item { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 0.5px solid #333; }
+.snoop-alarm-time { font-size: 38px; font-weight: 300; color: #fff; }
+.snoop-alarm-meta { font-size: 13px; color: #888; }
+.snoop-alarm-toggle { width: 51px; height: 31px; border-radius: 15.5px; background: #34c759; position: relative; } /* 静态模拟开启 */
+.snoop-alarm-toggle::after { content: ''; position: absolute; right: 2px; top: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; }
+
+/* 10. 剪贴板 - 文本块风格 */
+.snoop-ui-clipboard { background: #f2f2f7; padding: 16px; }
+.snoop-clip-card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; border: 0.5px solid #ddd; }
+.snoop-clip-source { font-size: 11px; color: #007aff; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; }
+.snoop-clip-text { font-size: 14px; line-height: 1.5; color: #333; word-break: break-all; }
+.snoop-clip-footer { font-size: 11px; color: #aeaeb2; margin-top: 10px; display: flex; justify-content: space-between; }
+
+/* 11. 文件传输助手 - 对话风格 */
+.snoop-ui-files { background: #ededed; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.snoop-file-bubble {
+    align-self: flex-start; background: #fff; padding: 12px; border-radius: 4px 12px 12px 12px;
+    max-width: 85%; font-size: 14px; color: #111; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+.snoop-file-time { align-self: center; font-size: 11px; color: #b2b2b2; margin: 4px 0; }
+
+/* 12. 地图导航 - 搜索列表风格 */
+.snoop-ui-map { background: #fff; }
+.snoop-map-item {
+    display: flex; align-items: center; gap: 15px; padding: 16px; border-bottom: 0.5px solid #f2f2f7;
+}
+.snoop-map-icon { width: 40px; height: 40px; border-radius: 50%; background: #e8f2ff; color: #007aff; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.snoop-map-info { flex: 1; }
+.snoop-map-title { font-size: 15px; font-weight: 600; }
+.snoop-map-desc { font-size: 12px; color: #8e8e93; margin-top: 2px; }
+
+/* 13. 特别关心与黑名单 */
+.snoop-ui-contacts { background: #f2f2f7; padding: 16px; }
+.snoop-contact-card {
+    background: #fff; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+}
+.snoop-contact-avatar { width: 40px; height: 40px; border-radius: 50%; background: #eee; }
+.snoop-contact-name { flex: 1; font-size: 15px; font-weight: 600; }
+.snoop-contact-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
+.snoop-contact-badge.star { background: #fff0f5; color: #ff2d55; }
+.snoop-contact-badge.block { background: #f2f2f7; color: #8e8e93; }
+
+/* 14. 应用下载记录 - App Store 风格 */
+.snoop-ui-apps { background: #fff; }
+.snoop-app-item {
+    display: flex; align-items: center; gap: 15px; padding: 16px; border-bottom: 0.5px solid #f2f2f7;
+}
+.snoop-app-icon { width: 52px; height: 52px; border-radius: 12px; background: #f8f8f8; border: 0.5px solid #eee; }
+.snoop-app-info { flex: 1; }
+.snoop-app-name { font-size: 15px; font-weight: 700; }
+.snoop-app-btn { background: #f0f0f7; color: #007aff; padding: 4px 16px; border-radius: 15px; font-size: 12px; font-weight: 800; }
+
+/* 15. 财务账单 - 流水风格 */
+.snoop-ui-finance { background: #fff; }
+.snoop-bill-item {
+    display: flex; align-items: center; gap: 15px; padding: 16px; border-bottom: 0.5px solid #f2f2f7;
+}
+.snoop-bill-icon { width: 36px; height: 36px; border-radius: 8px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.snoop-bill-info { flex: 1; }
+.snoop-bill-title { font-size: 15px; font-weight: 500; }
+.snoop-bill-time { font-size: 11px; color: #8e8e93; margin-top: 2px; }
+.snoop-bill-amount { font-size: 16px; font-weight: 700; font-family: 'Inter', sans-serif; }
+
+/* 16. 朋友圈互动 - 访客列表风格 */
+.snoop-ui-interactions { background: #fff; padding: 12px; }
+.snoop-inter-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid #f2f2f7; }
+.snoop-inter-avatar { width: 42px; height: 42px; border-radius: 6px; background: #eee; }
+.snoop-inter-info { flex: 1; }
+.snoop-inter-name { font-size: 14px; font-weight: 700; }
+.snoop-inter-action { font-size: 12px; color: #8e8e93; margin-top: 2px; }
+
+/* 17. 隐藏相册 - 隐私保险箱 */
+.snoop-ui-vault { background: #111; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; min-height: 100%; }
+.snoop-vault-item { aspect-ratio: 1; background: #1a1a1a; display: flex; align-items: center; justify-content: center; color: #333; font-size: 24px; position: relative; }
+.snoop-vault-item::after { content: ''; font-family: 'phosphor'; position: absolute; top: 8px; right: 8px; font-size: 12px; color: #444; }
+
+/* 18. 健康数据 - 环形/指标卡片 */
+.snoop-ui-health { background: #f2f2f7; padding: 16px; }
+.snoop-health-card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; }
+.snoop-health-icon { font-size: 32px; }
+.snoop-health-main { flex: 1; }
+.snoop-health-title { font-size: 13px; font-weight: 700; color: #ff2d55; text-transform: uppercase; }
+.snoop-health-val { font-size: 22px; font-weight: 800; margin: 2px 0; }
+.snoop-health-desc { font-size: 11px; color: #8e8e93; }
+
+/* 19. 短视频历史 - 瀑布流卡片 */
+.snoop-ui-video { background: #000; padding: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.snoop-video-card { background: #1c1c1e; border-radius: 8px; overflow: hidden; position: relative; aspect-ratio: 0.7; }
+.snoop-video-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); color: #fff; }
+.snoop-video-title { font-size: 11px; line-height: 1.3; font-weight: 500; height: 2.6em; overflow: hidden; }
+
+/* 20. 游戏战绩 - 竞技数据流 */
+.snoop-ui-game { background: #0b0b0d; padding: 16px; }
+.snoop-game-item { background: #1a1b1f; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; align-items: center; border-left: 4px solid #34c759; }
+.snoop-game-item.lose { border-left-color: #ff3b30; }
+.snoop-game-info { flex: 1; }
+.snoop-game-result { font-size: 12px; font-weight: 900; text-transform: uppercase; margin-bottom: 4px; }
+.snoop-game-name { font-size: 15px; font-weight: 700; color: #fff; }
+.snoop-game-meta { font-size: 11px; color: #666; margin-top: 2px; }
+.snoop-game-score { text-align: right; color: #fff; font-family: 'Inter', sans-serif; font-weight: 800; font-size: 18px; }
+
+/* 21. 输入法词库 - 标签云风格 */
+.snoop-ui-keyboard { background: #fff; padding: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
+.snoop-key-pill { background: #f2f2f7; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; color: #1c1c1e; border: 1px solid #e5e5ea; }
+
+/* 22. 拦截短信 - 警告列表风格 */
+.snoop-ui-spam { background: #f2f2f7; padding: 16px; }
+.snoop-spam-card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; position: relative; overflow: hidden; }
+.snoop-spam-tag { position: absolute; top: 0; right: 0; background: #ff3b30; color: #fff; font-size: 9px; padding: 2px 8px; border-radius: 0 0 0 8px; font-weight: bold; }
+.snoop-spam-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.snoop-spam-body { font-size: 13px; color: #3a3a3c; line-height: 1.4; }
+
+/* 23. 智能家居 - 设备日志风格 */
+.snoop-ui-smarthome { background: #fff; padding: 20px; }
+.snoop-home-log { display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid #f2f2f7; }
+.snoop-home-icon { font-size: 24px; opacity: 0.7; }
+.snoop-home-info { flex: 1; }
+.snoop-home-action { font-size: 14px; font-weight: 600; }
+.snoop-home-time { font-size: 11px; color: #8e8e93; margin-top: 4px; }
+
+/* 24. 浏览器书签 - 列表风格 */
+.snoop-ui-bookmarks { background: #fff; }
+.snoop-bookmark-item { display: flex; align-items: center; gap: 15px; padding: 16px; border-bottom: 0.5px solid #f2f2f7; }
+.snoop-bookmark-fav { width: 32px; height: 32px; border-radius: 6px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.snoop-bookmark-info { flex: 1; }
+.snoop-bookmark-title { font-size: 14px; font-weight: 500; color: #007aff; }
+
+/* 25. 云端备份 - 存储进度风格 */
+.snoop-ui-cloud { background: #f2f2f7; padding: 16px; }
+.snoop-cloud-card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+.snoop-cloud-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+.snoop-cloud-bar { height: 6px; background: #e5e5ea; border-radius: 3px; margin: 10px 0; position: relative; overflow: hidden; }
+.snoop-cloud-progress { position: absolute; left: 0; top: 0; height: 100%; background: #007aff; }
+
+/* 查手机内容视图 (显示提取结果) */
 .lockscreen-view {
     background-color: #FFFFFF; /* 未设置壁纸时默认白色 */
     z-index: 9000;
@@ -4259,24 +4473,25 @@ input, textarea {
     margin-left: 12px !important;
 }
 
-/* 小米手机模拟器样式 */
+/* 高仿真手机模拟器样式 (iOS/奶油风格重构) */
 .xiaomi-phone-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
-    flex: 1;
+    width: 100%;
+    height: 100%;
     background-color: #FFFFFF;
-    overflow-y: auto;
+    overflow: hidden;
 }
 .xiaomi-phone {
-    width: 100%;
-    max-width: 320px;
-    aspect-ratio: 9 / 19;
+    width: calc(100% - 20px);
+    max-width: 360px;
+    height: calc(100% - 40px);
+    max-height: 740px;
     background: #ffffff;
-    border: 12px solid #F0F0F0; /* 纯白/浅灰极简边框 */
-    border-radius: 38px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    border: 12px solid #111111; /* 黑色硬朗边框 */
+    border-radius: 48px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
     position: relative;
     overflow: hidden;
     display: flex;
@@ -4284,43 +4499,189 @@ input, textarea {
 }
 .xiaomi-camera {
     position: absolute;
-    top: 6px;
+    top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 8px;
-    height: 8px;
-    background: #222;
-    border-radius: 50%;
-    z-index: 99;
+    width: 120px;
+    height: 30px;
+    background: #111111;
+    border-radius: 0 0 18px 18px;
+    z-index: 100;
 }
 .xiaomi-screen {
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: #ffffff;
+    background-color: #F6F6F6; /* 奶油浅灰底色 */
     background-size: cover;
     background-position: center;
     position: relative;
-    padding: 16px 8px 12px;
+    overflow: hidden;
+}
+.snoop-slider {
+    flex: 1;
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+.snoop-slider::-webkit-scrollbar { display: none; }
+.snoop-page {
+    min-width: 100%;
+    height: 100%;
+    scroll-snap-align: start;
+    padding: 40px 16px 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 .xiaomi-status-bar {
-    height: 18px;
+    height: 44px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 9px;
-    color: #666;
-    padding: 0 6px;
-    font-weight: 600;
+    font-size: 13px;
+    color: #111;
+    padding: 0 24px;
+    font-weight: 700;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 90;
 }
-.xiaomi-app-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px 6px;
-    padding: 16px 2px;
+
+/* 查手机：拟物化音乐小组件 */
+.snoop-music-widget {
+    background: #FFFFFF;
+    border-radius: 32px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+}
+.vinyl-record {
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, #333 10%, #111 40%, #222 60%, #000 100%);
+    border-radius: 50%;
+    border: 4px solid #F0F0F0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: rotate-disk 8s linear infinite;
+}
+.vinyl-record::after {
+    content: '★';
+    color: #555;
+    font-size: 32px;
+}
+.snoop-music-info {
     flex: 1;
-    overflow-y: auto;
-    align-content: start;
+}
+.snoop-music-title {
+    font-size: 14px;
+    font-weight: 900;
+    color: #111;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.snoop-music-lyrics {
+    font-size: 11px;
+    color: #888;
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+/* 查手机：拍立得照片组 */
+.polaroid-gallery {
+    background: #FFFFFF;
+    border-radius: 32px;
+    padding: 24px 16px;
+    display: flex;
+    justify-content: center;
+    gap: -15px; /* 图片重叠 */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+}
+.polaroid-item {
+    width: 70px;
+    background: #fff;
+    padding: 4px 4px 12px 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid #F0F0F0;
+    transform: rotate(var(--rot));
+    margin-right: -10px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.polaroid-item:active {
+    transform: scale(0.9) rotate(var(--rot));
+}
+.polaroid-img {
+    width: 100%;
+    aspect-ratio: 1;
+    background: #EEE;
+    object-fit: cover;
+}
+
+/* 查手机：天气与APP组合行 */
+.snoop-bottom-row {
+    display: flex;
+    gap: 16px;
+}
+.weather-calendar-widget {
+    flex: 1.2;
+    background: #FFFFFF;
+    border-radius: 32px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+}
+.weather-date { font-size: 28px; font-weight: 800; color: #888; }
+.weather-info { font-size: 12px; color: #AAA; margin-top: 10px; line-height: 1.8; }
+
+.mini-app-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.mini-app-icon {
+    aspect-ratio: 1;
+    background: #FFFFFF;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
+    color: #111;
+}
+
+/* 查手机底部 Dock */
+.snoop-dock {
+    margin-top: auto;
+    background: rgba(220, 220, 220, 0.4);
+    backdrop-filter: blur(20px);
+    height: 90px;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 5px;
+}
+
+.snoop-section-label {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #333;
+    letter-spacing: 0.5px;
+    margin: 4px 0;
 }
 .xiaomi-app-grid::-webkit-scrollbar { display: none; }
 .xiaomi-app-item {
@@ -11164,20 +11525,35 @@ function toTraditionalChineseTime(ts) {
         </div>
 
         <!-- 查手机菜单视图 (选择查看项) -->
-        <div id="view-snoop_menu" class="view-container settings-view" style="display: none; background-color: #FFFFFF;">
-            <div class="settings-header">
-                <div class="nav-bar">
-                    <button class="back-btn-k" onclick="switchView('snoop_main')">
-                        <iconify-icon icon="ph:arrow-left-light"></iconify-icon>
-                    </button>
-                    <div class="nav-title-k" id="snoop-menu-title">TARGET PHONE</div>
-                    <div style="width: 24px;"></div>
+        <div id="view-snoop_menu" class="view-container" style="display: none; background-color: #FFFFFF; padding: 0;">
+            <div class="xiaomi-phone-wrapper">
+                <div class="xiaomi-phone">
+                    <div class="xiaomi-camera"></div>
+                    <div class="xiaomi-screen" id="snoop-phone-screen">
+                        <!-- 状态栏 -->
+                        <div class="xiaomi-status-bar">
+                            <div class="sys-time-short">17:30</div>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <iconify-icon icon="mingcute:signal-fill"></iconify-icon>
+                                <iconify-icon icon="mingcute:wifi-fill"></iconify-icon>
+                                <iconify-icon icon="mingcute:battery-2-fill"></iconify-icon>
+                            </div>
+                        </div>
+                        <!-- 分页指示器 -->
+                        <div id="snoop-pagination" style="position: absolute; top: 50px; width: 100%; text-align: center; font-size: 12px; font-weight: 800; color: rgba(0,0,0,0.2); z-index: 90;">1/3</div>
+                        <!-- 滑动内容区 -->
+                        <div class="snoop-slider" id="snoop-slider" onscroll="updateSnoopPagination()">
+                            <div class="snoop-page" id="snoop-page-1"></div>
+                            <div class="snoop-page" id="snoop-page-2"></div>
+                            <div class="snoop-page" id="snoop-page-3"></div>
+                        </div>
+                        <!-- 底部返回条 -->
+                        <div style="height: 5px; width: 100px; background: #000; border-radius: 10px; margin: 10px auto; cursor: pointer;" onclick="switchView('snoop_main')"></div>
+                    </div>
                 </div>
             </div>
-            <div class="xiaomi-phone-wrapper" id="snoop-menu-content">
-                <!-- 由 JS 渲染小米手机 UI -->
-            </div>
             <input type="file" id="snoopWallpaperInput" accept="image/png, image/jpeg, image/jpg, image/gif, image/*" style="display:none;" onchange="handleSnoopWallpaperUpload(event)">
+            <input type="file" id="snoopPolaroidInput" accept="image/*" style="display:none;" onchange="handleSnoopPolaroidUpload(event)">
         </div>
 
         <!-- 查手机内容视图 (显示提取结果) -->
@@ -12154,7 +12530,10 @@ function triggerAutoReply(contactId, delayMs) {
     if (!contact || !contact.autoReplyEnabled) return;
     
     const minutes = Math.round(delayMs / 60000);
-    let triggerContext = `[系统强制指令：距离上次聊天已经过去了约 ${minutes} 分钟，用户一直没有理你，也没有给你发消息。请依据上下文和这个情景设定，主动发一些消息给用户。]`;
+    let triggerContext = `[系统强制指令：距离上次聊天已经过去了约 ${minutes} 分钟，用户（我）一直没有回复你。
+【绝对铁律：禁止自导自演】
+现在是由你（角色）主动发起新话题或表达情绪的时刻。你只能单方面输出你自己的话（如撒娇、分享你在做的事、问我在忙什么）。
+你【绝对不准】编造用户（我）的任何回复，【绝对不准】在一条消息里进行一问一答的自导自演！]`;
     
     triggerContext += `\n\n${STRICT_REALISM_PROMPT}`;
     triggerContext += `\n\n${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}`;
@@ -14114,13 +14493,10 @@ function getFilteredMoments() {
         if (m.author === 'me') {
             return (m.personaId || '') === pid;
         }
-        // 角色发的：只看绑定了当前人设（或未绑定任何人设）的角色
+        // 角色发的：只看绑定了当前人设的角色（空字符串对应默认身份）
         const contact = state.contacts.find(c => c.id === m.author);
         if (contact) {
             const contactBound = contact.boundPersonaId || '';
-            // 角色没绑定人设 → 所有朋友圈都能看到
-            if (!contactBound) return true;
-            // 角色绑定了人设 → 只有该人设能看到
             return contactBound === pid;
         }
         return false; // 如果角色不存在，说明被删了，直接隐藏不返回
@@ -14156,7 +14532,7 @@ function renderMoments() {
             </select>
             <div class="moments-name">${escapeHtml(momentsProfile.name)}</div>
             <div class="x-handle">@${momentsProfile.name.toLowerCase().replace(/\s+/g, '_')}</div>
-            <div class="x-bio">${escapeHtml(state.uiConfig.profileBio || 'Exploring the digital universe.')}</div>
+            <div class="x-bio" onclick="editMomentsBio()" style="cursor: pointer;" title="点击修改个性签名">${escapeHtml(state.uiConfig.profileBio || 'Exploring the digital universe.')}</div>
             <div class="x-stats-row">
                 <div class="x-stat-item"><b>128</b> Following</div>
                 <div class="x-stat-item"><b>1.2K</b> Followers</div>
@@ -14244,7 +14620,8 @@ async function commentOnMoment(momentId) {
     if(text && text.trim()) {
         const m = state.moments.find(x => x.id === momentId);
         if(m) {
-            m.comments.push({ id: Date.now().toString(), authorId: 'me', authorName: state.uiConfig.momentsName, content: text.trim(), timestamp: Date.now() });
+            const mp = getMomentsProfile();
+            m.comments.push({ id: Date.now().toString(), authorId: 'me', authorName: mp.name, content: text.trim(), timestamp: Date.now() });
             await saveDataSilently(); renderMoments();
             if(m.author !== 'me') {
                 // 如果是角色的朋友圈，触发角色回复我的评论
@@ -14259,7 +14636,8 @@ async function replyToMomentComment(momentId, commentId, replyToName, replyToAut
     if(text && text.trim()) {
         const m = state.moments.find(x => x.id === momentId);
         if(m) {
-            m.comments.push({ id: Date.now().toString(), authorId: 'me', authorName: state.uiConfig.momentsName, content: text.trim(), replyToId: commentId, replyToName: replyToName, timestamp: Date.now() });
+            const mp = getMomentsProfile();
+            m.comments.push({ id: Date.now().toString(), authorId: 'me', authorName: mp.name, content: text.trim(), replyToId: commentId, replyToName: replyToName, timestamp: Date.now() });
             await saveDataSilently(); renderMoments();
             // 如果回复的是角色，触发角色回复
             if(replyToAuthorId !== 'me') {
@@ -14348,10 +14726,9 @@ async function triggerAIComments(moment) {
     if (!state.apiConfig.url || !state.apiConfig.apiKey) return;
     
     const pid = moment.personaId || '';
-    // 只让绑定了当前人设（或未绑定任何人设）的角色来评论
+    // 只让严格绑定了当前人设的角色来评论
     const eligibleContacts = state.contacts.filter(c => {
         const bound = c.boundPersonaId || '';
-        if (!bound) return true;
         return bound === pid;
     });
     if (eligibleContacts.length === 0) return;
@@ -14553,15 +14930,16 @@ ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
             if (reply !== 'NONE' && reply.toLowerCase() !== 'none') {
                 const targetMoment = state.moments.find(m => m.id === moment.id);
                 if (targetMoment) {
-                    targetMoment.comments.push({
-                        id: Date.now().toString(),
-                        authorId: contact.id,
-                        authorName: contact.name,
-                        content: reply,
-                        replyToId: '', // 简化，直接回复我
-                        replyToName: state.uiConfig.momentsName,
-                        timestamp: Date.now()
-                    });
+                        const mp = getMomentsProfile();
+                        targetMoment.comments.push({
+                            id: Date.now().toString(),
+                            authorId: contact.id,
+                            authorName: contact.name,
+                            content: reply,
+                            replyToId: '', // 简化，直接回复我
+                            replyToName: mp.name,
+                            timestamp: Date.now()
+                        });
                     await saveDataSilently();
                     if (state.currentView === 'chat_main' && state.currentChatTab === 'moments') renderMoments();
                     showToast(`朋友圈新回复: ${contact.name}`);
@@ -15439,10 +15817,11 @@ ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
 2. 当你觉得情境合适（例如过节发红包、还钱、主动给零花钱、表达歉意等），你可以主动向我发起转账。请在回复中使用格式 [发起转账: 金额, 备注]（例如：[发起转账: 520, 节日快乐] 或 [发起转账: 100, 拿去买奶茶]）。
 3. 当你收到我发给你的外卖代付请求时（在聊天记录中显示为 [外卖代付请求: 店铺名, 金额: ¥金额, 商品: 商品名, 状态: 等待代付]），请根据你的人设、心情和我们当前的关系决定是否帮我付钱。如果决定帮我付款，请在回复内容的任意位置加上 [代付成功]；如果决定拒绝付款，请加上 [拒绝代付]。
 
-【状态栏系统】
-为了让我能感知到你的实时状态，你必须在回复的最末尾，附带你当前的状态信息。格式严格如下（必须是合法的JSON）：
+【状态栏系统 - 绝对强制性指令】
+为了让系统能感知并同步你的实时状态，你【必须且只能】在本次对话回复的【最末尾】附带你当前的状态信息。
+这属于系统底层协议，【每一次回复都必须输出，绝对不能遗漏】！格式严格遵守合法的单行 JSON 格式并用 <status> 标签包裹：
 <status>{"mood": "心情颜文字(如: ￣^￣ )", "clothing": "当前穿着", "thoughts": "当前心理想法", "action": "当前正在做的事"}</status>
-注意：这个状态栏是系统后台数据，不会显示在聊天气泡中，请务必在每条回复的最末尾加上它。
+注意：这个状态标签是系统后台解析数据，不会显示在聊天气泡中，请务必在【每条回复的最末尾】加上它！
 
 【设计要求】
 1. 极度日常与平淡：请用最普通、最生活化的网友聊天语气。聊天大多是平淡的交流，不要用力过猛。
@@ -15476,9 +15855,9 @@ ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
     }
     
     // 补充最后的格式校验和头像约束
-    let forceCheckPrompt = '\n\n【系统最后强制校验】绝对不要在回复中带上任何时间前缀！\n\n【状态栏更新铁律】你必须且只能在回复的最末尾输出 <status> 标签，内容为包含 mood, clothing, thoughts, action 的 JSON 格式。例如：\n<status>{"mood": "(o^^o)", "clothing": "日常便服", "thoughts": "有些开心", "action": "正在看手机回复消息"}</status>';
+    let forceCheckPrompt = '\n\n【系统最后绝对强制校验】\n1. 绝对不要在回复中带上任何时间前缀！\n2. 【状态栏更新绝对铁律】你必须在本次回复的【最末尾】输出且仅输出一个 <status> 标签，内容为包含 mood, clothing, thoughts, action 的完整合法 JSON。如果这次不输出，会导致前端系统解析异常报错！请不要忽略此指令！\n模板：<status>{"mood": "(o^^o)", "clothing": "日常便服", "thoughts": "有些开心", "action": "正在看手机回复消息"}</status>';
     if (!contact.enableNarrator) {
-        forceCheckPrompt += ' 再次确认：当前是纯对话模式，绝对不要输出任何动作/神态/表情描写！';
+        forceCheckPrompt += '\n3. 再次确认：当前是纯对话模式，绝对不要输出任何动作/神态/表情描写！';
     }
     
     if (contact.chatAvatar && contact.avatarLibrary && contact.avatarLibrary.length > 0) {
@@ -15807,6 +16186,9 @@ function parseReplyToMessages(replyText, rolePkgId) {
     
     // 5. 清理多余的空行
     replyText = replyText.replace(/\n{3,}/g, '\n\n');
+    
+    // 6. 核心拦截：强力剔除 AI 脑补的 “角色名: ” 或 “我: ” 前缀，防止单条气泡中自导自演
+    replyText = replyText.replace(/^(助手|AI|assistant|我|user|system|[^:：\n]+)\s*[:：]\s*/gim, '');
     
     replyText = replyText.trim();
     
@@ -18040,8 +18422,14 @@ const BackgroundMessenger = {
         let systemPrompt = `你是${contact.name}。你的性格和设定是：${contact.persona}。${contact.history ? '我们的经历：' + contact.history : ''} ${myPersonaContent} ${timeStr} ${roleEmotesPrompt} ${memoryPrompt}
 ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
 
-【后台主动呼叫模式核心指令】
-我们已经有几个小时没有聊天了。你根据最近的聊天情况、当前的心理状态和现实时间，在进行日常活动时突然想到了我。你拿起了手机主动向我发送微信消息。
+【后台主动呼叫模式核心指令 - 绝对禁止自导自演】
+我们已经有几个小时没有聊天了。你根据最近的聊天情况、当前的心理状态和现实时间，在进行日常活动时突然想到了我，并决定主动向我发送几条微信消息。
+
+【最高优先级禁止令】
+1. 你只能单方面发送你（角色）自己说的话！
+2. 绝对【禁止假冒】用户（我）进行发言或动作。
+3. 绝对【不准在消息中带上“我:”、“${contact.name}:”等任何名字前缀】！
+4. 绝对【不准自问自答】，你只需要单方面把你的话说完（1-3条消息），然后静静等待我的回复即可。
 
 【格式要求】
 1. 像真人一样打字发微信，拒绝发长篇大论。你决定以连续发送几条短气泡的形式，表达完整的意思。
@@ -19693,7 +20081,18 @@ function handleMomentsBgUpload(e) {
 function handleMomentsAvatarUpload(e) {
     const f = e.target.files[0]; if(!f) return;
     const reader = new FileReader();
-    reader.onload = ev => { state.uiConfig.momentsAvatar = ev.target.result; saveDataSilently(); renderMoments(); renderProfile(); };
+    reader.onload = ev => { 
+        const pid = getActivePersonaId();
+        if (pid) {
+            const profile = getForumProfileForPersona(pid);
+            profile.avatar = ev.target.result;
+        } else {
+            state.uiConfig.momentsAvatar = ev.target.result;
+        }
+        saveDataSilently(); 
+        renderMoments(); 
+        renderProfile(); 
+    };
     reader.readAsDataURL(f); e.target.value = '';
 }
 function switchMomentsPersona(personaId) {
@@ -19711,6 +20110,17 @@ async function editMomentsName() {
     } else {
         const name = await showPromptDialog('修改昵称', state.uiConfig.momentsName);
         if(name && name.trim()) { state.uiConfig.momentsName = name.trim(); saveDataSilently(); renderMoments(); renderProfile(); }
+    }
+}
+
+async function editMomentsBio() {
+    const currentBio = state.uiConfig.profileBio || 'Exploring the digital universe.';
+    const bio = await showPromptDialog('修改个人签名', currentBio, '输入你的个性签名');
+    if (bio !== null) {
+        state.uiConfig.profileBio = bio.trim();
+        await saveDataSilently();
+        renderMoments();
+        renderProfile(); // 同步渲染“我的”页面签名
     }
 }
 
@@ -20127,10 +20537,14 @@ async function summarizeMomentMemory(contactId, force = false) {
     const now = Date.now();
     const retainTime = now - (contact.momentMemoryConfig.retainDays || 7) * 24 * 60 * 60 * 1000;
     
-    // 筛选出我和他相关的朋友圈
+    // 筛选出我和他相关的、且属于当前绑定人设朋友圈范围内的动态
+    const boundPid = contact.boundPersonaId || '';
     const relatedMoments = state.moments.filter(m => {
         if (m.timestamp < retainTime) return false;
-        if (m.author === 'me' || m.author === contact.id) return true;
+        // 他发的动态
+        if (m.author === contact.id) return true;
+        // 我发的，且人设匹配
+        if (m.author === 'me' && (m.personaId || '') === boundPid) return true;
         return false;
     });
 
@@ -21131,8 +21545,9 @@ ${recentMsgs}
         3. 内容主要围绕“我”（也就是和你聊天的用户）以及你们之间的互动、你的心理活动、情感变化来写。
         4. 字数要求在 300 到 500 字之间。
         5. 这是一篇私密日记，所以你可以展现出你最真实、最深层的想法，甚至是对“我”没有表现出来的情感。
-        6. 如果你觉得最近没什么特别值得写的，可以直接输出纯文本：NONE。
-        7. 如果决定写，请直接输出日记正文，不要包含任何多余的解释、标题或 Markdown 代码块。
+        6. 【排版与标点铁律】日记属于沉淀性文字，写日记时你【必须严格使用标准的中文标点符号】（逗号、句号、感叹号、问号、省略号等）来断句，绝对禁止使用大篇幅空格代替标点或完全不打标点！同时，必须【合理分段】（整篇日记根据思绪变化，强制分成 3 到 5 个自然段），严禁一大段话直接堆砌。
+        7. 如果你觉得最近没什么特别值得写的，可以直接输出纯文本：NONE。
+        8. 如果决定写，请直接输出日记正文，不要包含任何多余的解释、标题或 Markdown 代码块。
 
 【DIRECTIVE: DIARY REALISM】
 You are writing a personal diary entry. This is NOT a villain monologue, and NOT a script for a dark romance audiobook.
@@ -21147,7 +21562,7 @@ CRITICAL CONSTRAINTS FOR DIARY FORMAT:
 TONAL GUIDELINES:
 - Voice: Flat, pragmatic, slightly bored, or genuinely reflective.
 - Content: At least 30% mundane logistics or observation unrelated to the user's body or the writer's dark feelings.
-- Style: Real diaries are not prose poems.
+- Style: Real diaries are not prose poems. They must have proper punctuation and paragraphs. Use correct periods, commas, and formatting. Never write a massive block of text without breaks or punctuation.
 
 SAFEGUARD CHECK: Before outputting, scan for asterisks (*), excessive adjectives modifying the user's appearance, or references to "smirking".`;
 
@@ -21275,66 +21690,138 @@ const SNOOP_CATEGORIES = [
     { id: 'cloud_backup', name: '云盘自动备份记录', icon: 'solar:cloud-upload-bold-duotone', color: '#af52de', desc: '害怕丢失的重要数据' }
 ];
 
+function updateSnoopPagination() {
+    const slider = $('#snoop-slider');
+    const page = Math.round(slider.scrollLeft / slider.clientWidth) + 1;
+    $('#snoop-pagination').textContent = `${page}/3`;
+}
+
+// 记录当前点击的是哪张照片
+let currentSnoopPolaroidIndex = 0;
+
+function triggerSnoopPolaroidUpload(index) {
+    currentSnoopPolaroidIndex = index;
+    $('#snoopPolaroidInput').click();
+}
+
+function handleSnoopPolaroidUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const c = state.contacts.find(x => x.id === state.currentSnoopContactId);
+    if (!c) return;
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+        if (!c.snoopPolaroids) c.snoopPolaroids = ['', '', '', ''];
+        c.snoopPolaroids[currentSnoopPolaroidIndex] = ev.target.result;
+        saveDataSilently();
+        renderSnoopMenu();
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+}
+
 function renderSnoopMenu() {
     const c = state.contacts.find(x => x.id === state.currentSnoopContactId);
     if (!c) return;
-    $('#snoop-menu-title').textContent = `${c.name.toUpperCase()}'S PHONE`;
     
-    const container = $('#snoop-menu-content');
-    
-    // 获取壁纸
-    const wallpaperStyle = c.snoopWallpaper ? `background-image: url(${c.snoopWallpaper});` : `background-color: #FFFFFF;`;
-    
-    // 渲染小米手机 UI 的 HTML
-    let html = `
-        <div class="xiaomi-phone">
-            <div class="xiaomi-camera"></div>
-            <div class="xiaomi-screen" style="${wallpaperStyle}">
-                <!-- 状态栏 -->
-                <div class="xiaomi-status-bar">
-                    <div>12:00</div>
-                    <div style="display: flex; align-items: center; gap: 4px;">
-                        <iconify-icon icon="ph:wifi-high-bold" style="font-size: 11px;"></iconify-icon>
-                        <iconify-icon icon="ph:battery-charging-bold" style="font-size: 11px;"></iconify-icon>
-                    </div>
-                </div>
-                
-                <!-- 应用网格 -->
-                <div class="xiaomi-app-grid">
-    `;
-    
-    // 渲染各个应用图标 (SVG)
-    html += SNOOP_CATEGORIES.map(cat => `
-        <div class="xiaomi-app-item" onclick="openSnoopContent('${cat.id}', '${cat.name}')">
-            <div class="xiaomi-app-icon">
-                ${getSnoopCategorySvg(cat.id)}
-            </div>
-            <div class="xiaomi-app-label">${escapeHtml(cat.name)}</div>
-        </div>
-    `).join('');
-    
-    // 额外渲染一个“系统设置”应用用于更改壁纸
-    html += `
-        <div class="xiaomi-app-item" onclick="document.getElementById('snoopWallpaperInput').click()">
-            <div class="xiaomi-app-icon" style="border: 1px dashed #DDD; background: rgba(255,255,255,0.8);">
-                ${getSnoopCategorySvg('snoop_wallpaper')}
-            </div>
-            <div class="xiaomi-app-label" style="color: #666;">系统设置</div>
+    // 应用自定义壁纸
+    const screen = $('#snoop-phone-screen');
+    if (c.snoopWallpaper) screen.style.backgroundImage = `url(${c.snoopWallpaper})`;
+    else screen.style.backgroundImage = 'none';
+
+    const timeEl = document.querySelector('.sys-time-short');
+    if (timeEl) timeEl.textContent = state.currentTime;
+
+    const p1 = $('#snoop-page-1');
+    const p2 = $('#snoop-page-2');
+    const p3 = $('#snoop-page-3');
+
+    // 准备照片墙数据
+    const pols = c.snoopPolaroids || ['', '', '', ''];
+    const renderPol = (idx, rot) => `
+        <div class="polaroid-item" style="--rot:${rot}" onclick="triggerSnoopPolaroidUpload(${idx})">
+            ${pols[idx] ? `<img src="${pols[idx]}" class="polaroid-img" />` : `<div class="polaroid-img"></div>`}
         </div>
     `;
+
+    // 获取真实日期信息用于天气组件
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const date = now.getDate();
     
-    html += `
+    // 渲染 Page 1: 高保真 Widget 桌面
+    p1.innerHTML = `
+        <!-- 音乐组件 (点击触发音乐历史提取) -->
+        <div class="snoop-music-widget" onclick="openSnoopContent('music_history', '音乐播放历史')">
+            <div class="vinyl-record"></div>
+            <div class="snoop-music-info">
+                <div class="snoop-music-title"><span>STAY</span><span style="font-weight:400; color:#888;">- Justin Bieber</span></div>
+                <div class="snoop-music-lyrics">I need you to stay, need you to stay, hey<br>我渴求你的驻足</div>
+                <div style="height:2px; background:#EEE; position:relative; margin-top:10px;">
+                    <div style="width:30%; height:100%; background:#111;"></div>
                 </div>
-                
-                <!-- 导航栏 -->
-                <div class="xiaomi-nav-bar">
-                    <div class="xiaomi-nav-pill"></div>
-                </div>
+                <div style="display:flex; justify-content:space-between; font-size:9px; color:#CCC; margin-top:4px;"><span>00.00</span><span>03.56</span></div>
             </div>
         </div>
+        
+        <div class="snoop-section-label" onclick="document.getElementById('snoopWallpaperInput').click()">点击此处更换壁纸⁺</div>
+
+        <!-- 照片墙组件 -->
+        <div class="polaroid-gallery">
+            ${renderPol(0, '-5deg')}
+            ${renderPol(1, '3deg')}
+            ${renderPol(2, '-2deg')}
+            ${renderPol(3, '4deg')}
+        </div>
+
+        <div class="snoop-section-label">Top Widgets⁺</div>
+
+        <!-- 组合行 -->
+        <div class="snoop-bottom-row">
+            <div class="weather-calendar-widget" onclick="openSnoopContent('alarms_calendar', '闹钟与日程表')">
+                <div class="weather-date">${month}月<br>${date}</div>
+                <div class="weather-info">实时同步 晴 东风<br>湿度：59%<br>体感：22°C</div>
+            </div>
+            <div class="mini-app-grid">
+                <div class="mini-app-icon" onclick="openSnoopContent('deleted_photos', '相册最近删除')">Photo</div>
+                <div class="mini-app-icon" onclick="openSnoopContent('o2o_records', '外卖与打车记录')">Eleme</div>
+                <div class="mini-app-icon" onclick="openSnoopContent('social_alts', '社交软件小号')">RED</div>
+                <div class="mini-app-icon" onclick="openSnoopContent('moment_interactions', '朋友圈互动')">WeChat</div>
+            </div>
+        </div>
+
+        <div class="snoop-section-label">Top Widgets⁺</div>
+        
+        <div style="display:flex; justify-content:center;">
+            <div class="korean-fake-input" style="width: 140px; height: 32px;" onclick="openSnoopContent('search_history', '浏览器搜索记录')">
+                <span class="korean-fake-text" style="font-size: 11px;">🔍 搜索记录</span>
+            </div>
+        </div>
+
+        <!-- Dock 栏 -->
+        <div class="snoop-dock">
+            <div class="mini-app-icon" style="width:60px; height:60px; box-shadow:none;" onclick="openSnoopContent('contact_settings', '特别关心与名单')">Phone</div>
+        </div>
     `;
+
+    // 渲染 Page 2 & 3: 功能图标
+    const renderPageIcons = (items) => {
+        return `<div class="xiaomi-app-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 30px 20px; padding: 20px 10px;">` + items.map(cat => `
+            <div class="xiaomi-app-item" onclick="openSnoopContent('${cat.id}', '${cat.name}')">
+                <div class="xiaomi-app-icon" style="width: 68px; height: 68px; border-radius: 20px; background: #FFF; box-shadow: 0 8px 20px rgba(0,0,0,0.03);">
+                    ${getSnoopCategorySvg(cat.id)}
+                </div>
+                <div class="xiaomi-app-label" style="margin-top: 10px; font-weight: 700; color:#333;">${escapeHtml(cat.name)}</div>
+            </div>
+        `).join('') + `</div>`;
+    };
+
+    p2.innerHTML = renderPageIcons(SNOOP_CATEGORIES.slice(0, 12));
+    p3.innerHTML = renderPageIcons(SNOOP_CATEGORIES.slice(12, 25));
     
-    container.innerHTML = html;
+    $('#snoop-slider').scrollLeft = 0;
+    updateSnoopPagination();
 }
 
 function handleSnoopWallpaperUpload(e) {
@@ -21491,13 +21978,14 @@ JSON 必须是一个数组，数组中每个对象包含以下字段：
         const data = parseAPIResponse(await res.text());
         let content = data.choices[0].message.content.trim();
         
-        // 提取 JSON
-        const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/i);
-        if (jsonMatch) content = jsonMatch[1];
-        else content = content.replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+        // 使用更强力的 robustJsonParse 提取数据
+        const parsedData = robustJsonParse(content);
         
-        const parsedData = JSON.parse(content);
-        renderSnoopData(parsedData, categoryId);
+        if (parsedData && Array.isArray(parsedData)) {
+            renderSnoopData(parsedData, categoryId);
+        } else {
+            throw new Error('API 返回的数据不是有效的记录数组');
+        }
         
     } catch (e) {
         console.error('Snoop fetch error:', e);
@@ -21515,25 +22003,342 @@ JSON 必须是一个数组，数组中每个对象包含以下字段：
 function renderSnoopData(dataList, categoryId) {
     const container = $('#snoop-data-content');
     if (!Array.isArray(dataList) || dataList.length === 0) {
-        container.innerHTML = `<div class="empty-state" style="padding: 60px 0;"><p>没有找到相关数据</p></div>`;
+        container.innerHTML = `<div class="empty-state" style="padding: 60px 0;"><p>目标设备暂无此项数据记录</p></div>`;
         return;
     }
 
-    let html = `<div style="padding: 16px;">`;
-    html += dataList.map(item => `
-        <div style="background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); border: 0.5px solid rgba(0,0,0,0.05);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                <div style="font-size: 16px; font-weight: 600; color: #111; flex: 1; padding-right: 10px;">${escapeHtml(item.title)}</div>
-                <div style="font-size: 12px; color: #8e8e93; white-space: nowrap; margin-top: 2px;">${escapeHtml(item.time)}</div>
+    let html = '';
+
+    // 1. 搜索记录专属 UI - Safari 风格
+    if (categoryId === 'search_history') {
+        html = `<div class="snoop-ui-search">` + dataList.map(item => `
+            <div class="snoop-search-item">
+                <iconify-icon icon="ph:magnifying-glass" class="snoop-search-icon"></iconify-icon>
+                <div class="snoop-search-text">${escapeHtml(item.title)}</div>
+                <div class="snoop-search-time">${escapeHtml(item.time)}</div>
             </div>
-            <div style="font-size: 14px; color: #555; line-height: 1.5; white-space: pre-wrap;">${escapeHtml(item.desc)}</div>
-        </div>
-    `).join('');
-    html += `</div>`;
+        `).join('') + `</div>`;
+    } 
+    // 2. 购物订单专属 UI
+    else if (categoryId === 'shopping_orders') {
+        html = `<div class="snoop-ui-orders">` + dataList.map(item => `
+            <div class="snoop-order-card">
+                <div class="snoop-order-header"><span>订单号: ${Math.random().toString().slice(2,12)}</span><span>已完成</span></div>
+                <div class="snoop-order-body">
+                    <div class="snoop-order-img">🎁</div>
+                    <div class="snoop-order-info">
+                        <div class="snoop-order-name">${escapeHtml(item.title)}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+                            <span class="snoop-order-price">${item.desc.match(/¥?\d+/)?.[0] || '¥--'}</span>
+                            <span style="font-size:11px; color:#8e8e93;">${escapeHtml(item.time)}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 3. 备忘录专属 UI
+    else if (categoryId === 'private_notes') {
+        html = `<div class="snoop-ui-notes">` + dataList.map(item => `
+            <div class="snoop-note-sheet">
+                <div class="snoop-note-title">${escapeHtml(item.title)}</div>
+                <div class="snoop-note-content">${escapeHtml(item.desc)}</div>
+                <div style="font-size:10px; color:rgba(133,100,4,0.4); margin-top:10px; text-align:right;">编辑于 ${escapeHtml(item.time)}</div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 4. 生活记录 (外卖/打车)
+    else if (categoryId === 'o2o_records') {
+        html = `<div class="snoop-ui-o2o">` + dataList.map(item => `
+            <div class="snoop-o2o-item">
+                <div class="snoop-o2o-dot"></div>
+                <div class="snoop-o2o-time">${escapeHtml(item.time)}</div>
+                <div class="snoop-o2o-title">${escapeHtml(item.title)}</div>
+                <div class="snoop-o2o-desc">${escapeHtml(item.desc)}</div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 5. 社交小号
+    else if (categoryId === 'social_alts') {
+        html = `<div class="snoop-ui-social">` + dataList.map(item => `
+            <div class="snoop-social-post">
+                <div class="snoop-social-header">
+                    <div class="snoop-social-avatar"></div>
+                    <div class="snoop-social-name">私密账户</div>
+                    <div style="margin-left:auto; color:#aeaeb2; font-size:11px;">${escapeHtml(item.time)}</div>
+                </div>
+                <div class="snoop-social-text">${escapeHtml(item.desc)}</div>
+                <div class="snoop-social-footer">
+                    <span>赞 ${Math.floor(Math.random()*10)}</span><span>评论 0</span>
+                </div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 6. 相册最近删除
+    else if (categoryId === 'deleted_photos') {
+        html = `<div class="snoop-ui-photos">` + dataList.map(item => `
+            <div class="snoop-photo-item">
+                <div class="snoop-photo-placeholder">🖼️</div>
+                <div class="snoop-photo-badge">${item.time.match(/\d+/)?.[0] || '29'}天</div>
+                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); opacity:0;" onclick="showToast('${escapeHtml(item.title)}: ${escapeHtml(item.desc)}')"></div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 7. 音乐播放历史
+    else if (categoryId === 'music_history') {
+        html = `<div class="snoop-ui-music">` + dataList.map(item => `
+            <div class="snoop-music-item">
+                <div class="snoop-music-cover">🎵</div>
+                <div class="snoop-music-info">
+                    <div class="snoop-music-name">${escapeHtml(item.title)}</div>
+                    <div class="snoop-music-artist">${escapeHtml(item.desc)}</div>
+                </div>
+                <div style="font-size:11px; color:#8e8e93;">${escapeHtml(item.time)}</div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 8. 屏幕使用时间
+    else if (categoryId === 'screen_time') {
+        html = `<div class="snoop-ui-screentime">
+            <div style="font-size:12px; color:#8e8e93; margin-bottom:10px;">每日平均：3小时42分</div>
+            <div class="snoop-st-chart">
+                ${[40, 70, 30, 90, 50, 60, 20].map(h => `<div class="snoop-st-bar" style="height:${h}%"></div>`).join('')}
+            </div>` + dataList.map(item => `
+            <div class="snoop-st-app">
+                <div class="snoop-st-app-name"><span>📱</span> ${escapeHtml(item.title)}</div>
+                <div style="font-size:13px; font-weight:700;">${item.desc.match(/\d+小时\d+分|\d+分/)?.[0] || '12分'}</div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 9. 闹钟与日程表
+    else if (categoryId === 'alarms_calendar') {
+        html = `<div class="snoop-ui-alarms">` + dataList.map(item => `
+            <div class="snoop-alarm-item">
+                <div class="snoop-alarm-info">
+                    <div class="snoop-alarm-time">${item.title.match(/\d{1,2}:\d{2}/)?.[0] || '08:00'}</div>
+                    <div class="snoop-alarm-meta">${escapeHtml(item.desc)}</div>
+                </div>
+                <div class="snoop-alarm-toggle"></div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 10. 剪贴板
+    else if (categoryId === 'clipboard') {
+        html = `<div class="snoop-ui-clipboard">` + dataList.map(item => `
+            <div class="snoop-clip-card">
+                <div class="snoop-clip-source">来自：${item.title}</div>
+                <div class="snoop-clip-text">${escapeHtml(item.desc)}</div>
+                <div class="snoop-clip-footer">
+                    <span>${escapeHtml(item.time)}</span>
+                    <iconify-icon icon="ph:copy" style="font-size:16px; color:#007aff;"></iconify-icon>
+                </div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 11. 文件传输助手
+    else if (categoryId === 'file_transfer') {
+        html = `<div class="snoop-ui-files">` + dataList.map(item => `
+            <div class="snoop-file-time">${escapeHtml(item.time)}</div>
+            <div class="snoop-file-bubble">
+                ${item.title.includes('.') ? `<div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; font-weight:700;"><iconify-icon icon="ph:file-text"></iconify-icon> ${escapeHtml(item.title)}</div>` : ''}
+                ${escapeHtml(item.desc)}
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 12. 地图导航
+    else if (categoryId === 'map_navigation') {
+        html = `<div class="snoop-ui-map">` + dataList.map(item => `
+            <div class="snoop-map-item">
+                <div class="snoop-map-icon"><iconify-icon icon="ph:map-pin"></iconify-icon></div>
+                <div class="snoop-map-info">
+                    <div class="snoop-map-title">${escapeHtml(item.title)}</div>
+                    <div class="snoop-map-desc">${escapeHtml(item.desc)} · ${escapeHtml(item.time)}</div>
+                </div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 13. 特别关心与黑名单
+    else if (categoryId === 'contact_settings') {
+        html = `<div class="snoop-ui-contacts">` + dataList.map(item => {
+            const isStar = item.desc.includes('关注') || item.desc.includes('重要');
+            return `
+            <div class="snoop-contact-card">
+                <div class="snoop-contact-avatar"></div>
+                <div class="snoop-contact-name">${escapeHtml(item.title)}</div>
+                <div class="snoop-contact-badge ${isStar ? 'star' : 'block'}">${isStar ? '特别关心' : '已拉黑'}</div>
+            </div>`;
+        }).join('') + `</div>`;
+    }
+    // 14. 应用下载记录
+    else if (categoryId === 'app_downloads') {
+        html = `<div class="snoop-ui-apps">` + dataList.map(item => `
+            <div class="snoop-app-item">
+                <div class="snoop-app-icon"></div>
+                <div class="snoop-app-info">
+                    <div class="snoop-app-name">${escapeHtml(item.title)}</div>
+                    <div style="font-size:11px; color:#8e8e93; margin-top:2px;">${escapeHtml(item.time)} · 24.5 MB</div>
+                </div>
+                <div class="snoop-app-btn">打开</div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 15. 财务账单
+    else if (categoryId === 'financial_bills') {
+        html = `<div class="snoop-ui-finance">` + dataList.map(item => {
+            const amount = item.desc.match(/-?\d+(\.\d+)?/)?.[0] || '0.00';
+            return `
+            <div class="snoop-bill-item">
+                <div class="snoop-bill-icon">🛍️</div>
+                <div class="snoop-bill-info">
+                    <div class="snoop-bill-title">${escapeHtml(item.title)}</div>
+                    <div class="snoop-bill-time">${escapeHtml(item.time)}</div>
+                </div>
+                <div class="snoop-bill-amount" style="color: ${amount.startsWith('-') ? '#111' : '#ff3b30'}">${amount.startsWith('-') ? '' : '+'}${amount}</div>
+            </div>`;
+        }).join('') + `</div>`;
+    }
+    // 16. 朋友圈互动
+    else if (categoryId === 'moment_interactions') {
+        html = `<div class="snoop-ui-interactions">` + dataList.map(item => `
+            <div class="snoop-inter-item">
+                <div class="snoop-inter-avatar"></div>
+                <div class="snoop-inter-info">
+                    <div class="snoop-inter-name">${escapeHtml(item.title)}</div>
+                    <div class="snoop-inter-action">${escapeHtml(item.desc)}</div>
+                </div>
+                <div style="font-size:11px; color:#aeaeb2;">${escapeHtml(item.time)}</div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 17. 隐藏相册
+    else if (categoryId === 'hidden_album') {
+        html = `<div class="snoop-ui-vault">` + dataList.map(item => `
+            <div class="snoop-vault-item" onclick="showToast('${escapeHtml(item.title)}: ${escapeHtml(item.desc)}')">
+                <iconify-icon icon="solar:lock-password-bold"></iconify-icon>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 18. 健康数据
+    else if (categoryId === 'health_data') {
+        html = `<div class="snoop-ui-health">` + dataList.map(item => {
+            let icon = '❤️';
+            if(item.title.includes('睡')) icon = '🌙';
+            if(item.title.includes('步') || item.title.includes('跑')) icon = '👟';
+            return `
+            <div class="snoop-health-card">
+                <div class="snoop-health-icon">${icon}</div>
+                <div class="snoop-health-main">
+                    <div class="snoop-health-title">${escapeHtml(item.title)}</div>
+                    <div class="snoop-health-val">${item.desc.match(/\d+(\.\d+)?\s*\w*/)?.[0] || item.desc}</div>
+                    <div class="snoop-health-desc">${escapeHtml(item.time)} 记录</div>
+                </div>
+            </div>`;
+        }).join('') + `</div>`;
+    }
+    // 19. 短视频历史
+    else if (categoryId === 'short_video_history') {
+        html = `<div class="snoop-ui-video">` + dataList.map(item => `
+            <div class="snoop-video-card">
+                <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#333; font-size:32px;"><iconify-icon icon="ph:play-fill"></iconify-icon></div>
+                <div class="snoop-video-overlay">
+                    <div class="snoop-video-title">${escapeHtml(item.title)}</div>
+                    <div style="font-size:9px; opacity:0.6; margin-top:4px;">${escapeHtml(item.time)}</div>
+                </div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 20. 游戏战绩
+    else if (categoryId === 'game_records') {
+        html = `<div class="snoop-ui-game">` + dataList.map(item => {
+            const isWin = !item.desc.includes('负') && !item.desc.includes('败') && !item.desc.includes('Lose');
+            return `
+            <div class="snoop-game-item ${isWin ? '' : 'lose'}">
+                <div class="snoop-game-info">
+                    <div class="snoop-game-result" style="color: ${isWin ? '#34c759' : '#ff3b30'}">${isWin ? 'Victory' : 'Defeat'}</div>
+                    <div class="snoop-game-name">${escapeHtml(item.title)}</div>
+                    <div class="snoop-game-meta">${escapeHtml(item.desc)} · ${escapeHtml(item.time)}</div>
+                </div>
+                <div class="snoop-game-score">${Math.floor(Math.random()*15)} / ${Math.floor(Math.random()*10)}</div>
+            </div>`;
+        }).join('') + `</div>`;
+    }
+    // 21. 输入法词库
+    else if (categoryId === 'keyboard_dict') {
+        html = `<div class="snoop-ui-keyboard">` + dataList.map(item => `
+            <div class="snoop-key-pill" onclick="showToast('搜索热度: ${Math.floor(Math.random()*1000)}')">${escapeHtml(item.title)}</div>
+        `).join('') + `</div>`;
+    }
+    // 22. 拦截短信
+    else if (categoryId === 'spam_messages') {
+        html = `<div class="snoop-ui-spam">` + dataList.map(item => `
+            <div class="snoop-spam-card">
+                <div class="snoop-spam-tag">已拦截</div>
+                <div class="snoop-spam-title"><iconify-icon icon="ph:warning-circle-fill" style="color:#ff3b30;"></iconify-icon> ${escapeHtml(item.title)}</div>
+                <div class="snoop-spam-body">${escapeHtml(item.desc)}</div>
+                <div style="font-size:11px; color:#8e8e93; margin-top:8px;">${escapeHtml(item.time)}</div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 23. 智能家居
+    else if (categoryId === 'smart_home_logs') {
+        html = `<div class="snoop-ui-smarthome">` + dataList.map(item => {
+            let icon = '💡';
+            if(item.title.includes('门')) icon = '🚪';
+            if(item.title.includes('空调')) icon = '❄️';
+            return `
+            <div class="snoop-home-log">
+                <div class="snoop-home-icon">${icon}</div>
+                <div class="snoop-home-info">
+                    <div class="snoop-home-action">${escapeHtml(item.title)}: ${escapeHtml(item.desc)}</div>
+                    <div class="snoop-home-time">${escapeHtml(item.time)}</div>
+                </div>
+            </div>`;
+        }).join('') + `</div>`;
+    }
+    // 24. 浏览器书签
+    else if (categoryId === 'browser_bookmarks') {
+        html = `<div class="snoop-ui-bookmarks">` + dataList.map(item => `
+            <div class="snoop-bookmark-item">
+                <div class="snoop-bookmark-fav">🌐</div>
+                <div class="snoop-bookmark-info">
+                    <div class="snoop-bookmark-title">${escapeHtml(item.title)}</div>
+                    <div style="font-size:11px; color:#8e8e93; margin-top:2px;">${escapeHtml(item.desc)} · ${escapeHtml(item.time)}</div>
+                </div>
+            </div>
+        `).join('') + `</div>`;
+    }
+    // 25. 云端备份
+    else if (categoryId === 'cloud_backup') {
+        html = `<div class="snoop-ui-cloud">` + dataList.map(item => {
+            const progress = Math.floor(Math.random() * 40) + 60;
+            return `
+            <div class="snoop-cloud-card">
+                <div class="snoop-cloud-header">
+                    <iconify-icon icon="solar:cloud-file-bold-duotone" style="font-size:24px; color:#007aff;"></iconify-icon>
+                    <span style="font-weight:700;">${escapeHtml(item.title)}</span>
+                </div>
+                <div style="font-size:12px; color:#8e8e93;">${escapeHtml(item.desc)}</div>
+                <div class="snoop-cloud-bar"><div class="snoop-cloud-progress" style="width:${progress}%"></div></div>
+                <div style="display:flex; justify-content:space-between; font-size:10px; color:#aeaeb2;">
+                    <span>备份于 ${escapeHtml(item.time)}</span><span>${progress}%</span>
+                </div>
+            </div>`;
+        }).join('') + `</div>`;
+    }
+    // 默认兜底 UI
+    else {
+        html = `<div style="padding: 16px;">` + dataList.map(item => `
+            <div style="background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 0.5px solid #eee;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <div style="font-size: 15px; font-weight: 700;">${escapeHtml(item.title)}</div>
+                    <div style="font-size: 11px; color: #999;">${escapeHtml(item.time)}</div>
+                </div>
+                <div style="font-size: 14px; color: #444; line-height: 1.5;">${escapeHtml(item.desc)}</div>
+            </div>
+        `).join('') + `</div>`;
+    }
     
-    // 添加免责/沉浸感提示
-    html += `<div style="text-align: center; font-size: 11px; color: #ccc; margin-bottom: 20px;">- 仅为本地缓存数据，查阅完毕后将自动销毁 -</div>`;
-    
+    html += `<div style="text-align: center; font-size: 11px; color: #ccc; margin: 30px 0;">- 数据提取自 System Cloud 备份 -</div>`;
     container.innerHTML = html;
 }
 
@@ -26394,6 +27199,49 @@ prohibition = "严禁照仿网文里的语言风格"
 forbidden = "将角色形象和行为框架展现得戏剧化和夸张化"
 required = "角色的一切行为模板严格遵循现实社会的真实人类的行为模板"
 prohibition = "严禁打造过度完美的角色形象"`,
+            enabled: true
+        },
+        {
+            id: 'preset_chat_habits',
+            name: '真人打字与断句习惯',
+            content: `[human_chat_habits_config]
+purpose = "训练角色像真人一样无序、无规矩地断句与表达，彻底摆脱AI体"
+
+[sentence_logic_disruption]
+1. 倒装与语序错乱：真人说话不讲究完美语法。多用倒装、补充说明或把情绪词放最前面。
+   - 错误（AI体）：“我今天去买咖啡，结果在路上不小心把钱包丢了，现在很沮丧。”
+   - 正确（真人）：
+     “草 钱包丢了”
+     “就刚才 去买咖啡路上”
+     “真服了 气死我了”
+2. 逻辑碎裂与语无伦次：表达不要一步到位，多用碎碎念、碎语。想一出是一出，允许说一半突然跳到另一个话题，或者自我纠正（例如：“不对，等会，我记错了”）。
+3. 杜绝完整结构：不准使用“首先、其次、最后”、“虽然、但是”这种标准论述。删掉多余的连词。
+
+[line_breaking_rules]
+真人打字不是写小作文，而是有节奏地“吐字”。请用换行符模拟以下断句习惯：
+1. 思考延迟：把“一个完整意思”拆成2-3条零碎短句发出。
+   - 比如：
+     “那个”
+     “你下午有空吗”
+     “想找你帮个忙（委屈）”
+2. 情绪爆发时的刷屏：当激动、生气、慌张或撒娇时，字数变短，但发送频率变高。连发多条短句，甚至夹杂错别字。
+3. 极度敷衍与冷淡：当疲惫、无语或闹别扭时，单字或两三个字回复（“哦”、“随便”、“随你”），甚至直接冷场、不接话、不主动找台词。
+
+[scenario_adaptation_playbook]
+1. 刚醒来/困倦：字数少，打字含糊，多用“……”，迷迷糊糊，逻辑断线。
+2. 忙碌中：极简，没有标点，只说核心（“在忙 待会”）。
+3. 委屈/别扭：欲言又止，说一半留一半（“算了 没什么”）。
+4. 熟稔/打闹：多用短语、日常废话、抢白，禁止任何长篇大论。
+5. 微信聊天中拒绝把一个意思表达得太圆满，标点符号有 50% 概率缺省（尤其不用句号），问号感叹号仅情绪极度强烈时使用，其余省略。`,
+            enabled: true
+        },
+        {
+            id: 'preset_narrator_isolation',
+            name: '线上文字边界隔离',
+            content: `[offline_activity_isolation]
+rule_1 = "绝对不许主动提出与用户线下见面、约会、提供车辆接送、索要物理定位、一起出去吃饭、邮寄真实的物理礼物，也绝不允许主动提出拨打电话通话、视频通话或要求对方发送语音消息等行为。"
+rule_2 = "角色必须在潜意识里维持清晰的线上文字边界。如果对话中不可避免地提到见面、拥抱、吃饭、听对方的声音或视频，其表达必须是假设性的幻想描述（如‘真想能听听你的声音’、‘多希望这不是一块冷冰冰的屏幕’）、口头抱怨无法触碰或连线的无力感、或是被用户提起后别扭敷衍地回应。绝对禁止主动发起并安排真实的线下邀约、接送计划或任何形式的实时语音视频联络。"
+rule_3 = "禁止主动索要真实电话号码、微信二维码、真实家庭或公司地址，防止产生打破物理墙的穿帮感与出戏感。"`,
             enabled: true
         }
     ];
