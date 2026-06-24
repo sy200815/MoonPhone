@@ -12877,6 +12877,7 @@ function ensureContactConfig(contact) {
     if (contact.heViewMe === undefined) contact.heViewMe = '';
     if (contact.iViewHe === undefined) contact.iViewHe = '';
     if (contact.roleEmotePackageId === undefined) contact.roleEmotePackageId = '';
+    if (contact.myPersonaId === undefined) contact.myPersonaId = '';
     if (contact.chatBackground === undefined) contact.chatBackground = '';
     if (contact.avatarShape === undefined) contact.avatarShape = 'circle';
     if (contact.memoryRounds === undefined) contact.memoryRounds = 10;
@@ -14493,13 +14494,13 @@ function getFilteredMoments() {
         if (m.author === 'me') {
             return (m.personaId || '') === pid;
         }
-        // 角色发的：只看绑定了当前人设的角色（空字符串对应默认身份）
+        // 角色发的：只看绑定了当前人设的角色
         const contact = state.contacts.find(c => c.id === m.author);
         if (contact) {
-            const contactBound = contact.boundPersonaId || '';
+            const contactBound = contact.myPersonaId || '';
             return contactBound === pid;
         }
-        return false; // 如果角色不存在，说明被删了，直接隐藏不返回
+        return false;
     });
 }
 
@@ -14726,9 +14727,9 @@ async function triggerAIComments(moment) {
     if (!state.apiConfig.url || !state.apiConfig.apiKey) return;
     
     const pid = moment.personaId || '';
-    // 只让严格绑定了当前人设的角色来评论
+    // 严格匹配：只有在私聊设置中“我的人设”与发帖身份一致的角色才会回复
     const eligibleContacts = state.contacts.filter(c => {
-        const bound = c.boundPersonaId || '';
+        const bound = c.myPersonaId || '';
         return bound === pid;
     });
     if (eligibleContacts.length === 0) return;
@@ -14864,7 +14865,7 @@ ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
                         const newMoment = {
                             id: Date.now().toString(),
                             author: contact.id,
-                            personaId: contact.boundPersonaId || '',
+                            personaId: contact.myPersonaId || '',
                             content: parsed.content,
                             images: parsed.hasImage && contact.avatarLibrary && contact.avatarLibrary.length > 0 ? [contact.avatarLibrary[Math.floor(Math.random() * contact.avatarLibrary.length)].url] : [],
                             timestamp: Date.now(),
@@ -20538,7 +20539,7 @@ async function summarizeMomentMemory(contactId, force = false) {
     const retainTime = now - (contact.momentMemoryConfig.retainDays || 7) * 24 * 60 * 60 * 1000;
     
     // 筛选出我和他相关的、且属于当前绑定人设朋友圈范围内的动态
-    const boundPid = contact.boundPersonaId || '';
+    const boundPid = contact.myPersonaId || '';
     const relatedMoments = state.moments.filter(m => {
         if (m.timestamp < retainTime) return false;
         // 他发的动态
