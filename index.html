@@ -11789,11 +11789,11 @@ function toTraditionalChineseTime(ts) {
         </div>
 
         <!-- 论坛个人主页 -->
-        <div id="view-forum_profile" class="view-container settings-view" style="display: none; z-index: 7;">
-            <div class="settings-header" style="background: #fff; border-bottom: none;">
+        <div id="view-forum_profile" class="view-container settings-view forum-theme-root" style="display: none; z-index: 7;">
+            <div class="settings-header" style="background: var(--f-header-bg) !important; border-bottom: none;">
                 <div class="status-bar" style="position: relative;"><div class="time sys-time"></div></div>
                 <div class="nav-bar">
-                    <div class="back-btn" onclick="switchView('forum_main')"><iconify-icon icon="ph:caret-left-bold"></iconify-icon></div>
+                    <div class="back-btn" style="background: var(--f-input-bg); color: var(--f-text-pri);" onclick="switchView('forum_main')"><iconify-icon icon="ph:caret-left-bold"></iconify-icon></div>
                     <div class="nav-title">个人主页</div>
                     <div class="nav-right"></div>
                 </div>
@@ -11806,10 +11806,10 @@ function toTraditionalChineseTime(ts) {
         </div>
 
         <!-- 论坛发帖页重构 -->
-        <div id="view-forum_create_post" class="view-container settings-view forum-theme-root" style="display: none; z-index: 8; background: #FFF;">
-            <div class="settings-header" style="background: #FFF; border-bottom: none;">
+        <div id="view-forum_create_post" class="view-container settings-view forum-theme-root" style="display: none; z-index: 8;">
+            <div class="settings-header" style="background: var(--f-header-bg) !important; border-bottom: none;">
                 <div class="nav-bar">
-                    <div class="back-btn" style="font-size: 15px; width: auto; color: #666666; font-weight: 500;" onclick="switchView(editingForumPostId ? 'forum_post' : 'forum_main')">取消</div>
+                    <div class="back-btn" style="font-size: 15px; width: auto; color: var(--f-text-sec); font-weight: 500;" onclick="switchView(editingForumPostId ? 'forum_post' : 'forum_main')">取消</div>
                     <div class="nav-title" id="forum-create-header-title" style="font-weight: 700;">发布帖子</div>
                     <div class="nav-right" style="width: auto;">
                         <button style="background:#111111; color:#FFFFFF; border-radius:20px; padding:8px 18px; font-size:14px; font-weight:600; border:none; cursor:pointer;" onclick="submitForumPost()">发布</button>
@@ -11824,10 +11824,10 @@ function toTraditionalChineseTime(ts) {
         </div>
 
         <!-- 论坛设置页重构 -->
-        <div id="view-forum_settings" class="view-container settings-view forum-theme-root" style="display: none; z-index: 7; background: #FFF;">
-            <div class="settings-header" style="background: #FFF; border-bottom: none;">
+        <div id="view-forum_settings" class="view-container settings-view forum-theme-root" style="display: none; z-index: 7;">
+            <div class="settings-header" style="background: var(--f-header-bg) !important; border-bottom: none;">
                 <div class="nav-bar">
-                    <div class="back-btn" onclick="switchView('forum_main')" style="background:transparent; color:#111111;"><iconify-icon icon="ph:arrow-left-light" style="font-size:24px;"></iconify-icon></div>
+                    <div class="back-btn" onclick="switchView('forum_main')" style="background:transparent; color: var(--f-text-pri);"><iconify-icon icon="ph:arrow-left-light" style="font-size:24px;"></iconify-icon></div>
                     <div class="nav-title" style="font-weight: 700;">论坛管理</div>
                     <div class="nav-right" style="cursor: pointer; display: flex; align-items: center; justify-content: flex-end;" onclick="createForumBoard()">
                         <iconify-icon icon="ph:plus-light" style="font-size: 24px; color: #111111;"></iconify-icon>
@@ -12800,6 +12800,7 @@ async function loadSettings() {
             state.chatGroups = data.chatGroups;
             state.chatGroups.forEach(g => {
                 if (g.showBubbleTimestamp === undefined) g.showBubbleTimestamp = true;
+                if (g.showMiniTimestamp === undefined) g.showMiniTimestamp = true;
                 if (g.chatHeaderNightMode === undefined) g.chatHeaderNightMode = false;
             });
         }
@@ -12870,6 +12871,8 @@ async function saveDataSilently() {
 function ensureContactConfig(contact) {
     if (contact.alias === undefined) contact.alias = '';
     if (contact.showBubbleTimestamp === undefined) contact.showBubbleTimestamp = true;
+    if (contact.showMiniTimestamp === undefined) contact.showMiniTimestamp = true;
+    if (contact.chatHeaderNightMode === undefined) contact.chatHeaderNightMode = false;
     if (contact.chatHeaderNightMode === undefined) contact.chatHeaderNightMode = false;
     if (contact.chatAvatar === undefined) contact.chatAvatar = '';
     if (contact.myChatAvatar === undefined) contact.myChatAvatar = '';
@@ -15574,11 +15577,12 @@ function renderChatRoom() {
         const hideMyAvatar = !isGroup && chatData.hideMyAvatar;
 
         // 气泡内元数据（时间 + 已读双勾）
+        const showMiniTime = chatData.showMiniTimestamp !== false;
         const ticksSvg = '<span class="msg-status-ticks"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L7 17l-5-5M22 10l-7.5 7.5-2-2"/></svg></span>';
-        const metaHtml = `<span class="msg-meta"><span class="msg-time">${formatMsgTime(msg.timestamp)}</span>${isMe ? ticksSvg : ''}</span>`;
+        const metaHtml = `<span class="msg-meta">${showMiniTime ? `<span class="msg-time">${formatMsgTime(msg.timestamp)}</span>` : ''}${isMe ? ticksSvg : ''}</span>`;
 
-        const showTime = chatData.showBubbleTimestamp !== false;
-        const timeHtml = showTime ? `<span class="msg-timestamp">${toTraditionalChineseTime(msg.timestamp)}</span>` : '';
+        const showLargeTime = chatData.showBubbleTimestamp !== false;
+        const timeHtml = showLargeTime ? `<span class="msg-timestamp">${toTraditionalChineseTime(msg.timestamp)}</span>` : '';
 
         return `
                 <div class="message-item ${msg.role}" data-id="${msg.id}" style="" onclick="if(state.isMultiSelecting) { toggleMsgSelect('${msg.id}'); }">
@@ -16189,7 +16193,8 @@ function parseReplyToMessages(replyText, rolePkgId) {
     replyText = replyText.replace(/\n{3,}/g, '\n\n');
     
     // 6. 核心拦截：强力剔除 AI 脑补的 “角色名: ” 或 “我: ” 前缀，防止单条气泡中自导自演
-    replyText = replyText.replace(/^(助手|AI|assistant|我|user|system|[^:：\n]+)\s*[:：]\s*/gim, '');
+    // 修正：确保不拦截以 [ 或 【 开头的指令标签（防止转账和表情包被吞）
+    replyText = replyText.replace(/^(?!\[|【)(助手|AI|assistant|我|user|system|[^:：\n\[【]+)\s*[:：]\s*/gim, '');
     
     replyText = replyText.trim();
     
@@ -16221,7 +16226,7 @@ function parseReplyToMessages(replyText, rolePkgId) {
                 // 1. 精确匹配
                 let emoteMatch = pkg.emotes.find(e => e.remark === content);
                 
-                // 2. 模糊匹配（防止 AI 脑补，如库里是“摸头”，AI 输出了“摸摸头”）
+                // 2. 模糊匹配
                 if (!emoteMatch) {
                     emoteMatch = pkg.emotes.find(e => e.remark && (content.includes(e.remark) || e.remark.includes(content)));
                 }
@@ -16229,12 +16234,12 @@ function parseReplyToMessages(replyText, rolePkgId) {
                 if (emoteMatch) {
                     msgs.push({ id: Math.random().toString(), role: 'assistant', type: 'image', content: emoteMatch.url, remark: emoteMatch.remark });
                 } else {
-                    // 3. 兜底过滤：如果AI完全捏造了一个库里没有的表情包，直接丢弃该指令，绝不作为文本展示给用户
                     console.warn(`过滤了AI捏造的表情包: ${content}`);
                 }
             }
         } else if (type === '发起转账') {
-            const parts = content.split(',');
+            // 支持中英文逗号分隔
+            const parts = content.split(/[,，]/);
             const amount = parseFloat(parts[0]) || 0;
             const remark = parts[1] ? parts[1].trim() : '转账';
             msgs.push({ 
@@ -17894,6 +17899,14 @@ function renderChatSettings() {
                         <div class="sidebar-submenu-item" style="cursor: default;">
                             <span>感知现实时间</span>
                             <div class="toggle-switch ${contact.perceiveTime ? 'active' : ''}" onclick="toggleContactProp('perceiveTime')"></div>
+                        </div>
+                        <div class="sidebar-submenu-item" style="cursor: default;">
+                            <span>显示气泡下方大时间</span>
+                            <div class="toggle-switch ${contact.showBubbleTimestamp !== false ? 'active' : ''}" onclick="toggleContactProp('showBubbleTimestamp')"></div>
+                        </div>
+                        <div class="sidebar-submenu-item" style="cursor: default;">
+                            <span>显示气泡内侧小时间</span>
+                            <div class="toggle-switch ${contact.showMiniTimestamp !== false ? 'active' : ''}" onclick="toggleContactProp('showMiniTimestamp')"></div>
                         </div>
                         <div class="sidebar-submenu-item" style="cursor: default;">
                             <span>显示气泡时间</span>
@@ -23633,6 +23646,7 @@ function openForumProfile(userId, isAnonymous) {
 }
 
 function renderForumProfile() {
+    applyForumNightMode();
     const userId = state.currentForumProfileId;
     const author = getForumAuthorInfo(userId, false, '热心网友');
     const userPosts = state.forumConfig.posts.filter(p => p.authorId === userId && !p.isAnonymous).sort((a,b)=>b.timestamp-a.timestamp);
@@ -23663,6 +23677,7 @@ function renderForumProfile() {
 let editingForumPostId = null;
 
 function openForumCreatePost() {
+    applyForumNightMode();
     editingForumPostId = null;
     $('#forum-create-header-title').textContent = '发布帖子';
     $('#forum-create-title').value = '';
@@ -23865,6 +23880,7 @@ JSON 格式示例：
 }
 
 function renderForumSettings() {
+    applyForumNightMode();
     const container = $('#forum-settings-content');
     let html = `<div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">`;
     
@@ -25557,6 +25573,14 @@ function renderGroupChatSettings() {
                             </select>
                         </div>
                         <div class="sidebar-submenu-item" style="cursor: default;">
+                            <span>显示气泡下方大时间</span>
+                            <div class="toggle-switch ${group.showBubbleTimestamp !== false ? 'active' : ''}" onclick="toggleGroupChatProp('showBubbleTimestamp')"></div>
+                        </div>
+                        <div class="sidebar-submenu-item" style="cursor: default;">
+                            <span>显示气泡内侧小时间</span>
+                            <div class="toggle-switch ${group.showMiniTimestamp !== false ? 'active' : ''}" onclick="toggleGroupChatProp('showMiniTimestamp')"></div>
+                        </div>
+                    </div>
                             <span>显示气泡时间</span>
                             <div class="toggle-switch ${group.showBubbleTimestamp !== false ? 'active' : ''}" onclick="toggleGroupChatProp('showBubbleTimestamp')"></div>
                         </div>
