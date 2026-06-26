@@ -16285,6 +16285,14 @@ ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
             }
             
                                     contact.memorySummary.msgCountSinceLast = (contact.memorySummary.msgCountSinceLast || 0) + 1;
+            
+            // 记录 Token 使用量 (如果有返回 usage 字段)
+            if (data.usage) {
+                if (!contact.tokenUsage) contact.tokenUsage = { total: 0, lastRound: 0 };
+                contact.tokenUsage.lastRound = data.usage.total_tokens || 0;
+                contact.tokenUsage.total += contact.tokenUsage.lastRound;
+            }
+
             queueAndPopMessages(contact.id, parsedMsgs);
             
             if (contact.memoryConfig.autoSummarize && contact.memorySummary.msgCountSinceLast >= contact.memoryConfig.triggerMsgCount) {
@@ -16304,7 +16312,26 @@ ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
             setTimeout(() => tryTriggerLoverPost(contact), 9000);
         }
         } catch (err) {
-        contact.messages.push({ id: Date.now().toString(), role: 'system', content: `[系统提示: 消息接收失败]\n详细原因解析:\n${err.message}`, timestamp: Date.now() });
+        const errorDetail = err.message || '未知错误';
+        state.lastApiError = errorDetail; // 暂存错误信息，避免 onclick 传参转义导致的语法错误
+        const errorHtml = `
+            <div style="text-align: left; font-family: monospace; font-size: 12px; background: #FFF0F0; padding: 12px; border-radius: 8px; border: 1px solid #FFCCC7; color: #FF4D4F; margin-bottom: 12px; overflow-x: auto; white-space: pre-wrap;">${escapeHtml(errorDetail)}</div>
+            <div style="font-size: 13px; color: #666; line-height: 1.6;">
+                <b>💡 诊断建议：</b><br>
+                - 401: 密钥(API Key)无效或已过期<br>
+                - 403: 余额不足或被拦截<br>
+                - 404: 接口地址路径填写错误<br>
+                - 503/429: 官方服务器繁忙，请稍后再试<br><br>
+                您可以<span style="color: #007aff; font-weight: bold; cursor: pointer;" onclick="copyToClipboard(state.lastApiError)">【点击复制报错信息】</span>，将其发给豆包或DeepSeek询问原因。
+            </div>
+        `;
+        
+        $('#dialog-title').textContent = '⚠️ 对话请求失败';
+        $('#dialog-body').innerHTML = errorHtml;
+        $('#custom-dialog').style.display = 'flex';
+        $('.custom-dialog-footer').innerHTML = `<button class="custom-dialog-btn confirm" style="width: 100%; border: none;" onclick="closeDialog()">我知道了</button>`;
+
+        contact.messages.push({ id: Date.now().toString(), role: 'system', content: `[请求失败] 详细错误见弹窗说明。`, timestamp: Date.now() });
         if (!targetContactId) {
             state.chatDisplayLimit += 1;
             scrollToBottom(); 
@@ -18236,6 +18263,35 @@ function renderChatSettings() {
                 ` : ''}
             </div>
 
+            <!-- Token 控制台 -->
+            <div class="menu-item-wrap" style="margin-top: 6px;">
+                <div class="sidebar-menu-item ${state.chatSettingsExpanded.tokens ? 'active expanded' : ''}" onclick="toggleChatSettingsSec('tokens')">
+                    <span class="menu-icon"><iconify-icon icon="ph:terminal-window-light"></iconify-icon></span>
+                    <span class="menu-label">Token 消耗监控</span>
+                    <span class="menu-arrow"><iconify-icon icon="ph:caret-down-light"></iconify-icon></span>
+                </div>
+                ${state.chatSettingsExpanded.tokens ? `
+                    <div class="sidebar-submenu">
+                        <div class="sidebar-submenu-item" style="cursor: default; flex-direction: column; align-items: flex-start; gap: 4px; padding: 14px 16px; background: #F8F9FA; border-radius: 10px;">
+                            <span style="font-size: 11px; color: #999; font-weight: 700;">本轮累计消耗 (EST.)</span>
+                            <span style="font-size: 18px; font-weight: 800; color: #111;">${contact.tokenUsage ? contact.tokenUsage.total : 0} <small style="font-size: 10px; font-weight: 400; color: #888;">Tokens</small></span>
+                        </div>
+                        <div class="sidebar-submenu-item" style="cursor: default; justify-content: space-between;">
+                            <span>上轮请求消耗</span>
+                            <span style="font-weight: 700; color: #111;">${contact.tokenUsage ? contact.tokenUsage.lastRound : 0}</span>
+                        </div>
+                        <div class="sidebar-submenu-item" style="cursor: default; justify-content: space-between;">
+                            <span>预计下轮请求 (含上下文)</span>
+                            <span style="font-weight: 700; color: #007aff;">~${Math.round(JSON.stringify(contact.messages.slice(-20)).length * 1.5)}</span>
+                        </div>
+                        <div class="sidebar-submenu-item" onclick="contact.tokenUsage = {total:0, lastRound:0}; saveDataSilently(); renderChatSettings();" style="color: #ff3b30;">
+                            <span>重置统计数据</span>
+                            <iconify-icon icon="ph:trash-light"></iconify-icon>
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+
             <!-- 系统控制 -->
             <div class="menu-item-wrap" style="margin-top: 6px;">
                 <div class="sidebar-menu-item ${state.chatSettingsExpanded.system ? 'active expanded' : ''}" onclick="toggleChatSettingsSec('system')">
@@ -19498,6 +19554,108 @@ function updateEmoteRemark(id, val) {
     const e = pkg.emotes.find(x => x.id === id); if(e) { e.remark = val; saveDataSilently(); }
 }
 
+// 复制文本到剪贴板 (增强鲁棒性与兼容性)
+async function copyToClipboard(text) {
+    if (!text) return;
+    const content = typeof text === 'string' ? text : JSON.stringify(text, null, 2);
+    
+    try {
+        // 尝试使用现代 API
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(content);
+            showToast('已复制到剪贴板');
+        } else {
+            throw new Error('Clipboard API unavailable');
+        }
+    } catch (e) {
+        // 传统 fallback 方案
+        const textarea = document.createElement('textarea');
+        textarea.value = content;
+        textarea.style.position = 'fixed'; // 防止页面跳动
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            showToast('已复制到剪贴板');
+        } catch (err) {
+            showToast('复制失败，请手动截图', 'error');
+        }
+        document.body.removeChild(textarea);
+    }
+}
+
+// 获取 API 账户余额 (兼容常见中转站接口)
+async function fetchApiBalance() {
+    const url = state.apiConfig.url.trim().replace(/\/+$/, '');
+    const key = state.apiConfig.apiKey.trim();
+    if (!url || !key) { showToast('请先填写接口地址和密钥', 'error'); return; }
+
+    const display = $('#api-balance-display');
+    const valEl = $('#api-balance-value');
+    display.style.display = 'block';
+    valEl.textContent = '正在联络服务器...';
+
+    // 尝试几种常见的余额查询端点
+    const endpoints = [
+        `${url}/dashboard/billing/usage`,      // 标准端点
+        `${url}/v1/dashboard/billing/subscription`, // 官方标准端点
+        `${url.replace('/v1','')}/api/user/info`, // 部分自建站
+        `${url}/user/balance`                  // 部分国内中转
+    ];
+
+    try {
+        // 尝试第一个：大部分中转站（New API）支持的订阅查询
+        const res = await fetch(`${url}/dashboard/billing/subscription`, {
+            headers: { 'Authorization': `Bearer ${key}` }
+        });
+        
+        if (res.ok) {
+            const data = await res.json();
+            if (data.hard_limit_usd !== undefined) {
+                let balance = data.hard_limit_usd;
+                // --- New API 自动换算逻辑 ---
+                // 如果余额超过 10,000，且没有 total_usage (或者 total_usage 很大)
+                // 基本可以判定是 New API 的配额单位 (1$ = 500,000 单位)
+                if (balance > 10000) {
+                    const estimatedUsd = balance / 500000;
+                    valEl.textContent = `$${estimatedUsd.toFixed(2)} (已换算)`;
+                    valEl.title = `原始配额: ${balance}`;
+                } else {
+                    valEl.textContent = `$${balance.toFixed(2)}`;
+                }
+                return;
+            }
+        }
+        
+        // 尝试 New API 站长常用统计接口 (若存在)
+        const res2 = await fetch(`${url}/dashboard/billing/usage`, {
+            headers: { 'Authorization': `Bearer ${key}` }
+        });
+        if (res2.ok) {
+            const data = await res2.json();
+            if (data.total_usage !== undefined) {
+                // 如果能拿到这个接口，通常能对比出比例
+                valEl.textContent = "已连接 (请看上方换算结果)";
+            }
+        }
+
+        // 如果上面都拿不到数据，尝试通用的 info 查询 (部分国内定制中转)
+        const res3 = await fetch(endpoints[2], { headers: { 'Authorization': `Bearer ${key}` } });
+        if (res3.ok) {
+            const data = await res3.json();
+            if (data.data?.balance !== undefined) {
+                valEl.textContent = `¥${(data.data.balance/100).toFixed(2)}`;
+                return;
+            }
+        }
+
+        valEl.textContent = '查询受限 (该站未开放余额接口)';
+    } catch (e) {
+        valEl.textContent = '网络请求失败';
+    }
+}
+
 // ==================== 10. Settings & Profile ====================
 function handleSettingsAvatarUpload(e) {
     const f = e.target.files[0]; if(!f) return;
@@ -19570,7 +19728,7 @@ function renderSettings() {
                 </div>
 
                 <div class="sidebar-submenu-item" style="padding: 0; margin-bottom: 12px; background: transparent;">
-                    <button class="m-btn" onclick="testConnection()" id="btn-test-conn" style="width: 100%; margin-top: 6px; border-radius: 10px;">
+                    <button class="m-btn" onclick="testConnection()" id="btn-test-conn" style="width: 100%; margin-top: 6px; border-radius: 10px; height: 44px;">
                         测试接口连接 →
                     </button>
                 </div>
