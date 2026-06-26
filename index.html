@@ -10239,6 +10239,96 @@ function toTraditionalChineseTime(ts) {
     display: flex; align-items: center; justify-content: center; font-size: 24px;
     box-shadow: 0 12px 24px rgba(0,0,0,0.15); z-index: 1100;
 }
+
+/* ===== 番茄钟倒计时悬浮窗与弹窗 ===== */
+.pomo-countdown-floating {
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom) + 180px);
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(12px) saturate(200%);
+    -webkit-backdrop-filter: blur(12px) saturate(200%);
+    border: 1.2px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08), 
+                inset 0 4px 8px rgba(255,255,255,0.4),
+                0 0 1px rgba(0,0,0,0.1);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 11000;
+    cursor: pointer;
+    touch-action: none;
+    transition: transform 0.2s;
+}
+.pomo-countdown-floating:active {
+    transform: scale(0.9);
+}
+.pomo-countdown-floating iconify-icon {
+    font-size: 24px;
+    color: #FF5C5C;
+    animation: pomo-pulse-scale 2.5s infinite ease-in-out;
+}
+.pomo-countdown-floating .badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #FF3B30;
+    color: #FFF;
+    font-size: 8px;
+    font-weight: 800;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    border: 1.5px solid #FFF;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+@keyframes pomo-pulse-scale {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+}
+
+.pomo-countdown-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 290px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1.2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 28px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15),
+                inset 0 12px 24px rgba(255, 255, 255, 0.4);
+    padding: 24px 20px;
+    z-index: 11500;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+    text-align: center;
+}
+.pomo-countdown-modal.active {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    display: flex;
+}
+.pomo-modal-time {
+    font-size: 38px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: #111111;
+    letter-spacing: -1px;
+}
 </style>
     <!-- 使用 defer 异步加载脚本，防止阻塞 DOM 解析 -->
     <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js" crossorigin="anonymous" defer></script>
@@ -12220,7 +12310,22 @@ function toTraditionalChineseTime(ts) {
             </div>
         </div>
 
-                        <!-- 全屏照片查看器 -->
+                        <!-- 番茄钟日程倒计时圆形小悬浮窗 -->
+        <div id="pomo-countdown-floating" class="pomo-countdown-floating" onclick="handlePomoFloatingClick(event)">
+            <iconify-icon icon="solar:hourglass-bold-duotone"></iconify-icon>
+            <div class="badge" id="pomo-floating-badge">30m</div>
+        </div>
+
+        <!-- 倒计时详情弹出卡片 (液态玻璃质感) -->
+        <div id="pomo-countdown-modal" class="pomo-countdown-modal" onclick="event.stopPropagation()">
+            <div style="font-size: 11px; font-weight: 800; color: rgba(0,0,0,0.4); text-transform: uppercase; letter-spacing: 0.15em;">Schedule / 日程倒计时</div>
+            <div style="font-size: 18px; font-weight: 800; color: #111; margin-top: 4px;" id="pomo-modal-task-name">准备去做这件事</div>
+            <div class="pomo-modal-time" id="pomo-modal-time-countdown">29:59</div>
+            <div id="pomo-modal-reminder-label" style="font-size: 11px; color: #888; background: rgba(0,0,0,0.03); padding: 4px 12px; border-radius: 999px;">🔔 暂无提醒角色</div>
+            <button class="custom-dialog-btn confirm" style="width: 100%; height: 40px; margin-top: 6px; border-radius: 12px;" onclick="closePomoCountdownModal()">关闭窗口</button>
+        </div>
+
+        <!-- 全屏照片查看器 -->
                 <div id="photo-popup" class="photo-popup-overlay" onclick="closePhotoPopup()">
                     <div class="photo-popup-close"><iconify-icon icon="ph:x-bold"></iconify-icon></div>
                     <div class="photo-popup-content" id="photo-popup-content-box">
@@ -18368,10 +18473,10 @@ const BUBBLE_PRESETS = {
     telegram: { myBubbleColor: '#EFFDDE', roleBubbleColor: '#FFFFFF', myTextColor: '#000000', roleTextColor: '#000000' },
     telegram_night: { myBubbleColor: '#2B5278', roleBubbleColor: '#182533', myTextColor: '#FFFFFF', roleTextColor: '#FFFFFF' },
     telegram_tinted: { myBubbleColor: '#C5E1A5', roleBubbleColor: '#FFFFFF', myTextColor: '#1B5E20', roleTextColor: '#111111' },
-    sakura: { myBubbleColor: '#FFE5EC', roleBubbleColor: '#FFFFFF', myTextColor: '#000000', roleTextColor: '#000000' },
-    seaside: { myBubbleColor: '#E3F2FD', roleBubbleColor: '#FFFFFF', myTextColor: '#000000', roleTextColor: '#000000' },
+    sakura: { myBubbleColor: '#FFF5F8', roleBubbleColor: '#FFFFFF', myTextColor: '#000000', roleTextColor: '#000000' },
+    seaside: { myBubbleColor: '#F2F9FF', roleBubbleColor: '#FFFFFF', myTextColor: '#000000', roleTextColor: '#000000' },
     wechat: { myBubbleColor: '#95ec69', roleBubbleColor: '#ffffff', myTextColor: '#111111', roleTextColor: '#111111' },
-    purple: { myBubbleColor: '#F3E5F5', roleBubbleColor: '#FFFFFF', myTextColor: '#000000', roleTextColor: '#000000' },
+    purple: { myBubbleColor: '#F9F7FF', roleBubbleColor: '#FFFFFF', myTextColor: '#000000', roleTextColor: '#000000' },
     mono: { myBubbleColor: '#333333', roleBubbleColor: '#F5F5F5', myTextColor: '#FFFFFF', roleTextColor: '#111111' }
 };
 
@@ -28120,24 +28225,274 @@ function updateBigClock() {
     $('#pomo-big-date').textContent = `${months[now.getMonth()]} ${now.getDate()}`;
 }
 
+// 倒计时高精度 Interval
+let pomoCountdownTimer = null;
+let currentCountdownTask = null;
+
 function initPomodoroReminderEngine() {
+    // 初始化拖拽绑定
+    initPomoCountdownDrag();
+
+    // 核心引擎：每 10 秒微调检测一次。
     setInterval(async () => {
         const now = new Date();
         const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         
-        // 查找今天、当前时间、未提醒过的任务
+        // 1. 查找今天、当前时间、未提醒过的任务
         const task = state.pomodoroTasks.find(t => t.dayOffset === 0 && t.time === currentTime && !t.reminded && !t.isCompleted);
-        
         if (task) {
             task.reminded = true;
             await saveDataSilently();
             triggerAITaskReminder(task);
+            
+            // 倒计时已到，强制清除该日程的悬浮倒计时
+            if (currentCountdownTask && currentCountdownTask.id === task.id) {
+                stopPomoCountdown();
+            }
+        }
+        
+        // 2. 查找今天、未完成、非正在倒计时且将在 30 分钟内开始的下一个任务进行接管
+        if (!currentCountdownTask) {
+            const nextUpcomingTask = state.pomodoroTasks.find(t => {
+                if (t.dayOffset !== 0 || t.isCompleted || t.reminded) return false;
+                
+                // 计算当前时间与任务时间的分钟差值
+                const [taskH, taskM] = t.time.split(':').map(Number);
+                const taskTotalMin = taskH * 60 + taskM;
+                const nowTotalMin = now.getHours() * 60 + now.getMinutes();
+                
+                const diffMin = taskTotalMin - nowTotalMin;
+                return diffMin > 0 && diffMin <= 30;
+            });
+            
+            if (nextUpcomingTask) {
+                startPomoCountdown(nextUpcomingTask);
+            }
         }
         
         if (state.currentView === 'pomodoro') {
             updateBigClock();
         }
-    }, 30000); 
+    }, 10000); 
+}
+
+// 启动高精度秒级倒计时
+function startPomoCountdown(task) {
+    currentCountdownTask = task;
+    const floating = document.getElementById('pomo-countdown-floating');
+    const badge = document.getElementById('pomo-floating-badge');
+    
+    if (floating) {
+        floating.style.display = 'flex';
+    }
+
+    if (pomoCountdownTimer) clearInterval(pomoCountdownTimer);
+    
+    const updateTick = () => {
+        if (!currentCountdownTask) {
+            stopPomoCountdown();
+            return;
+        }
+        
+        const now = new Date();
+        const [taskH, taskM] = currentCountdownTask.time.split(':').map(Number);
+        
+        const taskDate = new Date();
+        taskDate.setHours(taskH, taskM, 0, 0);
+        
+        const diffMs = taskDate.getTime() - now.getTime();
+        
+        if (diffMs <= 0) {
+            // 倒计时结束，强提醒弹窗
+            triggerTimeArrivedAlert(currentCountdownTask);
+            stopPomoCountdown();
+            return;
+        }
+        
+        const totalSec = Math.floor(diffMs / 1000);
+        const min = Math.floor(totalSec / 60);
+        const sec = totalSec % 60;
+        
+        const timeStr = `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+        
+        // 更新悬浮球气泡数字 (仅显示分钟数，比如 "29m")
+        if (badge) {
+            badge.textContent = `${min + 1}m`;
+        }
+        
+        // 如果倒计时弹窗已打开，更新上面的秒级精确时间
+        const modal = document.getElementById('pomo-countdown-modal');
+        if (modal && modal.classList.contains('active')) {
+            const timeDisplay = document.getElementById('pomo-modal-time-countdown');
+            if (timeDisplay) timeDisplay.textContent = timeStr;
+        }
+    };
+    
+    updateTick();
+    pomoCountdownTimer = setInterval(updateTick, 1000);
+}
+
+// 停止并清理倒计时
+function stopPomoCountdown() {
+    if (pomoCountdownTimer) {
+        clearInterval(pomoCountdownTimer);
+        pomoCountdownTimer = null;
+    }
+    currentCountdownTask = null;
+    
+    const floating = document.getElementById('pomo-countdown-floating');
+    if (floating) floating.style.display = 'none';
+    
+    closePomoCountdownModal();
+}
+
+// 倒计时终点大弹窗
+function triggerTimeArrivedAlert(task) {
+    let reminderText = '';
+    if (task.remindedBy && task.remindedBy !== 'none') {
+        const contact = state.contacts.find(c => c.id === task.remindedBy);
+        if (contact) {
+            reminderText = `\n（${contact.name} 已经去准备给你发消息提醒啦！）`;
+        }
+    }
+
+    try { if(navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 300]); } catch(e){}
+
+    $('#dialog-title').textContent = '⏰ 日程时间到啦！';
+    $('#dialog-body').innerHTML = `
+        <div style="text-align: center; padding: 10px 0;">
+            <div style="font-size: 20px; font-weight: 800; color: #FF3B30; margin-bottom: 8px;">该去做这件事了：</div>
+            <div style="font-size: 16px; font-weight: 700; color: #111;">${escapeHtml(task.task)}</div>
+            ${task.note ? `<div style="font-size: 13px; color: #666; margin-top: 6px; font-style: italic;">“ ${escapeHtml(task.note)} ”</div>` : ''}
+            <div style="font-size: 12px; color: #888; margin-top: 14px;">日程设定时间：${task.time}${reminderText}</div>
+        </div>
+    `;
+    $('#custom-dialog').style.display = 'flex';
+    $('.custom-dialog-footer').innerHTML = `<button class="custom-dialog-btn confirm" style="width: 100%; border: none;" onclick="closeDialog(true)">收到，这就去！</button>`;
+}
+
+// 圆形悬浮窗点击响应
+function handlePomoFloatingClick(event) {
+    if (event) {
+        const floatEl = document.getElementById('pomo-countdown-floating');
+        if (floatEl && floatEl.dataset.dragged === 'true') {
+            event.stopPropagation();
+            return;
+        }
+    }
+    
+    if (!currentCountdownTask) return;
+    
+    const modal = document.getElementById('pomo-countdown-modal');
+    if (modal) {
+        document.getElementById('pomo-modal-task-name').textContent = currentCountdownTask.task;
+        
+        let reminderName = '无提醒角色';
+        if (currentCountdownTask.remindedBy && currentCountdownTask.remindedBy !== 'none') {
+            const contact = state.contacts.find(c => c.id === currentCountdownTask.remindedBy);
+            if (contact) {
+                reminderName = `提醒人: ${contact.alias || contact.name}`;
+            }
+        }
+        document.getElementById('pomo-modal-reminder-label').textContent = `🔔 ${reminderName}`;
+        
+        modal.style.display = 'flex';
+        modal.offsetHeight; // 强制重绘
+        modal.classList.add('active');
+    }
+}
+window.handlePomoFloatingClick = handlePomoFloatingClick;
+
+function closePomoCountdownModal() {
+    const modal = document.getElementById('pomo-countdown-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        setTimeout(() => {
+            if (!modal.classList.contains('active')) modal.style.display = 'none';
+        }, 300);
+    }
+}
+window.closePomoCountdownModal = closePomoCountdownModal;
+
+// 番茄钟悬浮窗拖拽手势绑定
+function initPomoCountdownDrag() {
+    const floating = document.getElementById('pomo-countdown-floating');
+    if (!floating) return;
+    
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialLeft = 0, initialTop = 0;
+    let dragMoved = false;
+
+    const onStart = (e) => {
+        if (e.type === 'mousedown' && e.button !== 0) return;
+        
+        const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+        
+        const rect = floating.getBoundingClientRect();
+        floating.style.transition = 'none';
+        floating.style.left = rect.left + 'px';
+        floating.style.top = rect.top + 'px';
+        floating.style.right = 'auto';
+        floating.style.bottom = 'auto';
+        
+        startX = clientX;
+        startY = clientY;
+        initialLeft = rect.left;
+        initialTop = rect.top;
+        isDragging = true;
+        dragMoved = false;
+    };
+
+    const onMove = (e) => {
+        if (!isDragging) return;
+        const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+        
+        const dx = clientX - startX;
+        const dy = clientY - startY;
+        
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+            dragMoved = true;
+        }
+        
+        if (e.cancelable) e.preventDefault();
+        
+        let newLeft = initialLeft + dx;
+        let newTop = initialTop + dy;
+        
+        const rect = floating.getBoundingClientRect();
+        const maxX = window.innerWidth - rect.width;
+        const maxY = window.innerHeight - rect.height;
+        
+        newLeft = Math.max(0, Math.min(newLeft, maxX));
+        newTop = Math.max(0, Math.min(newTop, maxY));
+        
+        floating.style.left = newLeft + 'px';
+        floating.style.top = newTop + 'px';
+    };
+
+    const onEnd = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        floating.style.transition = '';
+        
+        if (dragMoved) {
+            floating.dataset.dragged = 'true';
+            setTimeout(() => {
+                delete floating.dataset.dragged;
+            }, 50);
+        }
+    };
+
+    floating.addEventListener('mousedown', onStart);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onEnd);
+
+    floating.addEventListener('touchstart', onStart, { passive: true });
+    window.addEventListener('touchmove', onMove, { passive: false });
+    window.addEventListener('touchend', onEnd);
 }
 
 async function triggerAITaskReminder(task) {
