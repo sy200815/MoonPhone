@@ -10156,6 +10156,89 @@ function toTraditionalChineseTime(ts) {
     align-items: center;
     justify-content: center;
 }
+
+/* ===== 番茄钟/日程 UI ===== */
+.pomodoro-view {
+    background-color: #FFFFFF !important;
+}
+
+/* 顶部横向滚动周历 */
+.pomo-week-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    margin: 20px 0;
+}
+.pomo-day-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.pomo-day-name { font-size: 11px; font-weight: 700; color: #BBB; text-transform: uppercase; }
+.pomo-day-num {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 800; color: #444;
+}
+.pomo-day-item.active .pomo-day-num { background: #111; color: #FFF; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+.pomo-day-item.active .pomo-day-name { color: #111; }
+
+/* 纵向时间轴 */
+.pomo-timeline-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 24px 100px 32px;
+    position: relative;
+}
+.pomo-timeline-line {
+    position: absolute;
+    left: 45px; top: 0; bottom: 0;
+    width: 1.5px;
+    background: #F0F0F0;
+}
+.pomo-task-item {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 32px;
+    position: relative;
+}
+.pomo-task-time {
+    width: 44px; font-size: 12px; font-weight: 700; color: #111; text-align: right; margin-top: 2px;
+}
+.pomo-task-node {
+    width: 12px; height: 12px; border-radius: 50%; background: #FFF; border: 3px solid #111;
+    z-index: 2; margin-top: 4px; transition: all 0.3s;
+}
+.pomo-task-item.completed .pomo-task-node { background: #111; }
+.pomo-task-content {
+    flex: 1; display: flex; flex-direction: column; gap: 4px;
+}
+.pomo-task-title { font-size: 16px; font-weight: 800; color: #111; letter-spacing: -0.3px; }
+.pomo-task-note { font-size: 12px; color: #888; line-height: 1.4; }
+.pomo-task-item.completed .pomo-task-title { text-decoration: line-through; opacity: 0.5; }
+
+/* 极简高级感时钟页 */
+.pomo-clock-page {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: #000; z-index: 1000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #FFF;
+}
+.pomo-big-clock {
+    font-size: 84px; font-weight: 200; font-variant-numeric: tabular-nums;
+    letter-spacing: -2px; margin-bottom: 10px;
+}
+.pomo-clock-date { font-size: 14px; font-weight: 600; color: #666; letter-spacing: 2px; text-transform: uppercase; }
+
+.pomo-fab-btn {
+    position: absolute; bottom: calc(env(safe-area-inset-bottom) + 30px); right: 24px;
+    width: 56px; height: 56px; border-radius: 50%; background: #111; color: #FFF;
+    display: flex; align-items: center; justify-content: center; font-size: 24px;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15); z-index: 1100;
+}
 </style>
     <!-- 使用 defer 异步加载脚本，防止阻塞 DOM 解析 -->
     <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js" crossorigin="anonymous" defer></script>
@@ -10313,12 +10396,11 @@ function toTraditionalChineseTime(ts) {
                             </div>
                         </div>
                         <div class="app-group" style="margin-top: 10px;">
-                            <div class="cream-app-item" onclick="showTodoToast('todo_camera')">
-                                <div class="app-icon-circle" style="position: relative;">
-                                    <iconify-icon icon="ph:camera"></iconify-icon>
-                                    <div class="todo-badge">待做</div>
+                            <div class="cream-app-item" onclick="handleAppClick('pomodoro')">
+                                <div class="app-icon-circle">
+                                    <iconify-icon icon="ph:timer-fill" style="color: #FF5C5C !important;"></iconify-icon>
                                 </div>
-                                <div class="app-label">待做</div>
+                                <div class="app-label">番茄钟</div>
                             </div>
                             <div class="cream-app-item" onclick="handleAppClick('network')">
                                 <div class="app-icon-circle"><iconify-icon icon="ph:image"></iconify-icon></div>
@@ -10573,6 +10655,7 @@ function toTraditionalChineseTime(ts) {
                         <!-- 对话房间视图 -->
         <div id="view-chat_room" class="view-container chat-room-view" style="display: none;">
             <style id="dynamic-chat-font"></style>
+            <style id="dynamic-chat-custom-css"></style>
             
             <!-- 状态栏悬浮窗 -->
             <div id="chat-status-modal" style="display: none; position: absolute; top: 88px; right: 16px; width: 270px; background: rgba(255,255,255,0.55); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); border-radius: 22px; padding: 18px; box-shadow: 0 12px 40px rgba(0,0,0,0.12), 0 0 1px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,0.5); z-index: 100; flex-direction: column; gap: 14px;">
@@ -11608,6 +11691,49 @@ function toTraditionalChineseTime(ts) {
             <div class="modern-settings-content" id="network-detail-content" style="padding-top: 0;"></div>
         </div>
 
+        <!-- 番茄钟日程视图 -->
+        <div id="view-pomodoro" class="view-container pomodoro-view" style="display: none;">
+            <!-- 顶部 -->
+            <div class="korean-top-actions">
+                <div class="korean-glass-back" onclick="switchView('desktop')">
+                    <iconify-icon icon="ph:caret-left-bold"></iconify-icon>
+                </div>
+                <div class="korean-deco-capsule" id="pomo-header-title">今日日程</div>
+                <div style="flex: 1;"></div>
+                <div class="korean-glass-back" style="width: 36px; height: 36px;" onclick="togglePomoView()">
+                    <iconify-icon id="pomo-view-icon" icon="ph:clock-bold"></iconify-icon>
+                </div>
+            </div>
+
+            <!-- 时间轴主视图 -->
+            <div id="pomo-timeline-view" style="flex: 1; display: flex; flex-direction: column;">
+                <div class="pomo-week-bar" id="pomo-week-bar">
+                    <!-- 动态渲染 -->
+                </div>
+                <div class="pomo-timeline-container">
+                    <div class="pomo-timeline-line"></div>
+                    <div id="pomo-task-list">
+                        <!-- 任务列表 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 极简时钟视图 -->
+            <div id="pomo-clock-view" class="pomo-clock-page" style="display: none;">
+                <div class="pomo-big-clock" id="pomo-big-time">00:00</div>
+                <div class="pomo-clock-date" id="pomo-big-date">OCTOBER 24</div>
+                <div style="margin-top: 40px; display: flex; gap: 20px;">
+                    <div class="korean-fake-btn" style="background: rgba(255,255,255,0.1); color: #FFF; width: 50px; height: 50px; border-radius: 50%;" onclick="togglePomoView()">
+                        <iconify-icon icon="ph:list-bullets-bold"></iconify-icon>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pomo-fab-btn" id="pomo-add-btn" onclick="addPomoTask()">
+                <iconify-icon icon="ph:plus-bold"></iconify-icon>
+            </div>
+        </div>
+
         <!-- 关系网聊天窃听视图 -->
         <div id="view-network_chat" class="view-container settings-view" style="display: none; background-color: #F7F4FA;">
             <div class="settings-header" style="background: #FFF; border-bottom: none;">
@@ -12373,6 +12499,7 @@ const state = {
         dialoguePresets: [], // 全局高权重提示词预设
         emotePresets: [], // old legacy
     emotePackages: [],
+    chatUiThemes: [], // 存储自定义CSS主题 {id, name, css}
     worldbooks: [],
     groups: [
         { id: 'default', name: '未分组' },
@@ -12484,9 +12611,14 @@ const state = {
         }
     },
     
-        newContact: { name: '', persona: '', history: '', avatar: '', groupId: 'default' },
+    newContact: { name: '', persona: '', history: '', avatar: '', groupId: 'default' },
     
-        currentDiaryContactId: null,
+    // 番茄钟/日程状态
+    pomodoroTasks: [], // { id, time, task, note, isCompleted }
+    pomodoroView: 'timeline', // 'timeline' or 'clock'
+    pomodoroActiveDay: 0, // 0=今天, 1=明天...
+    
+    currentDiaryContactId: null,
     currentDiaryId: null,
     
         currentSnoopContactId: null,
@@ -12801,11 +12933,13 @@ async function loadSettings() {
             state.chatGroups.forEach(g => {
                 if (g.showBubbleTimestamp === undefined) g.showBubbleTimestamp = true;
                 if (g.showMiniTimestamp === undefined) g.showMiniTimestamp = true;
+                if (g.showReadTicks === undefined) g.showReadTicks = true;
                 if (g.chatHeaderNightMode === undefined) g.chatHeaderNightMode = false;
             });
         }
         if (data.chatGroups) state.chatGroups = data.chatGroups;
         if (data.myPersonas) state.myPersonas = data.myPersonas;
+        if (data.chatUiThemes) state.chatUiThemes = data.chatUiThemes;
         if (data.emotePackages) state.emotePackages = data.emotePackages;
         if (data.aiRecognizeEmote !== undefined) state.aiRecognizeEmote = data.aiRecognizeEmote;
                                 if (data.myActiveEmotePackageId !== undefined) state.myActiveEmotePackageId = data.myActiveEmotePackageId;
@@ -12831,6 +12965,7 @@ async function loadSettings() {
         if (data.bankCard) state.bankCard = data.bankCard;
         if (data.takeoutAddress) state.takeoutAddress = data.takeoutAddress;
         if (data.loverSpaces) state.loverSpaces = data.loverSpaces;
+        if (data.pomodoroTasks) state.pomodoroTasks = data.pomodoroTasks;
         if (data.forumConfig && data.forumConfig.favorites) {
             state.forumConfig.favorites = data.forumConfig.favorites;
         } else {
@@ -12849,6 +12984,7 @@ async function saveDataSilently() {
                 contacts: state.contacts,
         chatGroups: state.chatGroups,
         myPersonas: state.myPersonas,
+        chatUiThemes: state.chatUiThemes,
         dialoguePresets: state.dialoguePresets,
         emotePackages: state.emotePackages,
         aiRecognizeEmote: state.aiRecognizeEmote,
@@ -12864,14 +13000,18 @@ async function saveDataSilently() {
         bankCard: state.bankCard,
         takeoutAddress: state.takeoutAddress,
         inventory: state.inventory,
-        loverSpaces: state.loverSpaces
+        loverSpaces: state.loverSpaces,
+        pomodoroTasks: state.pomodoroTasks
     });
 }
 
 function ensureContactConfig(contact) {
     if (contact.alias === undefined) contact.alias = '';
+    if (contact.activeChatThemeId === undefined) contact.activeChatThemeId = '';
     if (contact.showBubbleTimestamp === undefined) contact.showBubbleTimestamp = true;
     if (contact.showMiniTimestamp === undefined) contact.showMiniTimestamp = true;
+    if (contact.showReadTicks === undefined) contact.showReadTicks = true;
+    if (contact.chatHeaderNightMode === undefined) contact.chatHeaderNightMode = false;
     if (contact.chatHeaderNightMode === undefined) contact.chatHeaderNightMode = false;
     if (contact.chatHeaderNightMode === undefined) contact.chatHeaderNightMode = false;
     if (contact.chatAvatar === undefined) contact.chatAvatar = '';
@@ -12898,6 +13038,7 @@ function ensureContactConfig(contact) {
     if (contact.chatFontSize === undefined) contact.chatFontSize = 15;
     if (contact.myTransferCover === undefined) contact.myTransferCover = '';
     if (contact.roleTransferCover === undefined) contact.roleTransferCover = '';
+    if (contact.chatWallpaperClarity === undefined) contact.chatWallpaperClarity = false;
     if (contact.favoriteMessages === undefined) contact.favoriteMessages = [];
         if (contact.avatarLibrary === undefined) contact.avatarLibrary = [];
         if (contact.groupId === undefined) contact.groupId = 'default';
@@ -13021,6 +13162,7 @@ async function switchView(viewName) {
     if (viewName === 'network_chat') renderNetworkChat();
     if (viewName === 'chat_forward_detail') { /* render is called explicitly */ }
     if (viewName === 'forum_main') renderForumMain();
+    if (viewName === 'pomodoro') renderPomodoro();
     if (viewName === 'forum_post') renderForumPostDetail();
     if (viewName === 'forum_profile') renderForumProfile();
     if (viewName === 'forum_settings') renderForumSettings();
@@ -13476,7 +13618,7 @@ function renderDesktop() {
         diary: '<iconify-icon icon="ph:calendar-blank"></iconify-icon>',
         takeout: '<iconify-icon icon="ph:shopping-bag-fill"></iconify-icon>',
         lover_space: '<iconify-icon icon="ph:heart-straight-fill" style="color: #FF8FAB !important;"></iconify-icon>',
-        todo_camera: '<iconify-icon icon="ph:camera"></iconify-icon>',
+        pomodoro: '<iconify-icon icon="ph:timer-fill" style="color: #FF5C5C !important;"></iconify-icon>',
         network: '<iconify-icon icon="ph:image"></iconify-icon>',
         snoop: '<iconify-icon icon="ph:note-pencil"></iconify-icon>',
         chat: '<iconify-icon icon="ph:users-three"></iconify-icon>',
@@ -14198,10 +14340,12 @@ async function deleteLoverMoment(spaceId, postId) {
 
 function handleAppClick(action) {
     if(action === 'settings') switchView('settings');
+    else if(action === 'pomodoro') switchView('pomodoro');
     else if(action === 'chat') { state.currentChatTab = 'messages'; switchView('chat_main'); }
     else if(action === 'diary') switchView('diary_main');
     else if(action === 'snoop') switchView('snoop_main');
     else if(action === 'network') switchView('network_main');
+    else if(action === 'pomodoro') switchView('pomodoro');
     else if(action === 'forum') { state.currentForumTab = 'feed'; switchView('forum_main'); }
     else if(action === 'shop') { renderShopMain(); switchView('shop_main'); }
     else if(action === 'tutorial') switchView('tutorial');
@@ -15196,16 +15340,32 @@ function renderChatRoom() {
     if (!chatData) return;
     
     if (chatData.chatBackground) {
-        $('#view-chat_room').style.backgroundColor = 'transparent';
-        $('#view-chat_room').style.backgroundImage = `url(${chatData.chatBackground})`;
+        // 使用 !important 确保壁纸能穿透自定义主题的背景色
+        $('#view-chat_room').style.setProperty('background-image', `url(${chatData.chatBackground})`, 'important');
         $('#view-chat_room').style.backgroundSize = 'cover';
         $('#view-chat_room').style.backgroundRepeat = 'no-repeat';
         $('#view-chat_room').style.backgroundPosition = 'center';
     } else {
-        $('#view-chat_room').style.backgroundColor = '#F7F7F7'; /* 默认浅灰色背景 */
         $('#view-chat_room').style.backgroundImage = 'none';
     }
-    $('#message-list').style.backgroundColor = 'transparent';
+    
+    // 处理壁纸清晰化（控制 message-list 的模糊度）
+    const msgList = $('#message-list');
+    if (msgList) {
+        if (chatData.chatWallpaperClarity) {
+            msgList.style.backdropFilter = 'none';
+            msgList.style.webkitBackdropFilter = 'none';
+        } else {
+            msgList.style.backdropFilter = 'blur(5px)';
+            msgList.style.webkitBackdropFilter = 'blur(5px)';
+        }
+    }
+
+    const customCssEl = $('#dynamic-chat-custom-css');
+    if (customCssEl) {
+        const theme = (state.chatUiThemes || []).find(t => t.id === chatData.activeChatThemeId);
+        customCssEl.innerHTML = theme ? theme.css : '';
+    }
 
     const fontStyleEl = $('#dynamic-chat-font');
     if (fontStyleEl) {
@@ -15578,7 +15738,8 @@ function renderChatRoom() {
 
         // 气泡内元数据（时间 + 已读双勾）
         const showMiniTime = chatData.showMiniTimestamp !== false;
-        const ticksSvg = '<span class="msg-status-ticks"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L7 17l-5-5M22 10l-7.5 7.5-2-2"/></svg></span>';
+        const showTicks = chatData.showReadTicks !== false;
+        const ticksSvg = showTicks ? '<span class="msg-status-ticks"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L7 17l-5-5M22 10l-7.5 7.5-2-2"/></svg></span>' : '';
         const metaHtml = `<span class="msg-meta">${showMiniTime ? `<span class="msg-time">${formatMsgTime(msg.timestamp)}</span>` : ''}${isMe ? ticksSvg : ''}</span>`;
 
         const showLargeTime = chatData.showBubbleTimestamp !== false;
@@ -15930,12 +16091,20 @@ ${CORE_BEHAVIOR_AND_CHAT_STYLE_PROMPT}
         }
         return { role: m.role, content: txt };
     });
-        apiMessages = apiMessages.concat(historyMsgs);
+    apiMessages = apiMessages.concat(historyMsgs);
 
-        if (isCurrent) {
-            state.isBotTyping = true; 
-            renderChatRoom();
-        }
+    // 核心修复：如果存在触发事件（如日程提醒或主动挂机），将指令追加在对话历史的最末尾，强制AI打破复读，立即执行该事件
+    if (triggerContext) {
+        apiMessages.push({
+            role: 'user',
+            content: `[系统环境事件触发]\n${triggerContext}\n\n请不要顺着之前的闲聊话题回复，请立即针对上述新发生的事件，完全以你的人设口吻主动向我发起本轮对话或提醒。`
+        });
+    }
+
+    if (isCurrent) {
+        state.isBotTyping = true; 
+        renderChatRoom();
+    }
         try {
             let baseUrl = state.apiConfig.url.trim().replace(/\/+$/, '');
             const res = await fetch(`${baseUrl}/chat/completions`, {
@@ -16489,9 +16658,13 @@ JSON 格式示例：
         renderChatRoom();
     }
     try {
+        let userQuery = '请根据上述指令和最近的聊天记录，推演并生成下一轮群聊回复，直接以JSON数组格式输出。';
+        if (triggerContext) {
+            userQuery = `【特殊事件发生：请以此为当前对话契机进行推演】\n${triggerContext}\n\n请立即针对该事件做出群聊内反应，推演生成下一轮群聊回复，直接以JSON数组格式输出。`;
+        }
         const apiMessages = [
             { role: 'system', content: prompt + `\n\n最近的聊天记录：\n${recentMsgs || '暂无'}\n\n【系统最后强制校验】请务必直接输出纯JSON数组格式，不要包含任何其他解释性文字，不要使用Markdown代码块包裹。` },
-            { role: 'user', content: '请根据上述指令和最近的聊天记录，推演并生成下一轮群聊回复，直接以JSON数组格式输出。' }
+            { role: 'user', content: userQuery }
         ];
         let baseUrl = state.apiConfig.url.trim().replace(/\/+$/, '');
         const res = await fetch(`${baseUrl}/chat/completions`, {
@@ -17909,12 +18082,19 @@ function renderChatSettings() {
                             <div class="toggle-switch ${contact.showMiniTimestamp !== false ? 'active' : ''}" onclick="toggleContactProp('showMiniTimestamp')"></div>
                         </div>
                         <div class="sidebar-submenu-item" style="cursor: default;">
-                            <span>显示气泡时间</span>
-                            <div class="toggle-switch ${contact.showBubbleTimestamp !== false ? 'active' : ''}" onclick="toggleContactProp('showBubbleTimestamp')"></div>
+                            <span>显示已读状态(小勾勾)</span>
+                            <div class="toggle-switch ${contact.showReadTicks !== false ? 'active' : ''}" onclick="toggleContactProp('showReadTicks')"></div>
                         </div>
                         <div class="sidebar-submenu-item" style="cursor: default;">
                             <span>顶栏夜间模式</span>
                             <div class="toggle-switch ${contact.chatHeaderNightMode ? 'active' : ''}" onclick="toggleContactProp('chatHeaderNightMode')"></div>
+                        </div>
+                        <div class="sidebar-submenu-item" onclick="openChatUiThemeManager()">
+                            <span>全局界面美化 (CSS)</span>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 11px; color:#888;">${contact.activeChatThemeId ? '已启用自定义' : '默认'}</span>
+                                <iconify-icon icon="ph:paint-brush-broad-light" style="color:#CCC;"></iconify-icon>
+                            </div>
                         </div>
                     </div>
                 ` : ''}
@@ -18000,6 +18180,10 @@ function renderChatSettings() {
                                 ${contact.chatBackground ? `<span onclick="clearChatBg(event)" style="color:#ff3b30; font-size:12px; font-weight:600; text-decoration:underline; text-underline-offset:2px;">清除</span>`:''}
                                 <iconify-icon icon="ph:caret-right-light" style="color:#CCC;"></iconify-icon>
                             </div>
+                        </div>
+                        <div class="sidebar-submenu-item" style="cursor: default;">
+                            <span>对话壁纸清晰化</span>
+                            <div class="toggle-switch ${contact.chatWallpaperClarity ? 'active' : ''}" onclick="toggleContactProp('chatWallpaperClarity')"></div>
                         </div>
                         <div class="sidebar-submenu-item" onclick="triggerChatUpload('myTransferCover')">
                             <span>我方红包封面</span>
@@ -19521,7 +19705,7 @@ function renderSettings() {
                     { id: 'forum', name: '论坛', icon: 'ph:television' },
                     { id: 'shop', name: '商城', icon: 'ph:disc' },
                     { id: 'tutorial', name: '新手教程', icon: 'ph:book-open' },
-                    { id: 'todo_camera', name: '待做 (相机)', icon: 'ph:camera' },
+                    { id: 'pomodoro', name: '番茄钟', icon: 'ph:timer-fill' },
                     { id: 'todo_video', name: '待做 (视频)', icon: 'ph:video-camera' },
                     { id: 'todo_sparkles', name: '待做 (美图)', icon: 'ph:sparkles' },
                     { id: 'todo_film', name: '待做 (短视频)', icon: 'ph:film-strip' },
@@ -19804,6 +19988,296 @@ async function handleGlobalFontChange(val) {
     saveDataSilently();
     applyGlobalFont();
     showToast('字体已更换');
+}
+
+// --- 对话界面美化 (CSS自定义) 核心逻辑 ---
+
+const DEFAULT_CHAT_CSS_SOURCE = `/* Moon小手机 对话界面全量选择器源码 */
+
+/* === 1. 基础布局与背景 === */
+.chat-room-view {
+    /* 提示：如果设置了对话壁纸，这里的背景色建议带上透明度(如 rgba)，否则会遮挡壁纸 */
+    background-color: #F7F4FA !important; 
+    background-image: none; 
+}
+
+/* === 2. 顶栏 (Header) === */
+.glass-effect-header {
+    background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,0)) !important;
+    backdrop-filter: blur(20px) !important;
+    border: none !important;
+}
+/* 顶栏标题处的头像 */
+.chat-title-avatar {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important; /* 改为 8px 即可变方 */
+    border: 2px solid #FFFFFF !important;
+}
+/* 顶栏内的按钮通用样式 (返回键、状态键、旁白键) */
+.chat-room-view .back-btn, 
+.chat-room-view .nav-right > div {
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    color: #111 !important;
+    border-radius: 50% !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* 专门定制返回按钮 (Back Button) */
+.chat-room-view .back-btn {
+    /* 你可以在这里单独修改返回键的外观，比如改成不同的形状或颜色 */
+}
+
+/* === 3. 头像定制 (Avatars) === */
+/* 消息列表所有头像通用样式 */
+.msg-avatar {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 50% !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+}
+/* 仅修改对方(AI)的头像 */
+.message-item.assistant .msg-avatar {
+    border: 2px solid #FF8FAB !important; /* 加上粉色边框 */
+}
+/* 仅修改我方(用户)的头像 */
+.message-item.user .msg-avatar {
+    filter: brightness(1.1) !important; /* 提高亮度 */
+}
+
+/* === 4. 底栏与输入区 (Footer) === */
+.glass-effect-bottom {
+    background: transparent !important; /* 保持透明以透出液态玻璃按钮 */
+}
+/* 输入框容器胶囊 */
+.input-wrap {
+    background: rgba(255, 255, 255, 0.5) !important;
+    border: 1.2px solid rgba(255, 255, 255, 0.6) !important;
+    border-radius: 22px !important;
+}
+/* 输入文字样式 */
+.input-wrap input {
+    color: #000 !important;
+}
+/* 底部功能键 (表情、附件、发送、接收) */
+.btn-plus, .input-action-btn {
+    background: rgba(255, 255, 255, 0.4) !important;
+    color: #111 !important;
+    border-radius: 50% !important;
+}
+/* 发送键特化 */
+.send-btn { background: #000 !important; color: #fff !important; }
+
+/* === 4. 对话气泡 === */
+/* 通用气泡 */
+.msg-bubble { border-radius: 18px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+/* 对方气泡 */
+.message-item.assistant .msg-bubble { background: #fff !important; color: #000 !important; }
+/* 我方气泡 */
+.message-item.user .msg-bubble { background: #EFFDDE !important; color: #000 !important; }
+
+/* === 5. 弹窗与面板 (Panels & Modals) === */
+/* 状态栏弹窗 (Live Status) */
+#chat-status-modal {
+    background: rgba(255,255,255,0.85) !important;
+    backdrop-filter: blur(25px) !important;
+    border-radius: 24px !important;
+}
+
+/* 附加功能面板 (更多菜单/表情面板) 容器 */
+.more-panel, .emote-panel {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 28px !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1) !important;
+}
+/* “更多”面板里的功能图标 */
+.more-icon {
+    background: rgba(255, 255, 255, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+}
+/* “更多”面板里的功能文字 */
+.more-text {
+    color: #555 !important;
+}
+/* 表情面板里的表情项 */
+.emote-item {
+    background: rgba(255, 255, 255, 0.5) !important;
+    border-radius: 16px !important;
+}
+
+/* === 6. 消息长按菜单 (Context Menu) === */
+/* 长按消息弹出的菜单容器 */
+.msg-bubble-menu {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 12px !important;
+}
+/* 菜单里的每一个按钮项 */
+.msg-bubble-menu-item {
+    color: #333 !important;
+}
+/* 菜单按钮里的图标 */
+.msg-bubble-menu-item iconify-icon {
+    font-size: 20px !important;
+}
+/* 菜单里的危险操作按钮 (如删除) */
+.msg-bubble-menu-item.text-danger {
+    color: #ff3b30 !important;
+}
+`;
+
+async function openChatUiThemeManager() {
+    const contact = state.contacts.find(c => c.id === state.activeContactId);
+    if(!contact) return;
+
+    const themeOptions = (state.chatUiThemes || []).map(t => 
+        `<option value="${t.id}" ${contact.activeChatThemeId === t.id ? 'selected' : ''}>${escapeHtml(t.name)}</option>`
+    ).join('');
+
+    let html = `
+    <div style="text-align: left; display: flex; flex-direction: column; gap: 12px; padding: 10px 0;">
+        <div style="font-size: 12px; color: #888; line-height: 1.4;">
+            你可以通过编写 CSS 代码来重构对话界面。支持修改气泡、顶栏、输入底栏、功能按钮以及各类弹窗样式。
+        </div>
+        
+        <div style="display: flex; gap: 8px;">
+            <button class="k-btn-sub" style="flex:1;" onclick="copyChatCssSource()">复制参考源码</button>
+            <button class="k-btn-sub" style="flex:1;" onclick="importChatThemeFile()">导入.txt文件</button>
+        </div>
+
+        <div style="font-size: 13px; font-weight: 700; color: #111; margin-top: 8px;">选择美化预设</div>
+        <select id="theme-select" class="m-select" style="width:100%; background:#f5f7fa; border:none; padding:10px; border-radius:8px;" onchange="previewChatTheme(this.value)">
+            <option value="">(使用默认样式)</option>
+            ${themeOptions}
+        </select>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+            <span style="font-size: 13px; font-weight: 700;">代码编辑</span>
+            <div style="display: flex; gap: 12px;">
+                <span style="font-size: 11px; color: #ff3b30; cursor: pointer;" onclick="deleteChatTheme()">删除此预设</span>
+                <span style="font-size: 11px; color: #007aff; cursor: pointer;" onclick="createNewChatTheme()">+ 保存为新预设</span>
+            </div>
+        </div>
+        <textarea id="theme-css-editor" class="custom-dialog-textarea" style="height: 180px; font-family: monospace; font-size: 12px; background: #1e1e1e; color: #d4d4d4; padding: 12px;" placeholder="在此输入 CSS 代码..."></textarea>
+    </div>
+    `;
+
+    $('#dialog-title').textContent = '界面美化 (CSS)';
+    $('#dialog-body').innerHTML = html;
+    
+    // 初始化编辑器内容
+    const activeTheme = (state.chatUiThemes || []).find(t => t.id === contact.activeChatThemeId);
+    if(activeTheme) $('#theme-css-editor').value = activeTheme.css;
+
+    $('#custom-dialog').style.display = 'flex';
+
+    state.dialog.resolve = async (confirmed) => {
+        if (confirmed) {
+            const currentCss = $('#theme-css-editor').value;
+            const themeId = $('#theme-select').value;
+            
+            // 如果在编辑器里改了代码但没保存为新预设，我们自动更新当前选中的预设
+            if (themeId) {
+                const t = state.chatUiThemes.find(x => x.id === themeId);
+                if (t) t.css = currentCss;
+            }
+            
+            contact.activeChatThemeId = themeId;
+            await saveDataSilently();
+            renderChatSettings();
+            if (state.currentView === 'chat_room') renderChatRoom();
+            showToast('美化配置已应用');
+        }
+    };
+    state.dialog.inputs = [];
+}
+
+// 复制参考源码
+function copyChatCssSource() {
+    navigator.clipboard.writeText(DEFAULT_CHAT_CSS_SOURCE);
+    showToast('参考源码已复制，快去修改吧！');
+}
+
+// 预览主题（即时在编辑器显示）
+function previewChatTheme(id) {
+    const t = (state.chatUiThemes || []).find(x => x.id === id);
+    if(t) $('#theme-css-editor').value = t.css;
+    else $('#theme-css-editor').value = '';
+}
+
+// 保存为新预设
+async function createNewChatTheme() {
+    const css = $('#theme-css-editor').value;
+    if(!css.trim()) { showToast('请先输入代码', 'error'); return; }
+    
+    const name = await showPromptDialog('预设名称', '', '给美化方案起个名字');
+    if(name && name.trim()) {
+        const newTheme = {
+            id: 'theme_' + Date.now(),
+            name: name.trim(),
+            css: css
+        };
+        if(!state.chatUiThemes) state.chatUiThemes = [];
+        state.chatUiThemes.push(newTheme);
+        await saveDataSilently();
+        
+        // 重新打开管理器以刷新列表
+        const contact = state.contacts.find(c => c.id === state.activeContactId);
+        if(contact) contact.activeChatThemeId = newTheme.id;
+        openChatUiThemeManager();
+        showToast('已存为新预设');
+    }
+}
+
+// 删除当前选中的预设
+async function deleteChatTheme() {
+    const themeId = $('#theme-select').value;
+    if (!themeId) {
+        showToast('无法删除默认样式', 'error');
+        return;
+    }
+    
+    if (await showConfirmDialog('删除预设', '确定要删除这个美化方案吗？所有使用此方案的角色都将恢复默认外观。')) {
+        // 从全局库移除
+        state.chatUiThemes = state.chatUiThemes.filter(t => t.id !== themeId);
+        
+        // 清除所有联系人的引用
+        state.contacts.forEach(c => {
+            if (c.activeChatThemeId === themeId) c.activeChatThemeId = '';
+        });
+        
+        await saveDataSilently();
+        // 重新打开管理器刷新列表
+        openChatUiThemeManager();
+        showToast('方案已删除');
+    }
+}
+
+// 导入文件
+function importChatThemeFile() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.txt,.css';
+    input.onchange = e => {
+        const file = e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const editor = document.getElementById('theme-css-editor');
+            if(editor) {
+                editor.value = ev.target.result;
+                showToast('代码已载入编辑器');
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
 }
 
 function applyGlobalFont() {
@@ -25580,6 +26054,10 @@ function renderGroupChatSettings() {
                             <span>显示气泡内侧小时间</span>
                             <div class="toggle-switch ${group.showMiniTimestamp !== false ? 'active' : ''}" onclick="toggleGroupChatProp('showMiniTimestamp')"></div>
                         </div>
+                        <div class="sidebar-submenu-item" style="cursor: default;">
+                            <span>显示已读状态(小勾勾)</span>
+                            <div class="toggle-switch ${group.showReadTicks !== false ? 'active' : ''}" onclick="toggleGroupChatProp('showReadTicks')"></div>
+                        </div>
                     </div>
                             <span>显示气泡时间</span>
                             <div class="toggle-switch ${group.showBubbleTimestamp !== false ? 'active' : ''}" onclick="toggleGroupChatProp('showBubbleTimestamp')"></div>
@@ -27068,6 +27546,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // 初始化后台消息管理器
     BackgroundMessenger.init();
+    
+    // 初始化番茄钟提醒引擎
+    initPomodoroReminderEngine();
 
             // 初始视图逻辑：始终显示锁屏界面以营造沉浸式手机体验
             switchView('lockscreen');
@@ -27307,6 +27788,213 @@ rule_3 = "禁止主动索要真实电话号码、微信二维码、真实家庭�
         BackgroundMessenger.checkRetroactiveMessages();
     }, 1500);
 });
+
+// ==================== Pomodoro Logic (番茄钟与日程提醒) ====================
+
+function renderPomodoro() {
+    if (state.pomodoroView === 'timeline') {
+        $('#pomo-timeline-view').style.display = 'flex';
+        $('#pomo-clock-view').style.display = 'none';
+        $('#pomo-add-btn').style.display = 'flex';
+        $('#pomo-view-icon').setAttribute('icon', 'ph:clock-bold');
+        renderPomoWeek();
+        renderPomoTaskList();
+    } else {
+        $('#pomo-timeline-view').style.display = 'none';
+        $('#pomo-clock-view').style.display = 'flex';
+        $('#pomo-add-btn').style.display = 'none';
+        $('#pomo-view-icon').setAttribute('icon', 'ph:list-bullets-bold');
+        updateBigClock();
+    }
+}
+
+function togglePomoView() {
+    state.pomodoroView = state.pomodoroView === 'timeline' ? 'clock' : 'timeline';
+    renderPomodoro();
+}
+
+function renderPomoWeek() {
+    const bar = $('#pomo-week-bar');
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const now = new Date();
+    let html = '';
+    
+    for (let i = 0; i < 7; i++) {
+        const d = new Date();
+        d.setDate(now.getDate() + i);
+        const isActive = state.pomodoroActiveDay === i;
+        html += `
+            <div class="pomo-day-item ${isActive ? 'active' : ''}" onclick="state.pomodoroActiveDay=${i}; renderPomodoro();">
+                <span class="pomo-day-name">${days[d.getDay()]}</span>
+                <div class="pomo-day-num">${d.getDate()}</div>
+            </div>
+        `;
+    }
+    bar.innerHTML = html;
+}
+
+function renderPomoTaskList() {
+    const container = $('#pomo-task-list');
+    if (!state.pomodoroTasks) state.pomodoroTasks = [];
+    
+    const tasks = state.pomodoroTasks.filter(t => t.dayOffset === state.pomodoroActiveDay)
+        .sort((a,b) => a.time.localeCompare(b.time));
+
+    if (tasks.length === 0) {
+        container.innerHTML = `<div style="padding: 60px 0; text-align: center; color: #CCC; font-size: 13px;">没有安排任务</div>`;
+        return;
+    }
+
+    container.innerHTML = tasks.map(t => {
+        let reminderName = '无提醒';
+        if (t.remindedBy && t.remindedBy !== 'none') {
+            const contact = state.contacts.find(c => c.id === t.remindedBy);
+            if (contact) {
+                reminderName = contact.alias || contact.name;
+            }
+        }
+        
+        return `
+        <div class="pomo-task-item ${t.isCompleted ? 'completed' : ''}" onclick="toggleTaskDone('${t.id}')">
+            <div class="pomo-task-time">${t.time}</div>
+            <div class="pomo-task-node"></div>
+            <div class="pomo-task-content">
+                <div class="pomo-task-title">${escapeHtml(t.task)}</div>
+                ${t.note ? `<div class="pomo-task-note">${escapeHtml(t.note)}</div>` : ''}
+                <div class="tm-label-row" style="margin-top: 4px;">
+                    <span class="tm-badge-black" style="background: #FAF9F6; color: #888888; border: 1.5px solid #EEEEEE; font-size: 8px;">🔔 ${escapeHtml(reminderName)}</span>
+                </div>
+            </div>
+            <div style="color: #EEE; padding: 4px; display: flex; align-items: center;" onclick="event.stopPropagation(); deletePomoTask('${t.id}')">
+                <iconify-icon icon="ph:trash-bold"></iconify-icon>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+async function addPomoTask() {
+    let html = '<div style="max-height: 320px; overflow-y: auto; text-align: left; display: flex; flex-direction: column; gap: 12px; padding: 10px 0;">';
+    
+    html += `<div style="font-size: 13px; color: #666; font-weight: 600;">时间</div>`;
+    html += `<input type="text" id="pomo-input-time" class="m-input" style="width:100%; background:#f5f7fa; border:none; padding:10px; border-radius:8px;" placeholder="例如 08:30" />`;
+
+    html += `<div style="font-size: 13px; color: #666; font-weight: 600;">任务名称</div>`;
+    html += `<input type="text" id="pomo-input-title" class="m-input" style="width:100%; background:#f5f7fa; border:none; padding:10px; border-radius:8px;" placeholder="需要去做的事情" />`;
+
+    html += `<div style="font-size: 13px; color: #666; font-weight: 600;">备注 (选填)</div>`;
+    html += `<textarea id="pomo-input-note" class="custom-dialog-textarea" style="width:100%; background:#f5f7fa; border:none; padding:10px; border-radius:8px; height: 60px; margin-top:0;" placeholder="其他补充信息"></textarea>`;
+
+    html += `<div style="font-size: 13px; color: #666; font-weight: 600;">提醒角色</div>`;
+    html += `<select id="pomo-input-reminder" class="m-select" style="width:100%; background:#f5f7fa; border:none; padding:10px; border-radius:8px;">`;
+    html += `<option value="none">无 (不提醒)</option>`;
+    state.contacts.forEach(c => {
+        html += `<option value="${c.id}">${escapeHtml(c.alias || c.name)}</option>`;
+    });
+    html += `</select>`;
+
+    html += '</div>';
+
+    $('#dialog-title').textContent = '添加日程任务';
+    $('#dialog-body').innerHTML = html;
+    $('#custom-dialog').style.display = 'flex';
+
+    state.dialog.resolve = async (confirmed) => {
+        if (confirmed) {
+            const timeVal = $('#pomo-input-time').value.trim();
+            const titleVal = $('#pomo-input-title').value.trim();
+            const noteVal = $('#pomo-input-note').value.trim();
+            const reminderVal = $('#pomo-input-reminder').value;
+
+            const timeMatch = timeVal.match(/^(\d{1,2})[:：](\d{1,2})$/);
+            if (!timeMatch) { 
+                showToast('时间格式不正确 (需为 08:30)', 'error'); 
+                return; 
+            }
+            if (!titleVal) {
+                showToast('任务名称不能为空', 'error');
+                return;
+            }
+
+            const hour = timeMatch[1].padStart(2, '0');
+            const min = timeMatch[2].padStart(2, '0');
+
+            state.pomodoroTasks.push({
+                id: 'pomo_' + Date.now(),
+                dayOffset: state.pomodoroActiveDay,
+                time: `${hour}:${min}`,
+                task: titleVal,
+                note: noteVal,
+                isCompleted: false,
+                reminded: false,
+                remindedBy: reminderVal
+            });
+            await saveDataSilently();
+            renderPomodoro();
+            showToast('日程已成功添加');
+        }
+    };
+    state.dialog.inputs = [];
+
+    $('.custom-dialog-footer').innerHTML = `
+        <button class="custom-dialog-btn cancel" onclick="closeDialog(false)">取消</button>
+        <button class="custom-dialog-btn confirm" onclick="closeDialog(true)">保存</button>
+    `;
+}
+
+async function deletePomoTask(id) {
+    if(await showConfirmDialog('删除任务', '确定删除这条日程吗？')) {
+        state.pomodoroTasks = state.pomodoroTasks.filter(t => t.id !== id);
+        await saveDataSilently();
+        renderPomodoro();
+    }
+}
+
+function toggleTaskDone(id) {
+    const t = state.pomodoroTasks.find(x => x.id === id);
+    if(t) { t.isCompleted = !t.isCompleted; saveDataSilently(); renderPomodoro(); }
+}
+
+function updateBigClock() {
+    if (state.pomodoroView !== 'clock') return;
+    const now = new Date();
+    $('#pomo-big-time').textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    const months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+    $('#pomo-big-date').textContent = `${months[now.getMonth()]} ${now.getDate()}`;
+}
+
+function initPomodoroReminderEngine() {
+    setInterval(async () => {
+        const now = new Date();
+        const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        
+        // 查找今天、当前时间、未提醒过的任务
+        const task = state.pomodoroTasks.find(t => t.dayOffset === 0 && t.time === currentTime && !t.reminded && !t.isCompleted);
+        
+        if (task) {
+            task.reminded = true;
+            await saveDataSilently();
+            triggerAITaskReminder(task);
+        }
+        
+        if (state.currentView === 'pomodoro') {
+            updateBigClock();
+        }
+    }, 30000); 
+}
+
+async function triggerAITaskReminder(task) {
+    let cId = task.remindedBy;
+    if (!cId || cId === 'none') return; // 如果是未设置提醒或设置为不提醒，则直接略过
+
+    const contact = state.contacts.find(c => c.id === cId);
+    if (!contact) return;
+
+    const triggerContext = `[系统提醒情境：现在时间到了 ${task.time}，我在日程表里设定了现在要去做：“${task.task}”${task.note ? '（备注：'+task.note+'）' : ''}。
+你作为我的日程提醒人，请根据你的人设和我们当下的关系（${contact.memorySummary.relation || '熟人'}）主动发消息提醒我去做这件事。
+语气要自然、符合角色性格，不要像个死板的闹钟。]`;
+
+    receiveMessage(triggerContext, contact.id);
+}
 </script>
 </body>
 </html>
