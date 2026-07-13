@@ -16431,7 +16431,7 @@ const STORE_NAME = 'settings';
 			        { id: 'm_reset', name: 'Reset', artist: 'Native/Finlay', category: 'Lofi', cover: 'https://i.postimg.cc/Zqp4FZsP/IMG-20260423-204152.png', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
 			        { id: 'm_chill', name: 'Coffee Shop Vibes', artist: 'Lofi Coffee', category: 'Lofi', cover: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=120&auto=format&fit=crop&q=60', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
 			        { id: 'm_korean1', name: 'Winter Breath', artist: 'Jiwoo', category: 'Korean R&B', cover: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=120&auto=format&fit=crop&q=60', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
-			        { id: 'm_pop1', name: 'Starlight', artist: 'Taehyun', category: 'Korean R&B', cover: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=120&auto=format&fit=crop&q=60', url: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=120&auto=format&fit=crop&q=60', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' },
+			        { id: 'm_pop1', name: 'Starlight', artist: 'Taehyun', category: 'Korean R&B', cover: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=120&auto=format&fit=crop&q=60', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' },
 			        { id: 'm_lofi2', name: 'Midsummer Dream', artist: 'Sunset Glow', category: 'Lofi', cover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=120&auto=format&fit=crop&q=60', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' }
 			    ],
 			    currentPlayingMusic: null,
@@ -16439,13 +16439,11 @@ const STORE_NAME = 'settings';
 			    musicPlayMode: 'list', // 'list' (列表循环) 或 'single' (单曲循环)
 			    parsedLyrics: [], // 当前解析出的歌词数组
 			    currentLyricsText: '', // 当前播放歌曲的纯净无时间戳歌词缓存，供 AI 随时调用
-			    isJellyCollapsed: false, // 正在播放弹窗是否收起为悬浮球
-			    isJellyCollapsed: false, // 正在播放弹窗是否收起为悬浮球
+			    isJellyCollapsed: false, // 正在播放弹窗是否收起为悬浮球			    
 			    musicSearchQuery: '',
 			    musicActiveCategory: 'all',
 			    carouselActiveIndex: 0,
-			    moments: [],
-			    moments: [],
+			    moments: [],			    
 			    postMomentImages: [],
 			    aiRecognizeEmote: false,
 			    myActiveEmotePackageId: '',
@@ -16767,9 +16765,16 @@ const STORE_NAME = 'settings';
 			                if (g.showBubbleTimestamp === undefined) g.showBubbleTimestamp = true;
 			                if (g.showReadTicks === undefined) g.showReadTicks = true;
 			                if (g.chatHeaderNightMode === undefined) g.chatHeaderNightMode = false;
+			                if (g.chatAvatarSize === undefined) g.chatAvatarSize = 46;
+			                if (g.chatAvatarRadius === undefined) g.chatAvatarRadius = 50;
+			                if (g.chatBubbleMaxWidth === undefined) g.chatBubbleMaxWidth = 78;
+			                if (g.chatBubblePaddingX === undefined) g.chatBubblePaddingX = 12;
+			                if (g.chatBubblePaddingY === undefined) g.chatBubblePaddingY = 8;
+			                if (g.chatListPaddingX === undefined) g.chatListPaddingX = 16;
+			                if (g.chatMsgGap === undefined) g.chatMsgGap = 16;
+			                if (g.chatAvatarOffsetY === undefined) g.chatAvatarOffsetY = 0;
 			            });
 			        }
-			        if (data.chatGroups) state.chatGroups = data.chatGroups;
 			        if (data.myPersonas) state.myPersonas = data.myPersonas;
 			        if (data.chatUiThemes) state.chatUiThemes = data.chatUiThemes;
 			        if (data.emotePackages) state.emotePackages = data.emotePackages;
@@ -19033,15 +19038,15 @@ const displayName = isGroup ? chatData.name : (chatData.alias || chatData.name);
 			    }
 
 			            			    // Render messages
-			    // 读取布局参数（群聊用默认值）
-			    const avatarSize = isGroup ? 46 : (chatData.chatAvatarSize || 46);
-			    const bubbleMaxWidth = isGroup ? 78 : (chatData.chatBubbleMaxWidth || 78);
-			    const bubblePadX = isGroup ? 12 : (chatData.chatBubblePaddingX || 12);
-			    const bubblePadY = isGroup ? 8 : (chatData.chatBubblePaddingY || 8);
-			    const listPadX = isGroup ? 16 : (chatData.chatListPaddingX || 16);
-			    const msgGap = isGroup ? 16 : (chatData.chatMsgGap || 16);
-			    const avatarOffsetY = isGroup ? 0 : (chatData.chatAvatarOffsetY || 0);
-			    const avatarRadius = isGroup ? 50 : (chatData.chatAvatarRadius !== undefined ? chatData.chatAvatarRadius : 50);
+			    // 读取布局参数
+			    const avatarSize = chatData.chatAvatarSize || 46;
+			    const bubbleMaxWidth = chatData.chatBubbleMaxWidth || 78;
+			    const bubblePadX = chatData.chatBubblePaddingX || 12;
+			    const bubblePadY = chatData.chatBubblePaddingY || 8;
+			    const listPadX = chatData.chatListPaddingX || 16;
+			    const msgGap = chatData.chatMsgGap || 16;
+			    const avatarOffsetY = chatData.chatAvatarOffsetY || 0;
+			    const avatarRadius = chatData.chatAvatarRadius !== undefined ? chatData.chatAvatarRadius : 50;
 
 			    // 动态注入布局 CSS
 			    let layoutStyle = document.getElementById('dynamic-chat-layout-style');
@@ -19054,7 +19059,7 @@ const displayName = isGroup ? chatData.name : (chatData.alias || chatData.name);
 			        #message-list { padding-left: ${listPadX}px !important; padding-right: ${listPadX}px !important; gap: ${msgGap}px !important; }
 			        #message-list-content { gap: ${msgGap}px !important; }
 			        #message-list .msg-avatar { width: ${avatarSize}px !important; height: ${avatarSize}px !important; margin-top: ${avatarOffsetY}px !important; border-radius: ${avatarRadius}% !important; }
-			        #message-list .msg-bubble { padding: ${bubblePadY}px ${bubblePadX}px !important; font-size: ${isGroup ? (chatData.chatFontSize || 14) : (chatData.chatFontSize || 14)}px !important; }
+			        #message-list .msg-bubble { padding: ${bubblePadY}px ${bubblePadX}px !important; font-size: ${chatData.chatFontSize || 14}px !important; }
 			        #message-list .msg-bubble-container { max-width: calc(${bubbleMaxWidth}% - ${avatarSize + 10}px) !important; }
 			    `;
 
@@ -19062,7 +19067,7 @@ const displayName = isGroup ? chatData.name : (chatData.alias || chatData.name);
 			    const msgListContent = $('#message-list-content');
 			    if (msgListContent) {
 			        msgListContent.classList.remove('bubble-style-pill', 'bubble-style-wechat');
-			        const bubbleStyle = isGroup ? (chatData.bubbleStyle || 'default') : (chatData.bubbleStyle || 'default');
+			        const bubbleStyle = chatData.bubbleStyle || 'default';
 			        if (bubbleStyle === 'pill') msgListContent.classList.add('bubble-style-pill');
 			        else if (bubbleStyle === 'wechat') msgListContent.classList.add('bubble-style-wechat');
 			    }
@@ -22085,14 +22090,6 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 			            <div class="toggle-switch ${contact.hideMyAvatar ? 'active' : ''}" onclick="event.stopPropagation(); toggleContactProp('hideMyAvatar');"></div>
 			        </div>
 
-			        <div class="cs-item-row" onclick="toggleContactProp('chatHeaderNightMode')">
-			            <div class="cs-label-col">
-			                <span class="cs-label-title">对话顶栏深色主题</span>
-			                <span class="cs-label-subtitle">强制使状态栏与导航文字使用高反差黑夜白字色彩</span>
-			            </div>
-			            <div class="toggle-switch ${contact.chatHeaderNightMode ? 'active' : ''}" onclick="event.stopPropagation(); toggleContactProp('chatHeaderNightMode');"></div>
-			        </div>
-
 			        <div class="cs-item-row" onclick="openChatUiThemeManager()">
 			            <div class="cs-label-col">
 			                <span class="cs-label-title">定制对话界面样式 (CSS)</span>
@@ -22796,6 +22793,25 @@ function updateChatLayout(prop, val) {
 			    saveDataSilently();
 			    renderChatSettings();
 			    showToast('布局已重置为默认');
+			}
+			function resetGroupChatLayout() {
+			    const g = state.chatGroups.find(x => x.id === state.activeGroupId);
+			    if (!g) return;
+			    g.chatAvatarSize = 46;
+			    g.chatBubbleMaxWidth = 78;
+			    g.chatBubblePaddingX = 12;
+			    g.chatBubblePaddingY = 8;
+			    g.chatListPaddingX = 16;
+			    g.chatMsgGap = 16;
+			    g.chatAvatarOffsetY = 0;
+			    g.myBubbleColor = '#EFFDDE';
+			    g.roleBubbleColor = '#F6F7F9';
+			    g.myTextColor = '#000000';
+			    g.roleTextColor = '#000000';
+			    g.showBubbleTimestamp = true;
+			    saveDataSilently();
+			    renderGroupChatSettings();
+			    showToast('群聊布局已重置为默认');
 			}
 			function toggleGroupChatProp(prop) {
 			    const g = state.chatGroups.find(x => x.id === state.activeGroupId);
@@ -27557,6 +27573,8 @@ No matter the character, their entrance should not be necessary. Introduce chara
 
 			    let wbPrompt = getWorldbookPrompt(contact);
 
+			    let timeStr = contact.perceiveTime ? `\n【现实世界时间感知】\n今天的时间是：${state.currentDate} ${state.currentTime} (${state.currentWeek})。\n你在写日记时，必须严格遵守并表现出当前的真实时间点（如深夜、清晨、工作日、周末等），禁止写错时间。` : `\n【当前真实时间参考】\n${state.currentDate} ${state.currentTime} (${state.currentWeek})。`;
+
 			    // 提取最近的聊天记录作为上下文
 			    const recentMsgs = contact.messages.slice(-20).map(m => {
 			        let txt = m.content;
@@ -27569,7 +27587,7 @@ No matter the character, their entrance should not be necessary. Introduce chara
 			        return `${m.role === 'user' ? '我' : contact.name}: ${txt}`;
 			    }).join('\n');
 
-			        const prompt = `你是${contact.name}。你的性格和设定 is：${contact.persona}。${wbPrompt}${memoryPrompt}
+			        const prompt = `你是${contact.name}。你的性格和设定是：${contact.persona}。${timeStr}${wbPrompt}${memoryPrompt}
 			${STRICT_REALISM_PROMPT}
 
 			【核心任务】
@@ -32017,7 +32035,14 @@ No matter the character, their entrance should not be necessary. Introduce chara
 			        autoReplyEnabled: false,
 			        autoReceiveEnabled: true,
 			        showBubbleTimestamp: true,
-			        chatHeaderNightMode: false
+			        chatHeaderNightMode: false,
+			        chatAvatarSize: 46,
+			        chatBubbleMaxWidth: 78,
+			        chatBubblePaddingX: 12,
+			        chatBubblePaddingY: 8,
+			        chatListPaddingX: 16,
+			        chatMsgGap: 16,
+			        chatAvatarOffsetY: 0
 			    };
 			    state.chatGroups.unshift(newGroup);
 			    await saveDataSilently();
@@ -32183,21 +32208,6 @@ No matter the character, their entrance should not be necessary. Introduce chara
 			            <div class="toggle-switch ${group.showBubbleTimestamp !== false ? 'active' : ''}" onclick="event.stopPropagation(); toggleGroupChatProp('showBubbleTimestamp');"></div>
 			        </div>
 
-			        <div class="cs-item-row" onclick="toggleGroupChatProp('showReadTicks')">
-			            <div class="cs-label-col">
-			                <span class="cs-label-title">显示已读状态(小勾勾)</span>
-			            </div>
-			            <div class="toggle-switch ${group.showReadTicks !== false ? 'active' : ''}" onclick="event.stopPropagation(); toggleGroupChatProp('showReadTicks');"></div>
-			        </div>
-
-			        <div class="cs-item-row" onclick="toggleGroupChatProp('chatHeaderNightMode')">
-			            <div class="cs-label-col">
-			                <span class="cs-label-title">对话顶栏深色主题</span>
-			                <span class="cs-label-subtitle">强制使状态栏与导航文字使用高反差黑夜白字色彩</span>
-			            </div>
-			            <div class="toggle-switch ${group.chatHeaderNightMode ? 'active' : ''}" onclick="event.stopPropagation(); toggleGroupChatProp('chatHeaderNightMode');"></div>
-			        </div>
-
 			        <div class="cs-item-row" style="flex-direction: column; align-items: stretch; gap: 10px; cursor: default;">
 			            <div class="cs-label-title" style="font-size: 14px;">一键更改气泡配色模板</div>
 			            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%;">
@@ -32227,7 +32237,7 @@ No matter the character, their entrance should not be necessary. Introduce chara
 			                </div>
 			            </div>
 
-			            <!-- 气泡字体大小 -->
+			            <!-- 气泡文字大小 -->
 			            <div style="display: flex; justify-content: space-between; align-items: center;">
 			                <div class="cs-label-col" style="padding: 0;">
 			                    <span class="cs-label-title" style="font-size: 13px;">气泡文字大小</span>
@@ -32235,6 +32245,16 @@ No matter the character, their entrance should not be necessary. Introduce chara
 			                </div>
 			                <input type="range" min="10" max="20" value="${group.chatFontSize || 14}" style="width: 100px; accent-color: #111;" oninput="updateChatLayout('chatFontSize', parseInt(this.value)); this.nextElementSibling.textContent = this.value + 'px'" />
 			                <span style="font-size: 11px; color: #888; width: 36px; text-align: right;">${group.chatFontSize || 14}px</span>
+			            </div>
+
+			            <!-- 头像大小 -->
+			            <div style="display: flex; justify-content: space-between; align-items: center;">
+			                <div class="cs-label-col" style="padding: 0;">
+			                    <span class="cs-label-title" style="font-size: 13px;">头像大小</span>
+			                    <span class="cs-label-subtitle">双方头像的显示尺寸 (px)</span>
+			                </div>
+			                <input type="range" min="28" max="64" value="${group.chatAvatarSize || 46}" style="width: 100px; accent-color: #111;" oninput="updateChatLayout('chatAvatarSize', parseInt(this.value)); this.nextElementSibling.textContent = this.value + 'px'" />
+			                <span style="font-size: 11px; color: #888; width: 36px; text-align: right;">${group.chatAvatarSize || 46}px</span>
 			            </div>
 
 			            <!-- 头像圆角大小 -->
@@ -32245,6 +32265,16 @@ No matter the character, their entrance should not be necessary. Introduce chara
 			                </div>
 			                <input type="range" min="0" max="50" value="${group.chatAvatarRadius !== undefined ? group.chatAvatarRadius : 50}" style="width: 100px; accent-color: #111;" oninput="updateChatLayout('chatAvatarRadius', parseInt(this.value)); this.nextElementSibling.textContent = this.value + '%'" />
 			                <span style="font-size: 11px; color: #888; width: 36px; text-align: right;">${group.chatAvatarRadius !== undefined ? group.chatAvatarRadius : 50}%</span>
+			            </div>
+
+			            <!-- 气泡最大宽度 -->
+			            <div style="display: flex; justify-content: space-between; align-items: center;">
+			                <div class="cs-label-col" style="padding: 0;">
+			                    <span class="cs-label-title" style="font-size: 13px;">气泡最大宽度</span>
+			                    <span class="cs-label-subtitle">气泡占屏幕宽度的百分比</span>
+			                </div>
+			                <input type="range" min="50" max="92" value="${group.chatBubbleMaxWidth || 78}" style="width: 100px; accent-color: #111;" oninput="updateChatLayout('chatBubbleMaxWidth', parseInt(this.value)); this.nextElementSibling.textContent = this.value + '%'" />
+			                <span style="font-size: 11px; color: #888; width: 36px; text-align: right;">${group.chatBubbleMaxWidth || 78}%</span>
 			            </div>
 
 			            <!-- 气泡水平内边距 -->
@@ -32265,6 +32295,36 @@ No matter the character, their entrance should not be necessary. Introduce chara
 			                </div>
 			                <input type="range" min="4" max="24" value="${group.chatBubblePaddingY || 8}" style="width: 100px; accent-color: #111;" oninput="updateChatLayout('chatBubblePaddingY', parseInt(this.value)); this.nextElementSibling.textContent = this.value + 'px'" />
 			                <span style="font-size: 11px; color: #888; width: 36px; text-align: right;">${group.chatBubblePaddingY || 8}px</span>
+			            </div>
+
+			            <!-- 消息列表左右外边距 -->
+			            <div style="display: flex; justify-content: space-between; align-items: center;">
+			                <div class="cs-label-col" style="padding: 0;">
+			                    <span class="cs-label-title" style="font-size: 13px;">消息列表左右边距</span>
+			                    <span class="cs-label-subtitle">整体消息区左右padding (px)</span>
+			                </div>
+			                <input type="range" min="4" max="32" value="${group.chatListPaddingX || 16}" style="width: 100px; accent-color: #111;" oninput="updateChatLayout('chatListPaddingX', parseInt(this.value)); this.nextElementSibling.textContent = this.value + 'px'" />
+			                <span style="font-size: 11px; color: #888; width: 36px; text-align: right;">${group.chatListPaddingX || 16}px</span>
+			            </div>
+
+			            <!-- 消息间距 -->
+			            <div style="display: flex; justify-content: space-between; align-items: center;">
+			                <div class="cs-label-col" style="padding: 0;">
+			                    <span class="cs-label-title" style="font-size: 13px;">消息条目间距</span>
+			                    <span class="cs-label-subtitle">每条消息之间的垂直间距 (px)</span>
+			                </div>
+			                <input type="range" min="2" max="32" value="${group.chatMsgGap || 16}" style="width: 100px; accent-color: #111;" oninput="updateChatLayout('chatMsgGap', parseInt(this.value)); this.nextElementSibling.textContent = this.value + 'px'" />
+			                <span style="font-size: 11px; color: #888; width: 36px; text-align: right;">${group.chatMsgGap || 16}px</span>
+			            </div>
+
+			            <!-- 头像纵向偏移 -->
+			            <div style="display: flex; justify-content: space-between; align-items: center;">
+			                <div class="cs-label-col" style="padding: 0;">
+			                    <span class="cs-label-title" style="font-size: 13px;">头像纵向偏移</span>
+			                    <span class="cs-label-subtitle">正数下移，负数上移 (px)</span>
+			                </div>
+			                <input type="range" min="-20" max="20" value="${group.chatAvatarOffsetY || 0}" style="width: 100px; accent-color: #111;" oninput="updateChatLayout('chatAvatarOffsetY', parseInt(this.value)); this.nextElementSibling.textContent = (this.value > 0 ? '+' : '') + this.value + 'px'" />
+			                <span style="font-size: 11px; color: #888; width: 36px; text-align: right;">${(group.chatAvatarOffsetY || 0) > 0 ? '+' : ''}${group.chatAvatarOffsetY || 0}px</span>
 			            </div>
 
 			            <!-- 我方气泡颜色 -->
@@ -32310,6 +32370,11 @@ No matter the character, their entrance should not be necessary. Introduce chara
 			                    <input type="text" value="${group.roleTextColor || '#000000'}" placeholder="#000000" oninput="updateChatLayout('roleTextColor', this.value)" style="width: 72px; border: 1px solid #EEE; border-radius: 8px; padding: 4px 8px; font-size: 12px; outline: none; font-family: monospace;" />
 			                </div>
 			            </div>
+
+			            <!-- 重置按钮 -->
+			            <button onclick="resetGroupChatLayout()" style="width: 100%; height: 36px; border-radius: 10px; border: 1px solid #EEEEEE; background: #FFFFFF; color: #888; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 4px;">
+			                重置为默认布局
+			            </button>
 
                     </div>
 
@@ -35224,6 +35289,87 @@ ${historyText}`;
 			    e.target.value = '';
 			}
             window.handleImportWorldbookDoc = handleImportWorldbookDoc;
+
+			// ================= 修复：情侣空间缺失的交互功能 =================
+
+			// 1. 处理情侣卡片背景上传
+			function handleLoverCardBgUpload(e) {
+			    const file = e.target.files[0];
+			    if (!file) return;
+			    const reader = new FileReader();
+			    reader.onload = ev => {
+			        state.uiConfig.loverCardBgTexture = ev.target.result;
+			        saveDataSilently();
+			        const select = document.getElementById('lover-space-persona-select');
+			        const currentPid = select ? select.value : '';
+			        renderLoverSpace(currentPid);
+			        showToast('情侣空间动态背景已更新');
+			    };
+			    reader.readAsDataURL(file);
+			    e.target.value = '';
+			}
+
+			// 2. 评论情侣空间动态
+			async function commentOnLoverMoment(spaceId, postId) {
+			    const text = await showPromptDialog('评论手账', '', '写下你的评论...');
+			    if (text && text.trim()) {
+			        const space = state.loverSpaces.find(s => s.id === spaceId);
+			        if (space) {
+			            const post = space.posts.find(p => p.id === postId);
+			            if (post) {
+			                const currentPid = state.forumConfig ? state.forumConfig.currentPersonaId : '';
+			                const myProfile = getForumProfileForPersona(currentPid);
+			                post.comments.push({
+			                    id: 'lc_' + Date.now(),
+			                    authorId: 'me',
+			                    authorName: myProfile.name,
+			                    content: text.trim(),
+			                    timestamp: Date.now()
+			                });
+			                await saveDataSilently();
+			                renderLoverSpace(currentPid);
+			            }
+			        }
+			    }
+			}
+
+			// 3. 回复情侣空间的评论
+			async function replyToLoverComment(spaceId, postId, commentId, replyToName) {
+			    const text = await showPromptDialog(`回复 ${replyToName}`, '', '写下你的回复...');
+			    if (text && text.trim()) {
+			        const space = state.loverSpaces.find(s => s.id === spaceId);
+			        if (space) {
+			            const post = space.posts.find(p => p.id === postId);
+			            if (post) {
+			                const currentPid = state.forumConfig ? state.forumConfig.currentPersonaId : '';
+			                const myProfile = getForumProfileForPersona(currentPid);
+			                post.comments.push({
+			                    id: 'lc_' + Date.now(),
+			                    authorId: 'me',
+			                    authorName: myProfile.name,
+			                    content: `回复 ${replyToName}: ` + text.trim(),
+			                    timestamp: Date.now()
+			                });
+			                await saveDataSilently();
+			                renderLoverSpace(currentPid);
+			            }
+			        }
+			    }
+			}
+
+			// 4. 删除情侣空间动态
+			async function deleteLoverMoment(spaceId, postId) {
+			    if (await showConfirmDialog('删除动态', '确定要删除这条情侣手账吗？')) {
+			        const space = state.loverSpaces.find(s => s.id === spaceId);
+			        if (space) {
+			            space.posts = space.posts.filter(p => p.id !== postId);
+			            await saveDataSilently();
+			            const currentPid = state.forumConfig ? state.forumConfig.currentPersonaId : '';
+			            renderLoverSpace(currentPid);
+			            showToast('已删除手账');
+			        }
+			    }
+			}
 
 		</script>
 	</body>
