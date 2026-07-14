@@ -7330,15 +7330,48 @@
 			    color: #FF6B6B;
 			}
 
-			.msg-bubble-menu-item.text-danger iconify-icon,
+				.msg-bubble-menu-item.text-danger iconify-icon,
 			.msg-bubble-menu-item.text-danger svg {
 			    stroke: #FF6B6B;
 			    color: #FF6B6B;
 			}
 
-			/* 菜单项之间的细分割线 */
-			.msg-bubble-menu-item + .msg-bubble-menu-item {
-			    border-left: 0.5px solid rgba(255,255,255,0.1);
+			.msg-bubble-menu {
+			    position: absolute;
+			    background: #1C1C1E;
+			    border-radius: 14px;
+			    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+			    display: flex;
+			    flex-direction: row;
+			    flex-wrap: wrap;
+			    align-items: center;
+			    justify-content: flex-start;
+			    width: auto;
+			    max-width: 240px;
+			    padding: 6px 4px;
+			    gap: 4px 0;
+			    transform-origin: center bottom;
+			    animation: menu-pop 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+			    overflow: hidden;
+			}
+
+			.msg-bubble-menu {
+			    position: absolute;
+			    background: #1C1C1E;
+			    border-radius: 14px;
+			    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+			    display: flex;
+			    flex-direction: row;
+			    flex-wrap: wrap;
+			    align-items: center;
+			    justify-content: flex-start;
+			    width: auto;
+			    max-width: 240px;
+			    padding: 6px 4px;
+			    gap: 4px 0;
+			    transform-origin: center bottom;
+			    animation: menu-pop 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+			    overflow: hidden;
 			}
 
 			/* 对话设置项列表 */
@@ -12653,16 +12686,24 @@
 					></div>
 				</div>
 
-				<!-- 输入区 -->
+								<!-- 输入区 -->
 				<div
 					id="chat-input-area"
 					class="chat-input-area glass-effect-bottom"
 				>
 					<div
+						id="typing-indicator"
+						style="display:none; position: absolute; top: -34px; left: 16px; background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: bold; color: #555; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee; z-index: 5;"
+					>
+						<iconify-icon icon="svg-spinners:3-dots-bounce" style="font-size: 16px; color: #111;"></iconify-icon>
+						<span>对方正在努力敲键盘喵*罒▽罒*...</span>
+					</div>
+					<div
 						id="reply-indicator"
 						class="reply-indicator"
 						style="display:none; position: absolute; top: -32px; left: 16px; color: white; align-items: center; gap: 6px;"
 					>
+
 						<iconify-icon
 							icon="ph:arrow-u-up-left-bold"
 							style="font-size: 14px; opacity: 0.7;"
@@ -12782,6 +12823,14 @@
 									</svg>
 								</div>
 								<div class="more-text">线下模式</div>
+							</div>
+							<div class="more-item" onclick="openDailyMemory()">
+								<div class="more-icon">
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#888888" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+										<path d="M2 12a10 10 0 1 0 20 0 10 10 0 0 0-20 0z"/><path d="M12 6v6l4 2"/>
+									</svg>
+								</div>
+								<div class="more-text">长期记忆</div>
 							</div>
 						</div>
 						<input
@@ -12946,6 +12995,29 @@
 			    </div>
 			</div>
 
+			<!-- 长期记忆视图 -->
+			<div id="view-long_term_memory" class="view-container inventory-view-root settings-view" style="display: none; z-index: 6;">
+			    <div class="wb-scale-wrapper">
+			        <div class="settings-header" style="background-color: #FFFFFF !important; border-bottom: none !important; box-shadow: none !important; padding-top: max(env(safe-area-inset-top), 10px) !important;">
+			            <div class="nav-bar" style="height: 48px; padding: 0 24px;">
+			                <button class="back-btn-k" onclick="switchView('chat_room')">
+			                    <svg class="back-btn-svg-only" viewBox="0 0 24 24">
+			                        <polyline points="15 18 9 12 15 6"></polyline>
+			                    </svg>
+			                </button>
+			            </div>
+			        </div>
+
+			        <div class="inventory-beautiful-serif-logo">Long-Term Memory</div>
+			        <div class="inventory-subtitle-counts chinese-only" id="ltm-qty-subtitle">
+			            长线记忆引擎
+			        </div>
+			        
+			        <div class="modern-settings-content" id="ltm-content" style="padding: 12px 20px 120px 20px; background: transparent; display: flex; flex-direction: column;">
+			        </div>
+			    </div>
+			</div>
+
 			<!-- 线下消息长按菜单 -->
 			<div id="offline-msg-menu" class="msg-bubble-menu-overlay" style="display: none; z-index: 10000;" onclick="closeOfflineMsgMenu(event)">
 				<div id="offline-msg-menu-box" class="msg-bubble-menu" style="width: auto;">
@@ -13016,6 +13088,10 @@
 					<div class="msg-bubble-menu-item" onclick="actionEditMsg()">
 						<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
 						<span>编辑</span>
+					</div>
+					<div class="msg-bubble-menu-item" id="msg-menu-recall-btn" onclick="actionRecallMsg()" style="display:none;">
+						<iconify-icon icon="ph:arrow-u-up-left-bold" style="font-size: 20px; color: #FFFFFF;"></iconify-icon>
+						<span>撤回</span>
 					</div>
 					<div class="msg-bubble-menu-item" onclick="actionStartMultiSelect()">
 						<svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
@@ -16431,7 +16507,7 @@ const STORE_NAME = 'settings';
 			        { id: 'm_reset', name: 'Reset', artist: 'Native/Finlay', category: 'Lofi', cover: 'https://i.postimg.cc/Zqp4FZsP/IMG-20260423-204152.png', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
 			        { id: 'm_chill', name: 'Coffee Shop Vibes', artist: 'Lofi Coffee', category: 'Lofi', cover: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=120&auto=format&fit=crop&q=60', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
 			        { id: 'm_korean1', name: 'Winter Breath', artist: 'Jiwoo', category: 'Korean R&B', cover: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=120&auto=format&fit=crop&q=60', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
-			        { id: 'm_pop1', name: 'Starlight', artist: 'Taehyun', category: 'Korean R&B', cover: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=120&auto=format&fit=crop&q=60', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' },
+			        { id: 'm_pop1', name: 'Starlight', artist: 'Taehyun', category: 'Korean R&B', cover: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=120&auto=format&fit=crop&q=60', url: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=120&auto=format&fit=crop&q=60', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' },
 			        { id: 'm_lofi2', name: 'Midsummer Dream', artist: 'Sunset Glow', category: 'Lofi', cover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=120&auto=format&fit=crop&q=60', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' }
 			    ],
 			    currentPlayingMusic: null,
@@ -16439,11 +16515,13 @@ const STORE_NAME = 'settings';
 			    musicPlayMode: 'list', // 'list' (列表循环) 或 'single' (单曲循环)
 			    parsedLyrics: [], // 当前解析出的歌词数组
 			    currentLyricsText: '', // 当前播放歌曲的纯净无时间戳歌词缓存，供 AI 随时调用
-			    isJellyCollapsed: false, // 正在播放弹窗是否收起为悬浮球			    
+			    isJellyCollapsed: false, // 正在播放弹窗是否收起为悬浮球
+			    isJellyCollapsed: false, // 正在播放弹窗是否收起为悬浮球
 			    musicSearchQuery: '',
 			    musicActiveCategory: 'all',
 			    carouselActiveIndex: 0,
-			    moments: [],			    
+			    moments: [],
+			    moments: [],
 			    postMomentImages: [],
 			    aiRecognizeEmote: false,
 			    myActiveEmotePackageId: '',
@@ -16811,36 +16889,47 @@ const STORE_NAME = 'settings';
 			    }
 			}
 
+									let _saveDataTimer = null;
+
 			async function saveDataSilently() {
-			        await StorageManager.saveData({
-			                        apiConfig: state.apiConfig,
-			        apiPresets: state.apiPresets,
-			        uiConfig: state.uiConfig,
-			        musicLibrary: state.musicLibrary,
-			        isJellyCollapsed: state.isJellyCollapsed,
-			                contacts: state.contacts,
-			        chatGroups: state.chatGroups,
-			        myPersonas: state.myPersonas,
-			        chatUiThemes: state.chatUiThemes,
-			        dialoguePresets: state.dialoguePresets,
-			        emotePackages: state.emotePackages,
-			        aiRecognizeEmote: state.aiRecognizeEmote,
-			        myActiveEmotePackageId: state.myActiveEmotePackageId,
-			                groups: state.groups,
-			                groupExpanded: state.groupExpanded,
-			                moments: state.moments,
-			                worldbooks: state.worldbooks,
-			                wallet: state.wallet,
-			        relationships: state.relationships,
-			        forumConfig: state.forumConfig,
-			        shopConfig: state.shopConfig,
-			        bankCard: state.bankCard,
-			        takeoutAddress: state.takeoutAddress,
-			        inventory: state.inventory,
-			        loverSpaces: state.loverSpaces,
-			        pomodoroTasks: state.pomodoroTasks
-			    });
+			    if (_saveDataTimer) clearTimeout(_saveDataTimer);
+			    
+			    // 立即释放主线程，不阻塞 UI，延迟 1.5 秒在后台打包写入
+			    _saveDataTimer = setTimeout(() => {
+			        StorageManager.saveData({
+			            apiConfig: state.apiConfig,
+			            apiPresets: state.apiPresets,
+			            uiConfig: state.uiConfig,
+			            musicLibrary: state.musicLibrary,
+			            isJellyCollapsed: state.isJellyCollapsed,
+			            contacts: state.contacts,
+			            chatGroups: state.chatGroups,
+			            myPersonas: state.myPersonas,
+			            chatUiThemes: state.chatUiThemes,
+			            dialoguePresets: state.dialoguePresets,
+			            emotePackages: state.emotePackages,
+			            aiRecognizeEmote: state.aiRecognizeEmote,
+			            myActiveEmotePackageId: state.myActiveEmotePackageId,
+			            groups: state.groups,
+			            groupExpanded: state.groupExpanded,
+			            moments: state.moments,
+			            worldbooks: state.worldbooks,
+			            wallet: state.wallet,
+			            relationships: state.relationships,
+			            forumConfig: state.forumConfig,
+			            shopConfig: state.shopConfig,
+			            bankCard: state.bankCard,
+			            takeoutAddress: state.takeoutAddress,
+			            inventory: state.inventory,
+			            loverSpaces: state.loverSpaces,
+			            pomodoroTasks: state.pomodoroTasks
+			        });
+			    }, 1500);
+			    
+			    return Promise.resolve(); // 瞬间放行，彻底消除卡顿
 			}
+
+
 
 			function ensureContactConfig(contact) {
 			    if (contact.alias === undefined) contact.alias = '';
@@ -16903,12 +16992,16 @@ const STORE_NAME = 'settings';
 			        if (contact.diaries === undefined) contact.diaries = [];
 			    if (contact.offlineMessages === undefined) contact.offlineMessages = [];
 			    if (contact.offlineSettings === undefined) contact.offlineSettings = { customPrompt: '', scene: '', perspective: '第二人称', length: '长', memoryCount: 5, fontUrl: '', fontFamily: '', fontSize: 12 };
+			    if (contact.dailyMemoryConfig === undefined) contact.dailyMemoryConfig = { enabled: false, retainDays: 15, lastSummaryTime: 0 };
+			    if (contact.dailyMemories === undefined) contact.dailyMemories = [];
 			    if (contact.offlineMemories === undefined) contact.offlineMemories = [];
     if (contact.snoopData === undefined) contact.snoopData = {};
 			    if (contact.lastDiaryTime === undefined) contact.lastDiaryTime = 0;
 			    if (contact.lastLoverPostTime === undefined) contact.lastLoverPostTime = 0;
 			        if (contact.gameRecords === undefined) contact.gameRecords = [];
 			    if (contact.currentStatus === undefined) contact.currentStatus = { mood: '(O_O)', clothing: '日常便服', thoughts: '平静', action: '正在看手机' };
+			    if (contact.isBlockedByMe === undefined) contact.isBlockedByMe = false;
+			    if (contact.isBlockedByRole === undefined) contact.isBlockedByRole = false;
 
 			    // 后台主动消息系统配置
 			    if (contact.bgMsgEnabled === undefined) contact.bgMsgEnabled = false;
@@ -17022,6 +17115,7 @@ const STORE_NAME = 'settings';
 			    if (viewName === 'tutorial') { /* static content */ }
 			  			    if (viewName === 'companion_mode') { /* rendered before switch */ }
 			    if (viewName === 'offline_chat') renderOfflineChat();
+			    if (viewName === 'long_term_memory') renderDailyMemory();
 			}
 
 			// 处理桌面APP图标点击事件，将图标ID精准映射到对应的系统页面
@@ -18061,6 +18155,7 @@ const STORE_NAME = 'settings';
                         else if (chat.lastMsg.type === 'music_share') preview = `[音乐分享] ${chat.lastMsg.musicTitle}`;
                         else if (chat.lastMsg.type === 'lover_invite') preview = `[情侣空间绑定邀请]`;
                         else if (chat.lastMsg.type === 'takeout_pay_request') preview = `[外卖代付请求]`;
+                        else if (chat.lastMsg.type === 'friend_request') preview = `[好友申请]`;
                         else preview = chat.lastMsg.content;
 
                         if (chat.type === 'group' && chat.lastMsg.role !== 'system') {
@@ -18749,6 +18844,10 @@ const STORE_NAME = 'settings';
 			            setTimeout(() => summarizeMomentMemory(contact.id, false), 2000);
 			        }
 			    }
+			    // 检查是否需要自动总结长线记忆
+			    if (contact && contact.dailyMemoryConfig && contact.dailyMemoryConfig.enabled) {
+			        setTimeout(() => checkAndTriggerDailyMemory(contact.id), 4000);
+			    }
 			}
 
 			function renderChatRoom() {
@@ -18806,19 +18905,24 @@ const catPaw = document.getElementById('cat-paw-fab');
 			            catPaw.style.top = Math.max(0, Math.min(initTop + dy, window.innerHeight - 48)) + 'px';
 			        };
 
+			     			        let lastToggleTime = 0;
 			        const onEnd = (e) => {
 			            e.stopPropagation();
+			            if (e.cancelable) e.preventDefault(); // 防止穿透和幽灵点击
 			            clearTimeout(longPressTimer);
 			            longPressTimer = null;
 			            const wasDragging = isDragging;
 			            isDragging = false;
 			            catPaw.style.transform = '';
-			            // 只有没有拖拽、没有移动时才触发点击打开状态卡
-			            if (!wasDragging && !moved) {
+			            // 防抖，限制触发频率
+			            const now = Date.now();
+			            if (!wasDragging && !moved && (now - lastToggleTime > 300)) {
+			                lastToggleTime = now;
 			                toggleChatStatusModal();
 			            }
 			            moved = false;
 			        };
+
 
 			        // 事件只绑定在猫爪元素本身，不挂到 window
 			        catPaw.addEventListener('mousedown', onStart);
@@ -18913,10 +19017,45 @@ const catPaw = document.getElementById('cat-paw-fab');
 			        $('#chat-room-header-multi').style.setProperty('display', 'flex', 'important');
 			        $('#multi-select-count').textContent = `已选择 ${state.selectedMsgIds.size} 项`;
 			        $('#chat-input-area').style.display = 'none';
+			        const ba = $('#chat-blocked-area');
+			        if (ba) ba.style.display = 'none';
 			    } else {
 			        $('#chat-room-header-multi').style.setProperty('display', 'none', 'important');
 			        $('#chat-room-header-normal').style.setProperty('display', 'flex', 'important');
-			        $('#chat-input-area').style.display = 'flex';
+			        
+			        let blockedArea = $('#chat-blocked-area');
+			        if (!blockedArea) {
+			            blockedArea = document.createElement('div');
+			            blockedArea.id = 'chat-blocked-area';
+			            blockedArea.className = 'glass-effect-bottom';
+			            blockedArea.style.cssText = 'position: absolute; bottom: 0; width: 100%; padding: 12px 20px calc(12px + env(safe-area-inset-bottom)) 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; gap: 8px; text-align: center; background: #F6F5F5; border-top: 1px solid #EEE;';
+			            $('#view-chat_room').appendChild(blockedArea);
+			        }
+
+			        if (!isGroup && (chatData.isBlockedByMe || chatData.isBlockedByRole)) {
+			            $('#chat-input-area').style.setProperty('display', 'none', 'important');
+			            blockedArea.style.display = 'flex';
+			            
+			            if (chatData.isBlockedByMe && chatData.isBlockedByRole) {
+			                blockedArea.innerHTML = `
+			                    <div style="font-size: 13px; color: #888; font-weight: 600;">你们已互相拉黑</div>
+			                    <button class="k-btn-sub" style="padding: 6px 16px; border-radius: 20px;" onclick="unblockContact()">解除拉黑</button>
+			                `;
+			            } else if (chatData.isBlockedByMe) {
+			                blockedArea.innerHTML = `
+			                    <div style="font-size: 13px; color: #888; font-weight: 600;">已将对方拉黑，无法接收或发送消息</div>
+			                    <button class="k-btn-sub" style="padding: 6px 16px; border-radius: 20px;" onclick="unblockContact()">解除拉黑</button>
+			                `;
+			            } else if (chatData.isBlockedByRole) {
+			                blockedArea.innerHTML = `
+			                    <div style="font-size: 13px; color: #ff3b30; font-weight: 600;">你已被对方拉黑</div>
+			                    <button class="k-btn-pri" style="padding: 6px 16px; border-radius: 20px;" onclick="sendFriendRequestToRole()">发送好友申请</button>
+			                `;
+			            }
+			        } else {
+			            blockedArea.style.display = 'none';
+			            $('#chat-input-area').style.setProperty('display', 'flex', 'important');
+			        }
 
 			                        let avatarStr = '';
 			        if (isGroup) {
@@ -18996,16 +19135,23 @@ const displayName = isGroup ? chatData.name : (chatData.alias || chatData.name);
 			            }
 			        }
 
-			        const receiveBtn = document.querySelector('.receive-btn');
-			        if (receiveBtn) {
-			            if (state.isBotTyping) {
+			       			        const receiveBtn = document.querySelector('.receive-btn');
+			        const typingInd = document.getElementById('typing-indicator');
+			        
+			        if (state.isBotTyping) {
+			            if (receiveBtn) {
 			                receiveBtn.style.opacity = '0.4';
 			                receiveBtn.style.pointerEvents = 'none';
-			            } else {
+			            }
+			            if (typingInd) typingInd.style.display = 'flex';
+			        } else {
+			            if (receiveBtn) {
 			                receiveBtn.style.opacity = '1';
 			                receiveBtn.style.pointerEvents = 'auto';
 			            }
+			            if (typingInd) typingInd.style.display = 'none';
 			        }
+
 
 			        if (state.showEmotePanel) {
 			            // 插入遮罩
@@ -19106,11 +19252,24 @@ const displayName = isGroup ? chatData.name : (chatData.alias || chatData.name);
 			        const isSameAsNext = nextMsg && nextMsg.role !== 'system' && msg.role !== 'system' && (isGroup ? (nextMsg.senderId === msg.senderId && nextMsg.role === msg.role) : nextMsg.role === msg.role);
 			        const showAvatar = true; // 强制每条气泡旁边都显示头像
 
-			        if (msg.role === 'system') {
+			        let senderName = '';
+			        if (isMe) {
+			            senderName = '我';
+			        } else {
+			            if (isGroup) {
+			                const sender = state.contacts.find(c => c.id === msg.senderId);
+			                senderName = sender ? (sender.alias || sender.name) : '未知';
+			            } else {
+			                senderName = chatData.alias || chatData.name;
+			            }
+			        }
+
+			        if (msg.role === 'system' || msg.isRecalled) {
+			            const sysText = msg.isRecalled ? `"${senderName}" 撤回了一条消息` : msg.content;
 			            return `
 			            <div class="message-item system" data-id="${msg.id}" style="justify-content: center; margin: 10px 0; width: 100%;">
 			                <div class="msg-bubble-container" style="align-items: center; max-width: 90%;">
-			                    <div class="msg-bubble" style="background-color: rgba(0,0,0,0.06); color: #8e8e93; font-size: 12px; padding: 4px 12px; border-radius: 8px; text-align: center; border: none; box-shadow: none; cursor: pointer;" onmousedown="startPress('${msg.id}', event)" onmouseup="endPress()" onmouseleave="endPress()" ontouchstart="startPress('${msg.id}', event)" ontouchend="endPress()">${escapeHtml(msg.content)}</div>
+			                    <div class="msg-bubble" style="background-color: rgba(0,0,0,0.06); color: #8e8e93; font-size: 12px; padding: 4px 12px; border-radius: 8px; text-align: center; border: none; box-shadow: none; cursor: pointer;" onmousedown="startPress('${msg.id}', event)" onmouseup="endPress()" onmouseleave="endPress()" ontouchstart="startPress('${msg.id}', event)" ontouchend="endPress()">${escapeHtml(sysText)}</div>
 			                </div>
 			            </div>`;
 			        }
@@ -19121,7 +19280,6 @@ const displayName = isGroup ? chatData.name : (chatData.alias || chatData.name);
 			        else if (!isSameAsPrev && isSameAsNext) bubbleGroupClass = 'bubble-top';
 
 			                        let avatarStr = '';
-			        let senderName = '';
 			                if (isMe) {
 			            senderName = '我';
 			            if (showAvatar) {
@@ -19316,6 +19474,32 @@ avatarStr = myAvatarSrc ? `<img src="${myAvatarSrc}" class="msg-avatar my-avatar
 			                </div>
 			            </div>`;
 			        }
+			        else if(msg.type === 'friend_request') {
+			            const status = msg.requestStatus || 'pending';
+			            let statusText = '接受';
+			            let btnClass = '';
+			            if (status === 'accepted') {
+			                statusText = '已通过';
+			                btnClass = 'disabled';
+			            } else if (status === 'rejected') {
+			                statusText = '已拒绝';
+			                btnClass = 'disabled';
+			            }
+
+			            contentStr = `
+			            <div class="msg-lover-invite-card" style="width: 240px; text-align: left; align-items: flex-start;" onclick="if(state.isMultiSelecting){ toggleMsgSelect('${msg.id}'); }">
+			                <div style="font-size: 14px; font-weight: 800; color: #111; margin-bottom: 4px;">好友申请</div>
+			                <div style="font-size: 12px; color: #666; margin-bottom: 12px;">“${escapeHtml(msg.content)}”</div>
+			                <div style="display: flex; gap: 8px; width: 100%;">
+			                    ${status === 'pending' ? `
+			                    <button class="msg-lover-invite-btn" style="flex: 1; background: #F5F5F5; color: #111; border: 1px solid #EEE;" onclick="if(state.isMultiSelecting){ toggleMsgSelect('${msg.id}'); event.stopPropagation(); } else { handleFriendRequestClick('${msg.id}', 'rejected'); }">拒绝</button>
+			                    <button class="msg-lover-invite-btn" style="flex: 1;" onclick="if(state.isMultiSelecting){ toggleMsgSelect('${msg.id}'); event.stopPropagation(); } else { handleFriendRequestClick('${msg.id}', 'accepted'); }">接受</button>
+			                    ` : `
+			                    <button class="msg-lover-invite-btn ${btnClass}" style="flex: 1;" disabled>${statusText}</button>
+			                    `}
+			                </div>
+			            </div>`;
+			        }
 			        else contentStr = escapeHtml(msg.content);
 
 			        const myBgColor = chatData.myBubbleColor || '#EFFDDE';
@@ -19372,7 +19556,7 @@ avatarStr = myAvatarSrc ? `<img src="${myAvatarSrc}" class="msg-avatar my-avatar
 			                <div class="message-item ${msg.role}" data-id="${msg.id}" style="transition: all 0.2s ease; ${multiSelectBg}; cursor: ${state.isMultiSelecting ? 'pointer' : 'default'};" onclick="if(state.isMultiSelecting) { toggleMsgSelect('${msg.id}'); }">
 			            ${!isMe ? `<div class="msg-avatar-wrap">${avatarStr}</div>` : ''}
 			            			                <div class="msg-bubble-container" ${isMe && hideMyAvatar ? `style="max-width: calc(100% - 20px);"` : ''}>
-			                <div class="msg-bubble ${bubbleGroupClass} ${msg.type === 'image' || msg.type === 'real_image' ? 'msg-image-bubble' : ''} ${(msg.type === 'transfer' || msg.type === 'red_packet' || msg.type === 'exclusive_red_packet' || msg.type === 'forward_records' || msg.type === 'gift' || msg.type === 'forum_post' || msg.type === 'music_share' || msg.type === 'takeout_pay_request' || msg.type === 'lover_invite' || msg.type === 'virtual_image') ? 'msg-transfer-bubble-wrap' : ''}" style="${isMe ? `background-color: ${myBgColor}; color: ${myTextColor};` : `background-color: ${roleBgColor}; color: ${roleTextColor};`} font-size: ${fontSize}px;" onmousedown="startPress('${msg.id}', event)" onmouseup="endPress()" onmouseleave="endPress()" ontouchstart="startPress('${msg.id}', event)" ontouchend="endPress()" ontouchcancel="endPress()">${replyStr}${contentStr}${metaHtml}</div>
+			                			                                                                <div class="msg-bubble ${bubbleGroupClass} ${msg.type === 'image' || msg.type === 'real_image' ? 'msg-image-bubble' : ''} ${(msg.type === 'transfer' || msg.type === 'red_packet' || msg.type === 'exclusive_red_packet' || msg.type === 'forward_records' || msg.type === 'gift' || msg.type === 'forum_post' || msg.type === 'music_share' || msg.type === 'takeout_pay_request' || msg.type === 'lover_invite' || msg.type === 'virtual_image' || msg.type === 'friend_request') ? 'msg-transfer-bubble-wrap' : ''}" style="${isMe ? `background-color: ${myBgColor}; color: ${myTextColor};` : `background-color: ${roleBgColor}; color: ${roleTextColor};`} font-size: ${fontSize}px;" onmousedown="startPress('${msg.id}', event)" onmouseup="endPress()" onmouseleave="endPress()" ontouchstart="startPress('${msg.id}', event)" ontouchend="endPress()" ontouchcancel="endPress()">${replyStr}${contentStr}${metaHtml}</div>
 			                ${translationHtml}
 			                ${timeHtml}
 			            </div>
@@ -19545,6 +19729,65 @@ function closeChatStatusModal() {
 			}
 			function cancelReply() { state.replyingMsg = null; renderChatRoom(); }
 
+			async function unblockContact() {
+			    const contact = state.contacts.find(c => c.id === state.activeContactId);
+			    if (!contact) return;
+			    contact.isBlockedByMe = false;
+			    contact.messages.push({
+			        id: Date.now().toString(),
+			        role: 'system',
+			        content: `你已将 "${contact.name}" 移出黑名单。`,
+			        timestamp: Date.now()
+			    });
+			    await saveDataSilently();
+			    renderChatRoom();
+			    scrollToBottom();
+			}
+
+			async function sendFriendRequestToRole() {
+			    const reqMsg = await showPromptDialog('发送好友申请', '我是...', '请输入验证信息');
+			    if (reqMsg !== null) {
+			        const contact = state.contacts.find(c => c.id === state.activeContactId);
+			        if (!contact) return;
+			        
+			        contact.messages.push({
+			            id: Date.now().toString(),
+			            role: 'system',
+			            content: `已发送朋友验证请求：“${reqMsg}”，等待对方验证。`,
+			            timestamp: Date.now()
+			        });
+			        await saveDataSilently();
+			        renderChatRoom();
+			        scrollToBottom();
+			        
+			        // 触发 AI
+			        receiveMessage(`[系统提示] 我被你拉黑了，我向你发送了好友申请：“${reqMsg}”。请你根据心情和人设决定是否要通过。如果同意请输出 [同意好友申请]，如果拒绝请输出 [拒绝好友申请]。`, contact.id);
+			    }
+			}
+
+			async function handleFriendRequestClick(msgId, decision) {
+			    const contact = state.contacts.find(c => c.id === state.activeContactId);
+			    const msg = contact.messages.find(m => m.id === msgId);
+			    if (!msg || msg.requestStatus !== 'pending') return;
+
+			    msg.requestStatus = decision;
+			    if (decision === 'accepted') {
+			        contact.isBlockedByMe = false;
+			        contact.messages.push({
+			            id: Date.now().toString(),
+			            role: 'system',
+			            content: `你已通过了 "${contact.name}" 的朋友验证请求，现在可以开始聊天了。`,
+			            timestamp: Date.now()
+			        });
+			        showToast('已通过好友申请');
+			    } else {
+			        showToast('已拒绝好友申请');
+			    }
+			    await saveDataSilently();
+			    renderChatRoom();
+			    scrollToBottom();
+			}
+
 			async function sendMessage() {
 			    const text = $('#chat-input').value.trim();
 			    if(!text) return;
@@ -19601,7 +19844,8 @@ function closeChatStatusModal() {
 			                receiveGroupMessage(null, chatData.id);
 			            }
 			        } else {
-			            if (!_receivingLock.has(chatData.id)) {
+			            // 如果处于拉黑状态，不自动回复，除非是特殊的好友申请上下文
+			            if (!chatData.isBlockedByMe && !_receivingLock.has(chatData.id)) {
 			                receiveMessage(null, chatData.id);
 			            }
 			        }
@@ -19700,6 +19944,17 @@ function closeChatStatusModal() {
 			    if (contact.memorySummary && (contact.memorySummary.relation || contact.memorySummary.events)) {
 			        memoryPrompt += `\n【你的对话记忆总结】\n你看待我们的关系：${contact.memorySummary.relation}\n你最新的心里想法：${contact.memorySummary.thoughts}\n你想对我说的话：${contact.memorySummary.wordsToSay}\n你记住的事情：${contact.memorySummary.events}\n你对聊天的看法：${contact.memorySummary.viewOnChat}`;
 			    }
+			    // 注入每日长期记忆
+			    if (contact.dailyMemoryConfig && contact.dailyMemoryConfig.enabled && contact.dailyMemories && contact.dailyMemories.length > 0) {
+			        const validMemories = contact.dailyMemories.filter(m => (Date.now() - m.timestamp) <= contact.dailyMemoryConfig.retainDays * 24 * 3600 * 1000);
+			        if (validMemories.length > 0) {
+			            memoryPrompt += `\n\n【长期记忆】\nThese are the core contents that the character needs to remember. They include interaction with users. Mentioning them at the right time can make users like them. You should let the character care about the user's life, but this does not mean that you need to care about it repeatedly. That is too deliberate and unnatural. You should operate the character to bring up their memories when the user needs it, so that the user can feel a real sense of companionship. You should show the character's sense and charm. When writing about him, you should write him as a person with a good memory and cares about the user.\n`;
+			            validMemories.forEach(m => {
+			                memoryPrompt += `- [${new Date(m.timestamp).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}] ${m.content}\n`;
+			            });
+			        }
+			    }
+
 			            // 注入跨模块生态记忆（日记、论坛、朋友圈）
 			    memoryPrompt += getCrossModuleMemoryPrompt(contact);
 
@@ -19784,7 +20039,52 @@ let fullSystemPrompt = GEMINI_OVERRIDE_HEADER + '\n\n' + systemPrompt + '\n\n' +
 			    if (triggerContext) {
 			        fullSystemPrompt += '\n\n【当前触发情景与上下文事件】\n' + triggerContext;
 			    }
+			    			    let recallPrompt = `\n【消息撤回机制（必读）】
+In this conversation, you are acting as a scriptwriter, not the character.
+If the character regrets a message they sent previously and wants to unsend it, they must issue a recall command.
+【撤回规则与格式】：
+1. 角色可以精准撤回历史剧本中自己发出的【任何一条消息】。
+2. 若决定撤回，请在本次新回复的开头输出 \`[撤回消息: 你想撤回的那句话的内容片段]\`。如果不写片段，则默认撤回你发出的最后一条。
+3. 示例：\`[撤回消息: 刚才我不小心说错的话]\` 然后换行继续说你想说的新话。
+4. 警告：绝对禁止在同一次回复中“先输出一句话，紧接着立马撤回它”。撤回动作必须针对【历史剧本中已经真实存在的旧消息】！`;
 
+
+			    			    // 注入拉黑与好友申请机制的Prompt
+			    let blockPrompt = '';
+			    if (contact) {
+			        blockPrompt = `\n【拉黑与好友申请机制（必读）】
+
+In this conversation, you are acting as a scriptwriter, not the character. You are only responsible for writing the character's responses.
+
+The character may use a specific format to roleplay the action of "blocking" the user. This can happen in these situations:
+· when the character is genuinely angry and has reached their limit,
+· when the character is joking around and wants the user to take the initiative to send a friend request,
+· or when the user does something that upsets the character, and the character wants to throw a little tantrum by blocking them.
+
+Even if the character blocks the user, they can't help but miss the user afterward, and may regret it and unblock them.
+At the same time, the user might send the character a friend request. The character can decide how to respond based on their mood and the details of the user's request—this should fit the character's personality.
+
+The character can always refuse the user's friend request (for example, if they're the tsundere type), but the final decision should depend on the specifics of the request.
+
+Similarly, if the user blocks the character, the character can choose whether to send a friend request to the user. They might act anxious, indifferent, or simply wait for the user to unblock them first—it's entirely up to the character's whims.
+
+【特殊指令格式（当且仅当需要执行对应操作时，在回复任意位置包含）】：
+- 拉黑我请输出：\`[拉黑用户]\`
+- 解除拉黑请输出：\`[解除拉黑]\`
+- 同意好友申请请输出：\`[同意好友申请]\`
+- 拒绝好友申请请输出：\`[拒绝好友申请]\`
+- 向我发送好友申请请输出：\`[发送好友申请: 你的验证消息内容]\`
+`;
+			        if (contact.isBlockedByMe) {
+			            blockPrompt += `\n【当前状态警告】你目前已经被我拉黑了！你无法发送普通消息，如果想恢复联系，你可以尝试使用 \`[发送好友申请: xxx]\` 指令。`;
+			        }
+			        if (contact.isBlockedByRole) {
+			            blockPrompt += `\n【当前状态警告】你目前已经把我拉黑了！如果你想主动恢复联系，请输出 \`[解除拉黑]\` 指令。`;
+			        }
+			    }
+
+			    fullSystemPrompt += blockPrompt;
+			    fullSystemPrompt += recallPrompt;
 			    // 头像状态附加到 system prompt 末尾（仍保留在 system 层）
 			    let avatarStateNote = '';
 			    if (contact.chatAvatar && contact.avatarLibrary && contact.avatarLibrary.length > 0) {
@@ -19826,8 +20126,13 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 			    let chatHistoryText = '【历史对话记录剧本】\n';
 			    
 			    recentMsgs.forEach(m => {
+			        if (m.role === 'system') {
+			            chatHistoryText += `【系统提示】: ${m.content}\n`;
+			            return;
+			        }
 			        let txt = m.content;
-			        if (m.type === 'image' || m.type === 'real_image') txt = `[表情包/图片: ${m.remark || '图片'}]`;
+			        if (m.isRecalled) txt = `[撤回了一条消息，原内容: ${m.content}]`;
+			        else if (m.type === 'image' || m.type === 'real_image') txt = `[表情包/图片: ${m.remark || '图片'}]`;
 			        else if (m.type === 'virtual_image') txt = `[文字图：${m.content}]`;
 			        else if (m.type === 'transfer') {
 			            let statusStr = m.transferStatus === 'pending' ? '未收款' : (m.transferStatus === 'accepted' ? '已收款' : '已退回');
@@ -19959,6 +20264,85 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 			                }
 
 
+			            // 解析拉黑相关指令
+			            if (reply.includes('[拉黑用户]')) {
+			                contact.isBlockedByRole = true;
+			                reply = reply.replace(/\[拉黑用户\]/g, '').trim();
+			                contact.messages.push({
+			                    id: Date.now().toString(),
+			                    role: 'system',
+			                    content: `"${contact.name}" 开启了朋友验证，你还不是他（她）朋友。请先发送朋友验证请求，对方验证通过后，才能聊天。`,
+			                    timestamp: Date.now()
+			                });
+			            }
+			            if (reply.includes('[解除拉黑]')) {
+			                contact.isBlockedByRole = false;
+			                reply = reply.replace(/\[解除拉黑\]/g, '').trim();
+			                contact.messages.push({
+			                    id: Date.now().toString(),
+			                    role: 'system',
+			                    content: `"${contact.name}" 已将你移出黑名单。`,
+			                    timestamp: Date.now()
+			                });
+			            }
+			            if (reply.includes('[同意好友申请]')) {
+			                contact.isBlockedByRole = false;
+			                reply = reply.replace(/\[同意好友申请\]/g, '').trim();
+			                contact.messages.push({
+			                    id: Date.now().toString(),
+			                    role: 'system',
+			                    content: `"${contact.name}" 已通过你的朋友验证请求，现在可以开始聊天了。`,
+			                    timestamp: Date.now()
+			                });
+			            }
+			            if (reply.includes('[拒绝好友申请]')) {
+			                reply = reply.replace(/\[拒绝好友申请\]/g, '').trim();
+			                contact.messages.push({
+			                    id: Date.now().toString(),
+			                    role: 'system',
+			                    content: `"${contact.name}" 拒绝了你的朋友验证请求。`,
+			                    timestamp: Date.now()
+			                });
+			            }
+
+			            const aiReqRegex = /\[发送好友申请:\s*(.*?)\]/g;
+			            let aiReqMatch;
+			            while ((aiReqMatch = aiReqRegex.exec(reply)) !== null) {
+			                const reqMsg = aiReqMatch[1].trim();
+			                contact.messages.push({
+			                    id: Date.now().toString() + Math.random().toString().substr(2,5),
+			                    role: 'assistant',
+			                    type: 'friend_request',
+			                    content: reqMsg,
+			                    requestStatus: 'pending',
+			                    timestamp: Date.now()
+			                });
+			            }
+			            reply = reply.replace(aiReqRegex, '').trim();
+
+			           			           			            			            // 解析撤回指令 (支持指定内容片段撤回)
+			            const recallRegex = /[\[【]撤回消息(?:[:：]\s*(.*?))?[\]】]/g;
+			            let recallMatch;
+			            while ((recallMatch = recallRegex.exec(reply)) !== null) {
+			                const targetContent = (recallMatch[1] || '').trim();
+			                const roleMsgs = contact.messages.filter(m => m.role === 'assistant' && !m.isRecalled);
+			                let targetMsg = null;
+			                
+			                if (targetContent) {
+			                    // 往回找包含该内容的片段
+			                    targetMsg = roleMsgs.slice().reverse().find(m => m.content && m.content.includes(targetContent));
+			                }
+			                // 如果没提供片段或者没找到，默认撤回最后一条
+			                if (!targetMsg && roleMsgs.length > 0) {
+			                    targetMsg = roleMsgs[roleMsgs.length - 1];
+			                }
+			                if (targetMsg) targetMsg.isRecalled = true;
+			            }
+			            reply = reply.replace(/[\[【]撤回消息(?:[:：]\s*.*?)?[\]】]/g, '').trim();
+
+
+
+
 			            // 解析并处理换头像指令
 			            const avatarRegex = /\[换头像:\s*(.*?)\]/g;
 			            let avatarMatch;
@@ -20065,7 +20449,7 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 			                reply = reply.replace(/[\[【]回复[:：]\s*(.*?)[\]】]/gi, '').trim();
 			            }
 
-			                                    const parsedMsgs = parseReplyToMessages(reply, contact.roleEmotePackageId);
+			                                    			                                    			                                    const parsedMsgs = parseReplyToMessages(reply, contact.roleEmotePackageId);
 			            if (parsedMsgs.length > 0 && replyToMsg) {
 			                parsedMsgs[0].replyTo = replyToMsg;
 			            }
@@ -20272,10 +20656,11 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 			                } else {
 			                    showNotification(contact, item.msg);
 			                }
-			                playMessageSound(contact);
+			                			                playMessageSound(contact);
 			                await saveDataSilently();
 			            }
 			            if (state.messageQueue.length > 0) await new Promise(r => setTimeout(r, 2000));
+
 			        }
 			        state.isProcessingQueue = false;
 			    }
@@ -20421,8 +20806,9 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 			            const sender = members.find(c => c.id === m.senderId);
 			            senderName = sender ? sender.name : '未知';
 			        }
-			        let txt = m.content;
-			        if (m.type === 'image' || m.type === 'real_image') txt = '[图片]';
+			       			        let txt = m.content;
+			        if (m.isRecalled) txt = `[撤回了一条消息，原内容: ${m.content}]`;
+			        else if (m.type === 'image' || m.type === 'real_image') txt = '[图片]';
 			        else if (m.type === 'virtual_image') txt = `[文字图: ${m.content}]`;
 			        else if (m.type === 'red_packet') txt = `[发出了一个群红包: ${m.remark}]`;
 			        else if (m.type === 'exclusive_red_packet') {
@@ -20452,6 +20838,18 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 
 			${triggerContext ? `【特殊触发情境】\n${triggerContext}\n` : ''}
 			${packetContext ? `【红包动态】\n${packetContext}\n` : ''}
+
+			【消息撤回机制】
+			In this conversation, you are acting as a scriptwriter, not the character. You are only responsible for writing the character's responses.
+			The character may use a specific format to "recall" (unsend) a message they just sent. This can happen when:
+			· the character immediately regrets what they said,
+			· the character feels they misspoke or said something wrong,
+			· or the character finds their own message too embarrassing, too cringey, or too over-the-line.
+			Whether the character recalls a message should depend on their personality and the current context. The goal is to create lively, entertaining interactions between the character and the user.
+		如果角色要撤回某条消息，请遵循以下规则：
+			1. 可以精准撤回历史剧本中自己发出的【任何一条消息】。
+			2. 请在当前新回复的 content 中输出 \`[撤回消息: 你想撤回的话的内容片段]\`。不加内容则默认撤回最后一条。
+			3. 警告：绝对禁止在同一条 content 里既写出想发的新话又立刻撤回它！撤回必须针对已经发出的旧消息！
 
 			${STRICT_REALISM_PROMPT}
 
@@ -20639,6 +21037,27 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 			                                // 解析表情包与禁言指令
 			                let finalContent = m.content;
 			                let finalType = m.type;
+
+			               			                			                // 处理撤回消息指令 (支持指定内容片段撤回)
+			                const groupRecallRegex = /[\[【]撤回消息(?:[:：]\s*(.*?))?[\]】]/g;
+			                let recallMatch;
+			                while ((recallMatch = groupRecallRegex.exec(finalContent)) !== null) {
+			                    const targetContent = (recallMatch[1] || '').trim();
+			                    const roleMsgs = group.messages.filter(mg => mg.senderId === m.senderId && mg.role === 'assistant' && !mg.isRecalled);
+			                    let targetMsg = null;
+			                    
+			                    if (targetContent) {
+			                        targetMsg = roleMsgs.slice().reverse().find(mg => mg.content && mg.content.includes(targetContent));
+			                    }
+			                    if (!targetMsg && roleMsgs.length > 0) {
+			                        targetMsg = roleMsgs[roleMsgs.length - 1];
+			                    }
+			                    if (targetMsg) targetMsg.isRecalled = true;
+			                }
+			                finalContent = finalContent.replace(/[\[【]撤回消息(?:[:：]\s*.*?)?[\]】]/g, '').trim();
+
+
+
 
 			                // 处理退群指令
 			                if (finalContent.includes('[退群]')) {
@@ -20856,12 +21275,14 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 			                        group.messages.push(m);
 			                        state.chatDisplayLimit += 1;
 			                    }
-			                    if (state.activeChatType === 'group' && state.activeGroupId === group.id) {
+			                    			                    if (state.activeChatType === 'group' && state.activeGroupId === group.id) {
 			                        renderChatRoom();
 			                        scrollToBottom();
 			                    }
 			                    await saveDataSilently();
 			                }
+
+
 			            }
 			        }
 			    } catch (err) {
@@ -21514,6 +21935,18 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 			        state.msgMenuObj.msgId = msgId;
 			        const menuOverlay = $('#msg-menu');
 			        const menuBox = $('#msg-menu-box');
+			        
+			        // 判断是否显示撤回按钮
+			        const isGroup = state.activeChatType === 'group';
+			        const chatData = isGroup ? state.chatGroups.find(g => g.id === state.activeGroupId) : state.contacts.find(c => c.id === state.activeContactId);
+			        const msg = chatData ? chatData.messages.find(m => m.id === msgId) : null;
+			        const recallBtn = $('#msg-menu-recall-btn');
+			        if (msg && msg.role === 'user' && (Date.now() - msg.timestamp < 120000)) {
+			            if (recallBtn) recallBtn.style.display = 'flex';
+			        } else {
+			            if (recallBtn) recallBtn.style.display = 'none';
+			        }
+
 			        menuOverlay.style.display = 'block';
 
 			        const rect = target.getBoundingClientRect();
@@ -21564,6 +21997,32 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 			            document.body.removeChild(textarea);
 			            showToast('已复制到剪贴板');
 			        }
+			    }
+			    closeMsgMenu();
+			}
+
+			async function actionRecallMsg() {
+			    const isGroup = state.activeChatType === 'group';
+			    const chatData = isGroup ? state.chatGroups.find(g => g.id === state.activeGroupId) : state.contacts.find(c => c.id === state.activeContactId);
+			    if (!chatData) return;
+			    const msg = chatData.messages.find(m => m.id === state.msgMenuObj.msgId);
+			    if (msg) {
+			        if (msg.role !== 'user') {
+			            showToast('只能撤回自己发送的消息', 'error');
+			            closeMsgMenu();
+			            return;
+			        }
+			        if (Date.now() - msg.timestamp > 120000) {
+			            showToast('发送时间超过2分钟，无法撤回', 'error');
+			            closeMsgMenu();
+			            return;
+			        }
+			        
+			        			        msg.isRecalled = true;
+
+			        
+			        await saveDataSilently();
+			        renderChatRoom();
 			    }
 			    closeMsgMenu();
 			}
@@ -21700,6 +22159,7 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 			        else if (m.type === 'forward_records') contentStr = `[聊天记录]`;
 			        else if (m.type === 'forum_post') contentStr = `[帖子] ${m.postTitle}`;
 			        else if (m.type === 'music_share') contentStr = `[音乐分享: ${m.musicTitle}]`;
+			        else if (m.type === 'friend_request') contentStr = `[好友申请] ${m.content}`;
 
 			        forwardText += `${senderName}: ${contentStr}\n`;
 			        if (previewLines.length < 4) previewLines.push(`${senderName}: ${contentStr}`);
@@ -21817,6 +22277,13 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 			                </div>
 			            </div>`;
 			        }
+			        else if(msg.type === 'friend_request') {
+			            contentStr = `
+			            <div class="msg-lover-invite-card" style="width: 240px; text-align: left; align-items: flex-start; cursor:default;">
+			                <div style="font-size: 14px; font-weight: 800; color: #111; margin-bottom: 4px;">好友申请</div>
+			                <div style="font-size: 12px; color: #666; margin-bottom: 12px;">“${escapeHtml(msg.content)}”</div>
+			            </div>`;
+			        }
 			        else contentStr = escapeHtml(msg.content);
 
 			                        return `
@@ -21824,7 +22291,7 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 			            ${!isMe ? `<div class="msg-avatar-wrap" style="margin-right:10px;">${avatarStr}</div>` : ''}
 			            <div class="msg-bubble-container">
 			                                ${showAvatar ? `<div style="font-size:11px; color:#999; margin-bottom:2px; ${isMe?'text-align:right;':''}">${escapeHtml(name)} ${formatMsgTime(msg.timestamp)}</div>` : ''}
-			                                                                <div class="msg-bubble ${bubbleGroupClass} ${msg.type === 'image' || msg.type === 'real_image' ? 'msg-image-bubble' : ''} ${(msg.type === 'transfer' || msg.type === 'red_packet' || msg.type === 'exclusive_red_packet' || msg.type === 'forward_records' || msg.type === 'gift') ? 'msg-transfer-bubble-wrap' : ''}" style="background-color: ${isMe ? '#007aff' : '#F5F5F5'}; color: ${isMe ? '#fff' : '#000'};">${contentStr}</div>
+			                                                                <div class="msg-bubble ${bubbleGroupClass} ${msg.type === 'image' || msg.type === 'real_image' ? 'msg-image-bubble' : ''} ${(msg.type === 'transfer' || msg.type === 'red_packet' || msg.type === 'exclusive_red_packet' || msg.type === 'forward_records' || msg.type === 'gift' || msg.type === 'friend_request') ? 'msg-transfer-bubble-wrap' : ''}" style="background-color: ${isMe ? '#007aff' : '#F5F5F5'}; color: ${isMe ? '#fff' : '#000'};">${contentStr}</div>
 			            </div>
 			            ${isMe ? `<div class="msg-avatar-wrap" style="margin-left:10px;">${avatarStr}</div>` : ''}
 			        </div>`;
@@ -22325,6 +22792,14 @@ ABSOLUTE RULE — NO TIME PREFIX in any reply.`
 
 			        <!-- 危险选项分区一比一复刻 -->
 			        <div class="cs-section-title">危险选项</div>
+
+			        <div class="cs-item-row" onclick="toggleBlockContact()">
+			            <div class="cs-label-col">
+			                <span class="cs-label-title danger">${contact.isBlockedByMe ? '解除拉黑此角色' : '拉黑此角色'}</span>
+			                <span class="cs-label-subtitle danger">${contact.isBlockedByMe ? '恢复正常聊天与消息接收' : '拉黑后将无法互相发送消息'}</span>
+			            </div>
+			            <button class="cs-btn-flat danger" onclick="event.stopPropagation(); toggleBlockContact();">${contact.isBlockedByMe ? '解除' : '拉黑'}</button>
+			        </div>
 
 			        <div class="cs-item-row" onclick="clearChatHistory()">
 			            <div class="cs-label-col">
@@ -22856,6 +23331,36 @@ function updateChatLayout(prop, val) {
 			            showToast('已灌下孟婆汤，角色深层记忆已彻底抹除！', 'success');
 			        }
 			    }
+			}
+
+			async function toggleBlockContact() {
+			    const contact = state.contacts.find(c => c.id === state.activeContactId);
+			    if (!contact) return;
+			    
+			    if (contact.isBlockedByMe) {
+			        contact.isBlockedByMe = false;
+			        contact.messages.push({
+			            id: Date.now().toString(),
+			            role: 'system',
+			            content: `你已将 "${contact.name}" 移出黑名单。`,
+			            timestamp: Date.now()
+			        });
+			        showToast('已解除拉黑');
+			    } else {
+			        if (await showConfirmDialog('拉黑角色', `确定要拉黑 "${contact.name}" 吗？拉黑后将无法聊天。`)) {
+			            contact.isBlockedByMe = true;
+			            contact.messages.push({
+			                id: Date.now().toString(),
+			                role: 'system',
+			                content: `你已将 "${contact.name}" 加入黑名单。`,
+			                timestamp: Date.now()
+			            });
+			            showToast('已拉黑');
+			        }
+			    }
+			    await saveDataSilently();
+			    renderChatSettings();
+			    if (state.currentView === 'chat_room') renderChatRoom();
 			}
 
 			async function deleteContact() {
@@ -26782,6 +27287,7 @@ No matter the character, their entrance should not be necessary. Introduce chara
 			    }
 
 			        const historyText = msgs.map(m => {
+			        if (m.role === 'system') return `【系统提示】: ${m.content}`;
 			        let content = m.content;
 			                                if (m.type === 'image' || m.type === 'real_image') content = '[图片]';
 			        else if (m.type === 'virtual_image') content = `[文字图: ${m.content}]`;
@@ -26876,10 +27382,7 @@ No matter the character, their entrance should not be necessary. Introduce chara
 			        qtySub.textContent = `共 ${state.worldbooks.length} 个设定夹`;
 			    }
 
-			    // 如果没有选过文件夹，默认选择第一个
-			    if (!currentWorldbookId && state.worldbooks.length > 0) {
-			        currentWorldbookId = state.worldbooks[0].id;
-			    }
+			    
 
 			    // 1. 渲染文件夹列表（物品页 cream-shadow-card 风格）
 			    if (state.worldbooks.length === 0) {
@@ -26897,9 +27400,9 @@ No matter the character, their entrance should not be necessary. Introduce chara
 			        const isActive = currentWorldbookId === wb.id;
 			        const numStr = String(index + 1).padStart(2, '0') + '/';
 
-			        return `
-			        <div class="inventory-item-card-flat cream-shadow-card" style="${isActive ? 'border: 1.5px solid #111111;' : ''}">
-			            <div class="inventory-item-left-group" onclick="selectWorldbookFolder('${wb.id}')" style="cursor: pointer;">
+			      			        return `
+			        <div class="inventory-item-card-flat cream-shadow-card" style="cursor: pointer; ${isActive ? 'border: 1.5px solid #111111;' : ''}" onclick="selectWorldbookFolder('${wb.id}')">
+			            <div class="inventory-item-left-group">
 			                <div class="inventory-item-num-badge green-serif-num">${numStr}</div>
 			                <div class="inventory-item-details">
 			                    <div class="inventory-item-name-txt">${escapeHtml(wb.name)}</div>
@@ -26907,9 +27410,10 @@ No matter the character, their entrance should not be necessary. Introduce chara
 			                </div>
 			            </div>
 			            <div style="display: flex; gap: 10px; align-items: center; flex-shrink: 0;">
-			                <button class="inventory-gift-submit-btn ins-green-pill-btn" onclick="manageWorldbookFolderDialog('${wb.id}')">管理</button>
+			                <button class="inventory-gift-submit-btn ins-green-pill-btn" onclick="event.stopPropagation(); manageWorldbookFolderDialog('${wb.id}')">管理</button>
 			            </div>
 			        </div>
+
 
 			        ${isActive ? `
 			        <!-- 展开区：选中文件夹的条目详情 -->
@@ -26948,9 +27452,14 @@ No matter the character, their entrance should not be necessary. Introduce chara
 			}
 
 			function selectWorldbookFolder(wbId) {
-			    currentWorldbookId = wbId;
+			    if (currentWorldbookId === wbId) {
+			        currentWorldbookId = null; // 再次点击时收起
+			    } else {
+			        currentWorldbookId = wbId;
+			    }
 			    renderWorldbookList();
 			}
+
 
 			let worldbookEditingIconId = null;
 
@@ -27577,6 +28086,7 @@ No matter the character, their entrance should not be necessary. Introduce chara
 
 			    // 提取最近的聊天记录作为上下文
 			    const recentMsgs = contact.messages.slice(-20).map(m => {
+			        if (m.role === 'system') return `【系统提示】: ${m.content}`;
 			        let txt = m.content;
 			                                if (m.type === 'image' || m.type === 'real_image') txt = '[图片]';
 			        else if (m.type === 'virtual_image') txt = `[文字图: ${m.content}]`;
@@ -33891,6 +34401,10 @@ const TAKEOUT_SHOPS = [
 			    // 启动已开启主动发消息的联系人的定时器
 			    state.contacts.forEach(c => {
 			        if (c.autoReplyEnabled) startAutoReplyTimer(c.id);
+			        // 初次加载也检查一次记忆总结
+			        if (c.dailyMemoryConfig && c.dailyMemoryConfig.enabled) {
+			            checkAndTriggerDailyMemory(c.id);
+			        }
 			    });
 
 			    if (state.chatGroups) {
@@ -34161,6 +34675,217 @@ const TAKEOUT_SHOPS = [
 			        BackgroundMessenger.checkRetroactiveMessages();
 			    }, 1500);
 			});
+
+			// ==================== 长期记忆引擎 ====================
+			function openDailyMemory() {
+			    const isGroup = state.activeChatType === 'group';
+			    if (isGroup) {
+			        showToast('群聊中暂不支持长期记忆', 'error');
+			        return;
+			    }
+			    hidePanels();
+			    switchView('long_term_memory');
+			}
+
+			function renderDailyMemory() {
+			    const c = state.contacts.find(x => x.id === state.activeContactId);
+			    if (!c) return;
+
+			    const config = c.dailyMemoryConfig;
+			    const memories = c.dailyMemories || [];
+
+			    // 清理过期记忆
+			    const validMemories = memories.filter(m => (Date.now() - m.timestamp) <= config.retainDays * 24 * 3600 * 1000);
+			    if (validMemories.length !== memories.length) {
+			        c.dailyMemories = validMemories;
+			        saveDataSilently();
+			    }
+
+			    $('#ltm-qty-subtitle').textContent = `已沉淀 ${validMemories.length} 条长线记忆`;
+
+			    let html = `
+			        <div class="inventory-item-card-flat cream-shadow-card" style="cursor: pointer; margin-bottom: 16px;" onclick="updateDailyMemoryConfig('enabled')">
+			            <div class="inventory-item-left-group">
+			                <div class="inventory-item-num-badge green-serif-num" style="font-size: 18px; color: #DDDDDD;">✦</div>
+			                <div class="inventory-item-details">
+			                    <div class="inventory-item-name-txt">开启长期记忆系统</div>
+			                    <div class="inventory-item-desc-txt" style="color: #AAAAAA; font-size: 11px; margin-top: 3px;">每天自动总结过去的聊天并注入记忆</div>
+			                </div>
+			            </div>
+			            <div class="toggle-switch ${config.enabled ? 'active' : ''}" onclick="event.stopPropagation(); updateDailyMemoryConfig('enabled')"></div>
+			        </div>
+
+			        <div class="inventory-item-card-flat cream-shadow-card" style="margin-bottom: 24px;">
+			            <div class="inventory-item-left-group">
+			                <div class="inventory-item-num-badge green-serif-num" style="font-size: 18px; color: #DDDDDD;">◷</div>
+			                <div class="inventory-item-details">
+			                    <div class="inventory-item-name-txt">记忆保留期限</div>
+			                    <div class="inventory-item-desc-txt" style="color: #AAAAAA; font-size: 11px; margin-top: 3px;">超过时限将会被渐渐淡忘</div>
+			                </div>
+			            </div>
+			            <select class="m-select" style="width:auto; border:none; background:#F2F2F7; padding:6px 10px; border-radius:8px; outline:none; font-size:13px; font-weight:700;" onchange="updateDailyMemoryConfig('retainDays', parseInt(this.value))">
+			                <option value="7" ${config.retainDays === 7 ? 'selected' : ''}>最近 7 天</option>
+			                <option value="15" ${config.retainDays === 15 ? 'selected' : ''}>最近 15 天</option>
+			                <option value="30" ${config.retainDays === 30 ? 'selected' : ''}>最近 30 天</option>
+			            </select>
+			        </div>
+
+			        <button class="inventory-gift-submit-btn ins-green-pill-btn" style="height: 44px; border-radius: 12px !important; margin-bottom: 24px;" onclick="forceTriggerDailyMemory()">
+			            立即对最近24H内容进行总结
+			        </button>
+
+			        <div style="font-size: 11px; font-weight: 700; color: #B0B0B0; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Memory Entries</div>
+			        <div style="display: flex; flex-direction: column; gap: 12px;">
+			    `;
+
+			    if (validMemories.length === 0) {
+			        html += `
+			            <div style="padding: 40px 0; text-align: center; color: #CCCCCC; font-size: 13px; font-weight: 600;">
+			                空空如也，随着聊天记录的积累才会产生记忆。
+			            </div>
+			        `;
+			    } else {
+			        html += validMemories.sort((a,b)=>b.timestamp-a.timestamp).map((m, index) => {
+			            // 只显示前 50 个字符
+			            const isExpanded = m.expanded;
+			            const preview = m.content.substring(0, 50) + (m.content.length > 50 && !isExpanded ? '...' : '');
+			            const dateStr = new Date(m.timestamp).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
+			            
+			            return `
+			            <div class="inventory-item-card-flat cream-shadow-card" style="flex-direction: column; align-items: stretch; gap: 10px; cursor: pointer; margin-bottom:0;" onclick="toggleDailyMemoryExpand('${m.id}')">
+			                <div style="display: flex; justify-content: space-between; align-items: center;">
+			                    <span style="font-size: 13px; font-weight: 800; color: #111;">${dateStr} 记忆切片</span>
+			                    <iconify-icon icon="ph:trash-bold" style="color: #FF5C8A; font-size: 16px; padding: 4px;" onclick="event.stopPropagation(); deleteDailyMemory('${m.id}')"></iconify-icon>
+			                </div>
+			                <div style="font-size: 13px; color: #666; line-height: 1.5;">
+			                    ${isExpanded ? escapeHtml(m.content) : escapeHtml(preview)}
+			                </div>
+			            </div>
+			            `;
+			        }).join('');
+			    }
+			    html += `</div>`;
+			    $('#ltm-content').innerHTML = html;
+			}
+
+			function updateDailyMemoryConfig(key, value) {
+			    const c = state.contacts.find(x => x.id === state.activeContactId);
+			    if (c) {
+			        if (key === 'enabled') c.dailyMemoryConfig.enabled = !c.dailyMemoryConfig.enabled;
+			        else c.dailyMemoryConfig[key] = value;
+			        saveDataSilently();
+			        renderDailyMemory();
+			    }
+			}
+
+			function toggleDailyMemoryExpand(id) {
+			    const c = state.contacts.find(x => x.id === state.activeContactId);
+			    if (c && c.dailyMemories) {
+			        const m = c.dailyMemories.find(x => x.id === id);
+			        if (m) {
+			            m.expanded = !m.expanded;
+			            renderDailyMemory();
+			        }
+			    }
+			}
+
+			async function deleteDailyMemory(id) {
+			    if (await showConfirmDialog('删除记忆', '确定删除这条长期记忆吗？')) {
+			        const c = state.contacts.find(x => x.id === state.activeContactId);
+			        if (c && c.dailyMemories) {
+			            c.dailyMemories = c.dailyMemories.filter(x => x.id !== id);
+			            await saveDataSilently();
+			            renderDailyMemory();
+			        }
+			    }
+			}
+
+			async function forceTriggerDailyMemory() {
+			    const c = state.contacts.find(x => x.id === state.activeContactId);
+			    if (c) {
+			        showToast('正在提取对话并总结...');
+			        await processDailyMemory(c, true);
+			        renderDailyMemory();
+			    }
+			}
+
+			async function checkAndTriggerDailyMemory(contactId) {
+			    const c = state.contacts.find(x => x.id === contactId);
+			    if (!c || !c.dailyMemoryConfig || !c.dailyMemoryConfig.enabled) return;
+
+			    const now = Date.now();
+			    const lastTime = c.dailyMemoryConfig.lastSummaryTime || 0;
+			    // 如果超过 24 小时未总结
+			    if (now - lastTime > 24 * 60 * 60 * 1000) {
+			        await processDailyMemory(c, false);
+			    }
+			}
+
+			async function processDailyMemory(contact, isForce) {
+			    if (!state.apiConfig.url || !state.apiConfig.apiKey) return;
+			    const now = Date.now();
+			    
+			    // 获取最近 24 小时内（或者自从上次提取之后）的消息
+			    const limitTime = contact.dailyMemoryConfig.lastSummaryTime > 0 ? contact.dailyMemoryConfig.lastSummaryTime : now - 24 * 60 * 60 * 1000;
+			    const msgsToSummarize = contact.messages.filter(m => m.timestamp >= limitTime && m.role !== 'system');
+			    
+			    if (msgsToSummarize.length === 0) {
+			        if (isForce) showToast('最近没有可总结的对话。');
+			        contact.dailyMemoryConfig.lastSummaryTime = now;
+			        await saveDataSilently();
+			        return;
+			    }
+
+			    const historyText = msgsToSummarize.slice(-200).map(m => {
+			        let content = m.content;
+			        if (m.type === 'image' || m.type === 'real_image') content = '[图片]';
+			        else if (m.type === 'virtual_image') content = `[文字图: ${m.content}]`;
+			        return `${m.role === 'user' ? '我' : contact.name}: ${content}`;
+			    }).join('\n');
+
+			    const prompt = `基于以下我们最近的聊天记录，生成一条长线记忆。
+			Make a short key summary based on this chat record. It is required to be 80 to 100 words, grasp the key and record the flow of emotions, record meaningful content, focus on recording the things that the user is most likely to remember, or the things that the user may mention again in the future, and record the ordinary and information-repeated conversations.
+			请直接输出总结内容，不要带任何多余格式。
+			
+			聊天记录：
+			${historyText}`;
+
+			    try {
+			        let baseUrl = state.apiConfig.url.trim().replace(/\/+$/, '');
+			        const res = await fetch(`${baseUrl}/chat/completions`, {
+			            method: 'POST',
+			            headers: { 'Authorization': `Bearer ${state.apiConfig.apiKey}`, 'Content-Type': 'application/json' },
+			            body: JSON.stringify({
+			                model: state.apiConfig.model || 'gpt-3.5-turbo',
+			                messages: normalizeMessages([ { role: 'user', content: prompt } ]),
+			                temperature: 0.7,
+			                stream: false
+			            })
+			        });
+
+			        if (res.ok) {
+			            const data = parseAPIResponse(await res.text());
+			            if (data.choices && data.choices[0] && data.choices[0].message) {
+			                let reply = data.choices[0].message.content.trim();
+			                if (reply) {
+			                    if (!contact.dailyMemories) contact.dailyMemories = [];
+			                    contact.dailyMemories.push({
+			                        id: 'ltm_' + Date.now(),
+			                        timestamp: now,
+			                        content: reply,
+			                        expanded: false
+			                    });
+			                    contact.dailyMemoryConfig.lastSummaryTime = now;
+			                    await saveDataSilently();
+			                    if (isForce) showToast('长期记忆更新成功！', 'success');
+			                }
+			            }
+			        }
+			    } catch (err) {
+			        console.warn('Daily Memory extraction failed:', err);
+			        if (isForce) showToast('提取失败，请重试', 'error');
+			    }
+			}
 
 			// ==================== Companion Mode Logic (专属陪伴模式) ====================
 
@@ -35289,87 +36014,6 @@ ${historyText}`;
 			    e.target.value = '';
 			}
             window.handleImportWorldbookDoc = handleImportWorldbookDoc;
-
-			// ================= 修复：情侣空间缺失的交互功能 =================
-
-			// 1. 处理情侣卡片背景上传
-			function handleLoverCardBgUpload(e) {
-			    const file = e.target.files[0];
-			    if (!file) return;
-			    const reader = new FileReader();
-			    reader.onload = ev => {
-			        state.uiConfig.loverCardBgTexture = ev.target.result;
-			        saveDataSilently();
-			        const select = document.getElementById('lover-space-persona-select');
-			        const currentPid = select ? select.value : '';
-			        renderLoverSpace(currentPid);
-			        showToast('情侣空间动态背景已更新');
-			    };
-			    reader.readAsDataURL(file);
-			    e.target.value = '';
-			}
-
-			// 2. 评论情侣空间动态
-			async function commentOnLoverMoment(spaceId, postId) {
-			    const text = await showPromptDialog('评论手账', '', '写下你的评论...');
-			    if (text && text.trim()) {
-			        const space = state.loverSpaces.find(s => s.id === spaceId);
-			        if (space) {
-			            const post = space.posts.find(p => p.id === postId);
-			            if (post) {
-			                const currentPid = state.forumConfig ? state.forumConfig.currentPersonaId : '';
-			                const myProfile = getForumProfileForPersona(currentPid);
-			                post.comments.push({
-			                    id: 'lc_' + Date.now(),
-			                    authorId: 'me',
-			                    authorName: myProfile.name,
-			                    content: text.trim(),
-			                    timestamp: Date.now()
-			                });
-			                await saveDataSilently();
-			                renderLoverSpace(currentPid);
-			            }
-			        }
-			    }
-			}
-
-			// 3. 回复情侣空间的评论
-			async function replyToLoverComment(spaceId, postId, commentId, replyToName) {
-			    const text = await showPromptDialog(`回复 ${replyToName}`, '', '写下你的回复...');
-			    if (text && text.trim()) {
-			        const space = state.loverSpaces.find(s => s.id === spaceId);
-			        if (space) {
-			            const post = space.posts.find(p => p.id === postId);
-			            if (post) {
-			                const currentPid = state.forumConfig ? state.forumConfig.currentPersonaId : '';
-			                const myProfile = getForumProfileForPersona(currentPid);
-			                post.comments.push({
-			                    id: 'lc_' + Date.now(),
-			                    authorId: 'me',
-			                    authorName: myProfile.name,
-			                    content: `回复 ${replyToName}: ` + text.trim(),
-			                    timestamp: Date.now()
-			                });
-			                await saveDataSilently();
-			                renderLoverSpace(currentPid);
-			            }
-			        }
-			    }
-			}
-
-			// 4. 删除情侣空间动态
-			async function deleteLoverMoment(spaceId, postId) {
-			    if (await showConfirmDialog('删除动态', '确定要删除这条情侣手账吗？')) {
-			        const space = state.loverSpaces.find(s => s.id === spaceId);
-			        if (space) {
-			            space.posts = space.posts.filter(p => p.id !== postId);
-			            await saveDataSilently();
-			            const currentPid = state.forumConfig ? state.forumConfig.currentPersonaId : '';
-			            renderLoverSpace(currentPid);
-			            showToast('已删除手账');
-			        }
-			    }
-			}
 
 		</script>
 	</body>
